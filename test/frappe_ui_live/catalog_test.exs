@@ -56,6 +56,23 @@ defmodule FrappeUILive.CatalogTest do
       def render(assigns), do: ~H"<.button />"
     end
 
+    # regressão: um segundo `import` do mesmo módulo sobrescrevia o primeiro e escondia `dialog/1`
+    defmodule UsaDialog do
+      use Phoenix.Component
+      use FrappeUILive
+
+      def render(assigns) do
+        ~H"""
+        <button phx-click={show_dialog("d")}>abrir</button>
+        <.dialog id="d">corpo</.dialog>
+        """
+      end
+    end
+
+    dialog_html = Phoenix.LiveViewTest.rendered_to_string(UsaDialog.render(%{__changed__: nil}))
+    assert dialog_html =~ "<dialog"
+    assert dialog_html =~ "fui:dialog-open"
+
     assert Phoenix.LiveViewTest.rendered_to_string(UsaTudo.render(%{__changed__: nil})) =~ "ok"
 
     assert Phoenix.LiveViewTest.rendered_to_string(UsaSemButton.render(%{__changed__: nil})) =~

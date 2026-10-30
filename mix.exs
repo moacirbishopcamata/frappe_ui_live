@@ -24,6 +24,8 @@ defmodule FrappeUILive.MixProject do
 
   def application, do: [extra_applications: [:logger]]
 
+  def cli, do: [preferred_envs: [quality: :test]]
+
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -43,6 +45,7 @@ defmodule FrappeUILive.MixProject do
   defp aliases do
     [
       "tokens.sync": ["cmd node scripts/sync_tokens.mjs"],
+      "icons.sync": ["cmd node scripts/sync_icons.mjs"],
       quality: [
         "format --check-formatted",
         "compile --warnings-as-errors",

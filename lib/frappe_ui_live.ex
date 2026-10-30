@@ -30,7 +30,6 @@ defmodule FrappeUILive do
 
     quote do
       (unquote_splicing(imports))
-      import FrappeUILive.Components.Dialog, only: [show_dialog: 1, hide_dialog: 1]
     end
   end
 end

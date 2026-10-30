@@ -1,0 +1,18 @@
+@import "tailwindcss" source(none);
+@import "../../../priv/static/frappe_ui.css";
+@import "../../../priv/static/frappe_ui_icons.css";
+
+/* Tailwind precisa enxergar as classes escritas nas views do mostruário e nos
+   componentes (incluindo o JS dos hooks colocated, que vive nos .ex). */
+@source "../../lib";
+@source "../../../lib";
+
+html {
+  font-family: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--surface-base);
+  color: var(--ink-gray-8);
+}
