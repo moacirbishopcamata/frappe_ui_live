@@ -25,6 +25,9 @@ defmodule FrappeUILive.Components.Dialog do
     "2xl": "max-w-2xl"
   }
 
+  @doc "Nome do hook colocated do diálogo (para componentes que montam o próprio `<dialog>`)."
+  def hook_name, do: "FrappeUILive.Components.Dialog.Dialog"
+
   attr :id, :string, required: true
   attr :open, :boolean, default: false
   attr :title, :string, default: nil

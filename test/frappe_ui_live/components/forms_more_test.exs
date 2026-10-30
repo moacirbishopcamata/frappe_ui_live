@@ -362,7 +362,12 @@ defmodule FrappeUILive.Components.FormsMoreTest do
       upload_ref: upload.ref
     }
 
-    upload = %{upload | entries: [entry], errors: [{upload.ref, :too_many_files}, {"0", :too_large}]}
+    upload = %{
+      upload
+      | entries: [entry],
+        errors: [{upload.ref, :too_many_files}, {"0", :too_large}]
+    }
+
     assigns = %{upload: upload}
 
     html =

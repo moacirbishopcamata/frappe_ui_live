@@ -21,6 +21,7 @@ defmodule ShowcaseWeb.Router do
     live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do
       live "/", CatalogLive, :index
       live "/c/:id", CatalogLive, :show
+      live "/f/:id", CatalogLive, :foundation
     end
   end
 end

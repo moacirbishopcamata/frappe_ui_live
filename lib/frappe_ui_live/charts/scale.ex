@@ -10,6 +10,9 @@ defmodule FrappeUILive.Charts.Scale do
   @spec color(non_neg_integer()) :: String.t()
   def color(index), do: "var(--surface-#{Enum.at(@palette, rem(index, length(@palette)))}-6)"
 
+  @doc "Famílias de cor da paleta de séries, na ordem de uso."
+  def palette, do: @palette
+
   @doc "Quantidade de cores distintas antes de repetir."
   def palette_size, do: length(@palette)
 

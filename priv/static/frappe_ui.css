@@ -1175,7 +1175,7 @@
   --color-outline-alpha-elevation-2: var(--outline-alpha-elevation-2);
 }
 
-@theme {
+@theme static {
   --radius-0: 0px;
   --radius-1: 4px;
   --radius-2: 5px;

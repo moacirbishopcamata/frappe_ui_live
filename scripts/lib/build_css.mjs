@@ -33,7 +33,8 @@ export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSi
     if (key === 'none' || key === 'DEFAULT') continue
     staticTheme.push(`  --shadow-elevation-${key}: ${value};`)
   }
-  out.push(`@theme {\n${staticTheme.join('\n')}\n}\n`)
+  // `static`: emite as variáveis mesmo sem classe que as use (a página de Fundamentos as lê)
+  out.push(`@theme static {\n${staticTheme.join('\n')}\n}\n`)
 
   // Escala tipográfica com prefixo fui-: não colide com text-sm/text-base do host.
   for (const [key, { fontSize: size, lineHeight, letterSpacing, fontWeight }] of Object.entries(fontSize)) {

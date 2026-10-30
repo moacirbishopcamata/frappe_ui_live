@@ -6,6 +6,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { buildCss } from './lib/build_css.mjs'
+import { buildFoundations } from './lib/build_foundations.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const tokens = await import('../vendor/frappe-ui-tokens/tokens.js')
@@ -18,7 +19,13 @@ if (!css.includes('--surface-base') || css.length < 10_000) {
   throw new Error('pós-condição violada: CSS gerado incompleto')
 }
 
+const foundations = buildFoundations(tokens)
+if (foundations.colors.surface.length < 50 || foundations.typography.scale.length < 20) {
+  throw new Error('pós-condição violada: fundamentos incompletos')
+}
+
 mkdirSync(join(root, 'priv/static'), { recursive: true })
+writeFileSync(join(root, 'priv/foundations.json'), JSON.stringify(foundations, null, 1) + '\n')
 writeFileSync(join(root, 'priv/static/frappe_ui.css'), css)
 writeFileSync(
   join(root, 'priv/tokens.provenance.json'),

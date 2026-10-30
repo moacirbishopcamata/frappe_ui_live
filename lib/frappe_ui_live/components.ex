@@ -220,7 +220,7 @@ defmodule FrappeUILive.Components do
     },
     %{id: :divider, module: C.Divider, fun: :divider, category: :navigation, title: "Divider"},
     # Dados
-    %{id: :list, module: C.List, fun: :list, category: :data, title: "List"},
+    %{id: :list, module: C.List, fun: :list, category: :molecules, title: "List"},
     %{id: :tree, module: C.Tree, fun: :tree, category: :data, title: "Tree"},
     %{id: :sortable, module: C.Sortable, fun: :sortable, category: :data, title: "Sortable"},
     # Charts
@@ -311,13 +311,50 @@ defmodule FrappeUILive.Components do
       category: :charts,
       title: "ChartStates"
     },
-    # Editores
-    %{id: :editor, module: C.Editor, fun: :editor, category: :editors, title: "Editor"},
+    # Experimental (API ainda pode mudar)
+    %{
+      id: :accordion,
+      module: C.Accordion,
+      fun: :accordion,
+      category: :experimental,
+      title: "Accordion"
+    },
+    %{
+      id: :calendar,
+      module: C.Calendar,
+      fun: :calendar,
+      category: :experimental,
+      title: "Calendar"
+    },
+    %{
+      id: :command_palette,
+      module: C.CommandPalette,
+      fun: :command_palette,
+      category: :experimental,
+      title: "CommandPalette"
+    },
+    %{
+      id: :list_view,
+      module: C.ListView,
+      fun: :list_view,
+      category: :experimental,
+      title: "ListView"
+    },
+    %{id: :stepper, module: C.Stepper, fun: :stepper, category: :experimental, title: "Stepper"},
+    %{
+      id: :theme_switcher,
+      module: C.ThemeSwitcher,
+      fun: :theme_switcher,
+      category: :experimental,
+      title: "ThemeSwitcher"
+    },
+    # Moléculas (continuação)
+    %{id: :editor, module: C.Editor, fun: :editor, category: :molecules, title: "Editor"},
     %{
       id: :code_editor,
       module: C.CodeEditor,
       fun: :code_editor,
-      category: :editors,
+      category: :molecules,
       title: "CodeEditor"
     }
   ]
@@ -329,7 +366,8 @@ defmodule FrappeUILive.Components do
     navigation: "Navegação e layout",
     data: "Dados",
     charts: "Charts",
-    editors: "Editores"
+    molecules: "Moléculas",
+    experimental: "Experimental"
   ]
 
   # Blocos de construção públicos que não são componentes de catálogo (sem exemplo isolado).

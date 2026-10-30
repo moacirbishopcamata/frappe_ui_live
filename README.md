@@ -4,8 +4,9 @@ Componentes **Phoenix LiveView** com a identidade visual do [Frappe UI](https://
 mesmos design tokens (`surface-*`, `ink-*`, `outline-*`, dark mode), mesmo markup e classes,
 sem Vue — estado autoritativo no servidor, JS só onde `Phoenix.LiveView.JS` e o HTML nativo não chegam.
 
-> **Status: v0.1.** ~80 componentes/blocos (formulários, feedback, overlays, navegação, dados, charts, editores),
-> integrações com Ecto e Plug, instalador e um **mostruário navegável**. Veja "Limites" no fim.
+> **Status: v0.1.** ~90 componentes/blocos (formulários, feedback, overlays, navegação, dados, charts, moléculas e experimentais),
+> **Fundamentos** (cores, tipografia, raio, sombras, foco, cores de gráficos), integrações com Ecto e Plug, instalador e um
+> **mostruário navegável**. Veja "Limites" e "Revisão de arquitetura" no fim.
 
 ## Componentes
 
@@ -15,12 +16,20 @@ sem Vue — estado autoritativo no servidor, JS só onde `Phoenix.LiveView.JS` e
 | Feedback e exibição | `badge`, `alert`, `progress`, `skeleton`, `spinner`, `loading_text`, `avatar`, `icon`, `keyboard_shortcut`, `item_list_row`, `saved_indicator`, `error_message`, `toast_container` |
 | Overlays | `dialog`, `bottom_sheet`, `settings_dialog`, `keyboard_shortcuts_dialog`, `dropdown`, `popover`, `context_menu`, `hover_card`, `tooltip` |
 | Navegação e layout | `tabs`, `tab_buttons`, `breadcrumbs`, `page_header`, `sidebar`, `sidebar_rail`, `desktop_shell`, `mobile_shell`, `scroll_area`, `divider` |
-| Dados | `list` (seleção, ações, arrastar-e-soltar), `tree`, `sortable` |
+| Dados | `tree`, `sortable` (arrastar-e-soltar) |
 | Charts (SVG no servidor) | `bar_chart`, `line_chart`, `area_chart`, `donut_chart`, `percentage_bar_chart`, `funnel_chart`, `heatmap_chart`, `calendar_heatmap_chart`, `scatter_chart`, `sankey_chart`, `number_card`, `chart_card`, `chart_legend`, `chart_tooltip`, `chart_frame` (estados loading/empty/error) |
-| Editores | `editor` (Markdown seguro), `code_editor` |
+| Moléculas | `list` (seleção, ações, arrastar-e-soltar), `editor` (Markdown seguro), `code_editor` |
+| Experimental | `accordion`, `calendar` (agenda), `command_palette` (Ctrl/⌘ K), `list_view` (agrupada), `stepper`, `theme_switcher` — a API ainda pode mudar |
 
 A especificação de cada um (atributos, tipos, valores permitidos, slots) está no mostruário e é
 **lida do código** (`FrappeUILive.Spec`), então não diverge.
+
+## Fundamentos
+
+Páginas de referência geradas da **mesma fonte do CSS** (`priv/foundations.json`, via `mix tokens.sync`), exibidas pelas
+variáveis do tema (acompanham claro/escuro): **Colors** (surface/ink/outline + alpha e rampas), **Typography**,
+**Radius**, **Shadows**, **Focus ring** e **Chart colors**. Em código: `FrappeUILive.Foundations`.
+Um teste de costura garante que todo token documentado existe no CSS distribuído.
 
 ## Mostruário (navegável, com formulários)
 
@@ -30,7 +39,7 @@ mix setup          # deps, baixa Tailwind/esbuild, gera CSS e JS
 mix phx.server     # http://localhost:4010
 ```
 
-- **Índice** por categoria; menu lateral para navegar.
+- **Índice** com Fundamentos e categorias (Formulários, Feedback, Overlays, Navegação, Dados, Charts, Moléculas, Experimental); menu lateral para navegar.
 - **Playground**: um *formulário gerado dos `attr` reais* altera a prévia ao vivo e o trecho de uso.
 - **Especificação**: tabela de atributos e slots.
 - Estado no servidor: listas, árvore, ordenação, upload real, "salvo", abas ativas.
@@ -140,7 +149,19 @@ Os tokens são **dados vendorizados** do pacote `frappe-ui` (sem dependências n
 - Classes de `Tabs`, `Breadcrumbs`, `Tooltip`, `Dialog` e dos componentes de layout foram aproximadas dos tokens,
   não copiadas 1:1 do original.
 - Fora do escopo: data fetching (`useCall`/`useDoc`/`useList`) — no LiveView o dado chega pelos assigns.
-- Pendente: revisão de arquitetura por reviewer externo (task 12.2 do OpenSpec).
+- Veja "Revisão de arquitetura" abaixo para o que ainda precisa de ajuste.
+
+## Revisão de arquitetura
+
+Feita com três revisores (OO design, Clean Architecture, API design). Sem ciclos de dependência e sem XSS explorável; extensão
+por `@behaviour`, funções puras e `Contract` estão consistentes. Veredito: **mudanças solicitadas**, com 1 ponto crítico e
+20 importantes, registrados como tasks 17.x no OpenSpec. Os principais:
+
+- **Crítico:** `mix frappe_ui_live.install` ignora opção inválida (`--dryrun`) e grava os arquivos.
+- `active` vindo da URL (`?tab=lixo`) derruba Tabs/TabButtons/SettingsDialog/Sidebar; `DatePicker` sem fallback em `handle_event`.
+- `id` obrigatório com erro uniforme e validação de id centralizada (hoje duplicada); acoplamento por string do hook do Sortable.
+- Markdown: `/\evil.com` passa como link relativo (open-redirect); Toast: hook sem container `phx-update=ignore`.
+- `use FrappeUILive` sem `only:`; `Spec` e `Samples` aumentam o custo de cada componente novo.
 
 ## Licença
 

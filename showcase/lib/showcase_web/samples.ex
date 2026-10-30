@@ -46,7 +46,13 @@ defmodule ShowcaseWeb.Samples do
     number_card: %{label: "Receita"},
     chart_card: %{title: "Vendas por mês"},
     editor: %{id: "demo-editor"},
-    code_editor: %{id: "demo-code", language: "json"}
+    code_editor: %{id: "demo-code", language: "json"},
+    accordion: %{id: "demo-accordion"},
+    calendar: %{id: "demo-calendar"},
+    command_palette: %{id: "demo-palette"},
+    list_view: %{id: "demo-list-view"},
+    stepper: %{current: 1},
+    theme_switcher: %{current: "light"}
   }
 
   @months ~w(Jan Fev Mar Abr Mai Jun)
@@ -74,7 +80,10 @@ defmodule ShowcaseWeb.Samples do
       selected: [2],
       expanded: [1],
       tree_selected: 2,
-      items: [%{id: 1, nome: "Primeiro"}, %{id: 2, nome: "Segundo"}, %{id: 3, nome: "Terceiro"}]
+      items: [%{id: 1, nome: "Primeiro"}, %{id: 2, nome: "Segundo"}, %{id: 3, nome: "Terceiro"}],
+      month: Date.utc_today(),
+      day: nil,
+      collapsed: []
     }
   end
 
@@ -738,6 +747,112 @@ defmodule ShowcaseWeb.Samples do
     ~H|<.code_editor name="codigo" value={code_sample()} {@a} />|
   end
 
+  # ---- experimentais ------------------------------------------------------------
+
+  defp sample(%{id: :accordion}, a, _) do
+    assigns = %{a: a}
+
+    ~H"""
+    <.accordion {@a}>
+      <:item id="uso" title="Como funciona?" open>
+        Cada seção é um &lt;details&gt; nativo: teclado e leitor de tela de graça.
+      </:item>
+      <:item id="estado" title="Onde fica o estado?">
+        Aberto/fechado é efêmero de UI; o servidor só define quais começam abertas.
+      </:item>
+      <:item id="multi" title="Várias abertas?">
+        Use <code>multiple</code> para permitir mais de uma seção aberta.
+      </:item>
+    </.accordion>
+    """
+  end
+
+  defp sample(%{id: :calendar}, a, %{demo: demo}) do
+    assigns = %{a: a, month: demo.month, day: demo.day, events: calendar_events(demo.month)}
+
+    ~H"""
+    <.calendar
+      month={@month}
+      selected={@day}
+      events={@events}
+      on_prev="cal_prev"
+      on_next="cal_next"
+      on_today="cal_today"
+      on_select="cal_select"
+      {@a}
+    />
+    """
+  end
+
+  defp sample(%{id: :command_palette}, a, _) do
+    assigns = %{a: a}
+
+    ~H"""
+    <div class="flex items-center gap-3">
+      <.button
+        label="Abrir paleta"
+        variant={:solid}
+        icon_left="search"
+        phx-click={show_dialog(@a.id)}
+      />
+      <.keyboard_shortcut keys={["Ctrl", "K"]} />
+    </div>
+    <.command_palette {@a}>
+      <:item
+        group="Criar"
+        label="Novo pedido"
+        icon="plus"
+        keywords="adicionar"
+        shortcut={["N"]}
+        click="demo"
+      />
+      <:item group="Criar" label="Novo cliente" icon="user" click="demo" />
+      <:item group="Ir para" label="Início" icon="house" navigate="/" />
+      <:item group="Ir para" label="Configurações" icon="settings" click="demo" />
+      <:item label="Sair" icon="log-out" click="demo" />
+    </.command_palette>
+    """
+  end
+
+  defp sample(%{id: :list_view}, a, %{demo: demo}) do
+    assigns = %{a: a, rows: demo.rows, collapsed: demo.collapsed}
+
+    ~H"""
+    <.list_view rows={@rows} group_by={& &1.papel} collapsed={@collapsed} on_toggle="lv_toggle" {@a}>
+      <:col :let={r} label="Nome">{r.nome}</:col>
+      <:col :let={r} label="Papel"><.badge label={r.papel} /></:col>
+    </.list_view>
+    """
+  end
+
+  defp sample(%{id: :stepper}, a, _) do
+    assigns = %{a: a}
+
+    ~H"""
+    <.stepper on_go="step_go" {@a}>
+      <:step label="Conta" description="Dados básicos" />
+      <:step label="Pagamento" description="Forma de pagamento" />
+      <:step label="Revisão" description="Confira e confirme" />
+    </.stepper>
+    <div class="mt-4 flex gap-2">
+      <.button label="Voltar" phx-click="step_go" phx-value-step={max(@a.current - 1, 0)} />
+      <.button label="Avançar" variant={:solid} phx-click="step_go" phx-value-step={@a.current + 1} />
+    </div>
+    """
+  end
+
+  defp sample(%{id: :theme_switcher}, a, extras) do
+    assigns = %{a: Map.put(a, :current, extras[:theme] || "light")}
+
+    ~H"""
+    <.theme_switcher {@a} />
+    <p class="fui-text-sm text-ink-gray-5 mt-3">
+      Recarrega a página com <code>?theme=…</code>; o <code>FrappeUILive.Plug.Theme</code>
+      guarda a escolha.
+    </p>
+    """
+  end
+
   # Demais componentes: sem slots obrigatórios nem contexto.
   defp sample(%{module: module, fun: fun}, a, _),
     do: apply(module, fun, [Map.put(a, :__changed__, nil)])
@@ -752,6 +867,18 @@ Texto com **negrito** e _itálico_.
   \"nome\": \"frappe_ui_live\",
   \"versao\": \"0.1.0\"
 }"
+
+  defp calendar_events(month) do
+    first = FrappeUILive.Calendar.first_of_month(month)
+
+    [
+      %{date: Date.add(first, 4), title: "Reunião", theme: :blue},
+      %{date: Date.add(first, 11), title: "Entrega", theme: :green},
+      %{date: Date.add(first, 11), title: "Revisão", theme: :amber},
+      %{date: Date.add(first, 11), title: "Retro", theme: :violet},
+      %{date: Date.add(first, 19), title: "Feriado", theme: :red}
+    ]
+  end
 
   defp fruits, do: @fruits
   defp months, do: @months

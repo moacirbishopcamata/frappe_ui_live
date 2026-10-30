@@ -9,10 +9,10 @@ defmodule ShowcaseWeb.CatalogLive do
   use Phoenix.LiveView
   use FrappeUILive
 
-  alias FrappeUILive.{Spec, Toast}
+  alias FrappeUILive.{Foundations, Spec, Toast}
   alias FrappeUILive.Components, as: Catalog
   alias FrappeUILive.Components.Sortable
-  alias ShowcaseWeb.{Samples, Snippet}
+  alias ShowcaseWeb.{FoundationsView, Samples, Snippet}
 
   @tabs ~w(playground spec)
 
@@ -24,7 +24,7 @@ defmodule ShowcaseWeb.CatalogLive do
      socket
      |> assign(:specs, Map.new(specs, &{Atom.to_string(&1.id), &1}))
      |> assign(:groups, groups(specs))
-     |> assign(spec: nil, tab: "playground", page_title: "Componentes")
+     |> assign(spec: nil, foundation: nil, tab: "playground", page_title: "Componentes")
      |> assign(attrs: %{}, params: %{}, form: to_form(%{}, as: :pg))
      |> assign(demo: Samples.demo_state(), saved_at: nil)
      |> allow_upload(:demo,
@@ -35,10 +35,21 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   @impl true
+  def handle_params(%{"id" => id}, _uri, %{assigns: %{live_action: :foundation}} = socket) do
+    case Enum.find(Foundations.sections(), &(Atom.to_string(&1.id) == id)) do
+      nil ->
+        {:noreply,
+         socket |> put_flash(:error, "Fundamento desconhecido: #{id}") |> push_navigate(to: "/")}
+
+      section ->
+        {:noreply, assign(socket, spec: nil, foundation: section, page_title: section.title)}
+    end
+  end
+
   def handle_params(%{"id" => id} = params, _uri, socket) do
     case Map.fetch(socket.assigns.specs, id) do
       {:ok, spec} ->
-        {:noreply, show(socket, spec, tab(params))}
+        {:noreply, socket |> assign(:foundation, nil) |> show(spec, tab(params))}
 
       :error ->
         {:noreply,
@@ -47,7 +58,7 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   def handle_params(_params, _uri, socket) do
-    {:noreply, assign(socket, spec: nil, page_title: "Componentes")}
+    {:noreply, assign(socket, spec: nil, foundation: nil, page_title: "Componentes")}
   end
 
   @impl true
@@ -127,6 +138,46 @@ defmodule ShowcaseWeb.CatalogLive do
     {:noreply, cancel_upload(socket, :demo, ref)}
   end
 
+  def handle_event("cal_prev", _params, socket), do: {:noreply, shift_month(socket, -1)}
+  def handle_event("cal_next", _params, socket), do: {:noreply, shift_month(socket, 1)}
+
+  def handle_event("cal_today", _params, socket) do
+    {:noreply, update(socket, :demo, &%{&1 | month: Date.utc_today(), day: Date.utc_today()})}
+  end
+
+  def handle_event("cal_select", %{"date" => iso}, socket) do
+    case FrappeUILive.Calendar.to_date(iso) do
+      %Date{} = date -> {:noreply, update(socket, :demo, &%{&1 | day: date})}
+      nil -> {:noreply, socket}
+    end
+  end
+
+  def handle_event("lv_toggle", %{"group" => group}, socket) do
+    known = socket.assigns.demo.rows |> Enum.map(& &1.papel) |> Enum.uniq()
+
+    if group in known do
+      collapsed = socket.assigns.demo.collapsed
+
+      collapsed =
+        if group in collapsed, do: List.delete(collapsed, group), else: collapsed ++ [group]
+
+      {:noreply, update(socket, :demo, &%{&1 | collapsed: collapsed})}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("step_go", %{"step" => step}, socket) do
+    case Integer.parse(step) do
+      {n, ""} when n in 0..3 ->
+        attrs = Map.put(socket.assigns.attrs, :current, n)
+        {:noreply, put_attrs(socket, attrs, to_params(attrs))}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
   def handle_event("demo", _params, socket) do
     {:noreply, Toast.put_toast(socket, :info, "Evento recebido no servidor")}
   end
@@ -150,6 +201,10 @@ defmodule ShowcaseWeb.CatalogLive do
 
   defp put_attrs(socket, attrs, params) do
     assign(socket, attrs: attrs, params: params, form: to_form(params, as: :pg))
+  end
+
+  defp shift_month(socket, delta) do
+    update(socket, :demo, &%{&1 | month: FrappeUILive.Calendar.shift_month(&1.month, delta)})
   end
 
   defp known_id(rows, id) do
@@ -183,6 +238,23 @@ defmodule ShowcaseWeb.CatalogLive do
         <.link patch="/" class="fui-text-lg-semibold text-ink-gray-9 mb-4 block px-2">
           Frappe UI Live
         </.link>
+        <nav aria-label="Fundamentos" class="mb-4">
+          <p class="fui-text-xs-medium text-ink-gray-5 mb-1 px-2 uppercase">Fundamentos</p>
+          <.link
+            :for={section <- Foundations.sections()}
+            id={"nav-foundation-#{section.id}"}
+            patch={"/f/#{section.id}"}
+            aria-current={@foundation && @foundation.id == section.id && "page"}
+            class={[
+              "fui-text-base block rounded-4 px-2 py-1",
+              @foundation && @foundation.id == section.id && "bg-surface-gray-3 text-ink-gray-9",
+              !(@foundation && @foundation.id == section.id) &&
+                "text-ink-gray-7 hover:bg-surface-gray-2"
+            ]}
+          >
+            {section.title}
+          </.link>
+        </nav>
         <nav :for={{category, title, entries} <- @groups} aria-label={title} class="mb-4">
           <p class="fui-text-xs-medium text-ink-gray-5 mb-1 px-2 uppercase">{title}</p>
           <.link
@@ -212,7 +284,8 @@ defmodule ShowcaseWeb.CatalogLive do
           />
         </div>
 
-        <.index :if={!@spec} groups={@groups} />
+        <.index :if={!@spec and !@foundation} groups={@groups} />
+        <.foundation_page :if={@foundation} section={@foundation} />
         <.detail
           :if={@spec}
           spec={@spec}
@@ -229,15 +302,47 @@ defmodule ShowcaseWeb.CatalogLive do
     """
   end
 
+  attr :section, :map, required: true
+
+  defp foundation_page(assigns) do
+    ~H"""
+    <.page_header title={@section.title} subtitle={@section.summary}>
+      <:breadcrumbs>
+        <.breadcrumbs>
+          <:item label="Fundamentos" patch="/" />
+          <:item label={@section.title} />
+        </.breadcrumbs>
+      </:breadcrumbs>
+    </.page_header>
+    <div class="p-5"><FoundationsView.section id={@section.id} /></div>
+    """
+  end
+
   attr :groups, :list, required: true
 
   defp index(assigns) do
+    assigns = assign(assigns, :foundations, Foundations.sections())
+
     ~H"""
     <.page_header
       title="Componentes"
       subtitle="Escolha um componente para ver o playground e a especificação."
     />
     <div class="space-y-8 p-5">
+      <section id="index-foundations">
+        <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-3">Fundamentos</h2>
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <.link
+            :for={section <- @foundations}
+            patch={"/f/#{section.id}"}
+            id={"card-foundation-#{section.id}"}
+            class="border-outline-gray-2 bg-surface-base hover:bg-surface-gray-1 rounded-6 border p-4 transition-colors"
+          >
+            <p class="fui-text-base-medium text-ink-gray-9">{section.title}</p>
+            <p class="fui-text-p-sm text-ink-gray-5 mt-1 line-clamp-2">{section.summary}</p>
+          </.link>
+        </div>
+      </section>
       <section :for={{_category, title, entries} <- @groups}>
         <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-3">{title}</h2>
         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -439,7 +544,12 @@ defmodule ShowcaseWeb.CatalogLive do
 
   # Estado do servidor que as amostras exibem (upload, "salvo", listas/árvore).
   defp extras(assigns) do
-    %{upload: assigns.uploads.demo, saved_at: assigns.saved_at, demo: assigns.demo}
+    %{
+      upload: assigns.uploads.demo,
+      saved_at: assigns.saved_at,
+      demo: assigns.demo,
+      theme: assigns[:frappe_ui_theme]
+    }
   end
 
   # ---- apresentação (puro) -----------------------------------------------------

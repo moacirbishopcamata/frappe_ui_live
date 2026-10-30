@@ -34,6 +34,7 @@ defmodule FrappeUILive.MixProject do
       {:phoenix, "~> 1.8"},
       {:phoenix_live_view, "~> 1.2"},
       {:phoenix_html, "~> 4.3"},
+      {:jason, "~> 1.4"},
       {:ecto, "~> 3.13", optional: true},
       {:phoenix_ecto, "~> 4.7", optional: true},
       {:lazy_html, "~> 0.1", only: :test},
