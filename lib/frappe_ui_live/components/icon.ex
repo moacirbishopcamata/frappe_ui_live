@@ -1,18 +1,40 @@
 defmodule FrappeUILive.Components.Icon do
   @moduledoc """
-  Ícone por máscara CSS (`lucide-<nome>`), colorido por `text-*`.
+  Ícone Lucide por nome, renderizado como `<svg>` inline (veja `FrappeUILive.Icons`).
 
-  A resolução do nome em classe é delegada a `FrappeUILive.IconResolver`.
+  O nome passa por `FrappeUILive.IconResolver` (apelidos do projeto) e depois pelo
+  catálogo, que aceita nomes antigos (aliases) e `-filled`. Para um ícone fixo no
+  template, prefira `FrappeUILive.Icons.Lucide` (`<Lucide.plus />`).
   """
   use Phoenix.Component
 
   attr :name, :string, required: true, doc: ~s(nome Lucide, ex.: "plus")
+  attr :size, :any, default: 24, doc: "largura e altura em pixels (número positivo)"
+  attr :color, :string, default: "currentColor", doc: "cor do traço (qualquer cor CSS)"
+  attr :stroke_width, :any, default: 2, doc: "espessura do traço (número positivo)"
+
+  attr :absolute_stroke_width, :boolean,
+    default: false,
+    doc: "mantém a espessura visual do traço igual em qualquer tamanho"
+
+  attr :title, :string, default: nil, doc: "nome acessível; sem ele o ícone é decorativo"
   attr :class, :any, default: nil
   attr :rest, :global
 
   def icon(assigns) do
+    assigns = assign(assigns, :name, FrappeUILive.IconResolver.resolve(assigns.name))
+
     ~H"""
-    <span class={[FrappeUILive.IconResolver.resolve(@name), @class]} aria-hidden="true" {@rest}></span>
+    <FrappeUILive.Icons.Svg.svg
+      name={@name}
+      size={@size}
+      color={@color}
+      stroke_width={@stroke_width}
+      absolute_stroke_width={@absolute_stroke_width}
+      title={@title}
+      class={@class}
+      {@rest}
+    />
     """
   end
 end

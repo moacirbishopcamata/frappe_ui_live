@@ -13,7 +13,7 @@ defmodule ShowcaseWeb.CatalogLive do
   alias Showcase.Spec
   alias FrappeUILive.Components, as: Catalog
   alias FrappeUILive.Components.Sortable
-  alias ShowcaseWeb.{FoundationsView, Samples, Snippet}
+  alias ShowcaseWeb.{FoundationsView, IconsView, Samples, Snippet}
 
   @tabs ~w(playground spec)
 
@@ -26,7 +26,7 @@ defmodule ShowcaseWeb.CatalogLive do
      |> assign(:specs, Map.new(specs, &{Atom.to_string(&1.id), &1}))
      |> assign(:groups, groups(specs))
      |> assign(spec: nil, foundation: nil, tab: "playground", page_title: "Componentes")
-     |> assign(attrs: %{}, params: %{}, form: to_form(%{}, as: :pg))
+     |> assign(attrs: %{}, params: %{}, form: to_form(%{}, as: :pg), icons: IconsView.init())
      |> assign(demo: Samples.demo_state(), saved_at: nil)
      |> allow_upload(:demo,
        accept: ~w(.png .jpg .jpeg .pdf),
@@ -36,6 +36,10 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   @impl true
+  def handle_params(_params, _uri, %{assigns: %{live_action: :icons}} = socket) do
+    {:noreply, assign(socket, spec: nil, foundation: nil, page_title: "Ícones")}
+  end
+
   def handle_params(%{"id" => id}, _uri, %{assigns: %{live_action: :foundation}} = socket) do
     case Enum.find(Foundations.sections(), &(Atom.to_string(&1.id) == id)) do
       nil ->
@@ -68,6 +72,17 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   def handle_event("reset", _params, socket), do: {:noreply, reset(socket, socket.assigns.spec)}
+
+  def handle_event("icons", %{"icons" => params}, socket) do
+    {:noreply, update(socket, :icons, &IconsView.cast(&1, params))}
+  end
+
+  def handle_event("icons_more", _params, socket),
+    do: {:noreply, update(socket, :icons, &IconsView.more/1)}
+
+  def handle_event("icon_select", %{"name" => name}, socket) when is_binary(name) do
+    {:noreply, update(socket, :icons, &IconsView.select(&1, name))}
+  end
 
   def handle_event("pg_tab", %{"tab" => tab}, socket) do
     attrs = Map.put(socket.assigns.attrs, :active, tab)
@@ -242,6 +257,20 @@ defmodule ShowcaseWeb.CatalogLive do
         <.link patch="/" class="fui-text-lg-semibold text-ink-gray-9 mb-4 block px-2">
           Frappe UI Live
         </.link>
+        <nav aria-label="Ícones" class="mb-4">
+          <.link
+            id="nav-icons"
+            patch="/icones"
+            aria-current={@live_action == :icons && "page"}
+            class={[
+              "fui-text-base block rounded-4 px-2 py-1",
+              @live_action == :icons && "bg-surface-gray-3 text-ink-gray-9",
+              @live_action != :icons && "text-ink-gray-7 hover:bg-surface-gray-2"
+            ]}
+          >
+            Ícones
+          </.link>
+        </nav>
         <nav aria-label="Fundamentos" class="mb-4">
           <p class="fui-text-xs-medium text-ink-gray-5 mb-1 px-2 uppercase">Fundamentos</p>
           <.link
@@ -288,7 +317,12 @@ defmodule ShowcaseWeb.CatalogLive do
           />
         </div>
 
-        <.index :if={!@spec and !@foundation} groups={@groups} extras={extras(assigns)} />
+        <.index
+          :if={!@spec and !@foundation and @live_action != :icons}
+          groups={@groups}
+          extras={extras(assigns)}
+        />
+        <IconsView.page :if={@live_action == :icons} icons={@icons} />
         <.foundation_page :if={@foundation} section={@foundation} />
         <.detail
           :if={@spec}
@@ -357,6 +391,23 @@ defmodule ShowcaseWeb.CatalogLive do
             <p class="fui-text-p-sm text-ink-gray-5 mt-1 line-clamp-2">{section.summary}</p>
           </.link>
         </div>
+      </section>
+
+      <section id="index-icons">
+        <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-3">Ícones</h2>
+        <.link
+          patch="/icones"
+          id="card-icons"
+          class="border-outline-gray-2 bg-surface-base hover:bg-surface-gray-1 rounded-6 block border p-4 transition-colors"
+        >
+          <div aria-hidden="true" class="text-ink-gray-7 mb-3 flex gap-3">
+            <.icon :for={name <- ~w(house search bell settings user heart star trash-2)} name={name} />
+          </div>
+          <p class="fui-text-base-medium text-ink-gray-9">Todos os ícones Lucide</p>
+          <p class="fui-text-p-sm text-ink-gray-5 mt-1">
+            {length(FrappeUILive.Icons.names())} componentes LiveView com size, color e stroke_width.
+          </p>
+        </.link>
       </section>
 
       <section :for={{category, title, entries} <- @groups} id={"index-#{category}"}>

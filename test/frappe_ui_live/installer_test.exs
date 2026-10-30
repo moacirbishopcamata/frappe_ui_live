@@ -42,8 +42,8 @@ defmodule FrappeUILive.InstallerTest do
       assert Enum.at(lines, tailwind + 1) ==
                ~s(@import "../../deps/frappe_ui_live/priv/static/frappe_ui.css";)
 
-      assert Enum.at(lines, tailwind + 2) =~ "frappe_ui_icons.css"
-      assert Enum.at(lines, tailwind + 3) == ~s(@source "../../deps/frappe_ui_live/lib";)
+      assert Enum.at(lines, tailwind + 2) == ~s(@source "../../deps/frappe_ui_live/lib";)
+      refute css =~ "frappe_ui_icons.css"
       assert css =~ ~s(@plugin "../vendor/heroicons";)
     end
 

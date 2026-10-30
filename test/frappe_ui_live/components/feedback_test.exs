@@ -169,13 +169,13 @@ defmodule FrappeUILive.Components.FeedbackTest do
       assert html_attr(rendered_to_string(~H|<Spinner.spinner />|), "svg", "role") == "status"
     end
 
-    test "Icon resolve nome por IconResolver, inclusive já prefixado" do
+    test "Icon renderiza o SVG do catálogo, inclusive nome já prefixado" do
       assigns = %{}
 
-      assert html_attr(rendered_to_string(~H|<Icon.icon name="plus" />|), "span", "class") =~
+      assert html_attr(rendered_to_string(~H|<Icon.icon name="plus" />|), "svg", "class") =~
                "lucide-plus"
 
-      assert html_attr(rendered_to_string(~H|<Icon.icon name="lucide-x" />|), "span", "class") ==
+      assert html_attr(rendered_to_string(~H|<Icon.icon name="lucide-x" />|), "svg", "class") =~
                "lucide-x"
     end
   end

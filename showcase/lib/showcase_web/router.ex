@@ -22,6 +22,7 @@ defmodule ShowcaseWeb.Router do
       live "/", CatalogLive, :index
       live "/c/:id", CatalogLive, :show
       live "/f/:id", CatalogLive, :foundation
+      live "/icones", CatalogLive, :icons
     end
   end
 end

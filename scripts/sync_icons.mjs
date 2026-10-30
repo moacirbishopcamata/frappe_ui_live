@@ -1,30 +1,34 @@
-// Gera priv/static/frappe_ui_icons.css a partir de scripts/icons.txt + lucide-static.
+// Gera priv/icons.json (todos os ícones Lucide, com tags e aliases) a partir do lucide-static.
 // Uso: `mix icons.sync` (requer `npm install` para ter o lucide-static).
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { buildIconsCss } from './lib/build_icons_css.mjs'
+import { buildIconsJson } from './lib/build_icons_json.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const names = readFileSync(join(root, 'scripts/icons.txt'), 'utf8')
-  .split('\n')
-  .map((line) => line.trim())
-  .filter((line) => line && !line.startsWith('#'))
+const pkg = join(root, 'node_modules/lucide-static')
+const read = (file) => JSON.parse(readFileSync(join(pkg, file), 'utf8'))
 
-const icons = {}
-for (const entry of names) {
-  // `nome:filled` gera `.lucide-nome-filled` com preenchimento (ex.: estrela cheia).
-  const [name, variant] = entry.split(':')
-  const file = join(root, 'node_modules/lucide-static/icons', `${name}.svg`)
-  // Pré-condição: o nome existe no Lucide; erro de digitação falha alto.
-  if (!existsSync(file)) throw new Error(`ícone Lucide inexistente: ${name}`)
-  const svg = readFileSync(file, 'utf8')
-  icons[variant === 'filled' ? `${name}-filled` : name] = variant === 'filled' ? svg.replace('fill="none"', 'fill="currentColor"') : svg
-}
+const svgDir = join(pkg, 'icons')
+const svgs = Object.fromEntries(
+  readdirSync(svgDir)
+    .filter((file) => file.endsWith('.svg'))
+    .map((file) => [file.slice(0, -4), readFileSync(join(svgDir, file), 'utf8')]),
+)
 
-const css = buildIconsCss(icons)
-if (Object.keys(icons).length !== names.length) throw new Error('pós-condição violada: ícones perdidos')
+const catalog = buildIconsJson({
+  version: read('package.json').version,
+  nodes: read('icon-nodes.json'),
+  tags: read('tags.json'),
+  svgs,
+})
 
-mkdirSync(join(root, 'priv/static'), { recursive: true })
-writeFileSync(join(root, 'priv/static/frappe_ui_icons.css'), css)
-console.log(`frappe_ui_icons.css: ${names.length} ícones (${css.length} bytes)`)
+// Pós-condição: nenhum ícone perdido entre a entrada e a saída.
+const total = Object.keys(catalog.icons).length
+const aliases = Object.values(catalog.icons).reduce((n, i) => n + i.aliases.length, 0)
+if (total + aliases !== Object.keys(svgs).length) throw new Error('pós-condição violada: ícones perdidos')
+
+mkdirSync(join(root, 'priv'), { recursive: true })
+const json = JSON.stringify(catalog)
+writeFileSync(join(root, 'priv/icons.json'), json + '\n')
+console.log(`icons.json: ${total} ícones, ${aliases} aliases, v${catalog.version} (${json.length} bytes)`)

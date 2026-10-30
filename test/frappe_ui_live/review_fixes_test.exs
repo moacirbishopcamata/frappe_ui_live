@@ -620,7 +620,7 @@ end")
     alias FrappeUILive.{Config, ErrorTranslator, IconResolver, Texts, ToastSink}
 
     defmodule MeuIcones do
-      def class(name), do: "meu-" <> name
+      def name(name), do: "meu-" <> name
     end
 
     defmodule SemCallback do
@@ -634,14 +634,14 @@ end")
     end
 
     test "Config.module!/4 devolve o padrão, o configurado e rejeita módulo sem o callback" do
-      assert Config.module!(:icon_resolver, IconResolver.Lucide, :class, 1) == IconResolver.Lucide
+      assert Config.module!(:icon_resolver, IconResolver.Lucide, :name, 1) == IconResolver.Lucide
       Application.put_env(:frappe_ui_live, :icon_resolver, MeuIcones)
-      assert Config.module!(:icon_resolver, IconResolver.Lucide, :class, 1) == MeuIcones
+      assert Config.module!(:icon_resolver, IconResolver.Lucide, :name, 1) == MeuIcones
 
       Application.put_env(:frappe_ui_live, :icon_resolver, SemCallback)
 
       assert_raise ArgumentError,
-                   ~r/icon_resolver: .*SemCallback.* não implementa class\/1/,
+                   ~r/icon_resolver: .*SemCallback.* não implementa name\/1/,
                    fn -> IconResolver.resolve("plus") end
 
       Application.put_env(:frappe_ui_live, :icon_resolver, Modulo.Que.Nao.Existe)
@@ -649,7 +649,7 @@ end")
     end
 
     test "IconResolver.resolve/1 usa a implementação configurada" do
-      assert IconResolver.resolve("plus") == "lucide-plus"
+      assert IconResolver.resolve("plus") == "plus"
       Application.put_env(:frappe_ui_live, :icon_resolver, MeuIcones)
       assert IconResolver.resolve("plus") == "meu-plus"
     end

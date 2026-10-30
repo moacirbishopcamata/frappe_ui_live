@@ -2,8 +2,7 @@ defmodule ShowcaseWeb.CatalogLiveTest do
   use ShowcaseWeb.ConnCase, async: true
 
   alias FrappeUILive.Components, as: Catalog
-
-  @icons_css Path.expand("../../../priv/static/frappe_ui_icons.css", __DIR__)
+  alias FrappeUILive.Icons
 
   describe "índice" do
     test "lista todos os componentes do catálogo, agrupados por categoria", %{conn: conn} do
@@ -44,27 +43,24 @@ defmodule ShowcaseWeb.CatalogLiveTest do
       end
     end
 
-    test "costura ícones: todo lucide-* renderizado existe no CSS de ícones", %{conn: conn} do
-      css = File.read!(@icons_css)
-
+    test "costura ícones: todo ícone renderizado existe no catálogo Lucide", %{conn: conn} do
       used =
         for entry <- Catalog.catalog(),
             {:ok, _view, html} = live(conn, "/c/#{entry.id}"),
-            [name] <- Regex.scan(~r/lucide-([a-z0-9-]+)/, html, capture: :all_but_first),
+            [name] <-
+              Regex.scan(~r/class="lucide lucide-([a-z0-9-]+)/, html, capture: :all_but_first),
             uniq: true,
             do: name
 
       assert used != []
-      missing = Enum.reject(used, &(css =~ ".lucide-#{&1} {"))
-      assert missing == [], "ícones sem CSS: #{inspect(missing)}"
+      missing = Enum.reject(used, &Icons.get/1)
+      assert missing == [], "ícones fora do catálogo: #{inspect(missing)}"
     end
 
-    test "ícones padrão de cada tema do Alert existem no CSS" do
-      css = File.read!(@icons_css)
-
+    test "ícones padrão de cada tema do Alert existem no catálogo" do
       for name <-
             ~w(info circle-check triangle-alert circle-alert chevron-down chevron-right check x) do
-        assert css =~ ".lucide-#{name} {"
+        assert Icons.get(name), name
       end
     end
   end
@@ -200,7 +196,7 @@ defmodule ShowcaseWeb.CatalogLiveTest do
 
       css = conn |> get("/assets/css/app.css") |> response(200)
       assert css =~ "--surface-base"
-      assert css =~ "lucide-plus"
+      refute css =~ "lucide-plus"
     end
   end
 end

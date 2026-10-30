@@ -10,8 +10,8 @@ defmodule Mix.Tasks.FrappeUiLive.Install do
 
   O que faz:
 
-    * `assets/css/app.css`: importa `frappe_ui.css` (tokens) e `frappe_ui_icons.css`
-      e adiciona `@source` para os componentes (depois de `@import "tailwindcss"`);
+    * `assets/css/app.css`: importa `frappe_ui.css` (tokens; os ícones são SVG inline,
+      sem CSS) e adiciona `@source` para os componentes (depois de `@import "tailwindcss"`);
     * `assets/js/app.js`: importa os hooks colocated e os soma ao `hooks:` do `LiveSocket`;
     * `mix.exs`: **só verifica** `compilers: [:phoenix_live_view] ++ Mix.compilers()`.
 

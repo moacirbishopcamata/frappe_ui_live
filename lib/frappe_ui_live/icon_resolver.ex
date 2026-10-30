@@ -1,29 +1,28 @@
 defmodule FrappeUILive.IconResolver do
   @moduledoc """
-  Contrato de como um nome de ícone vira classe CSS.
-
-  A implementação padrão (`FrappeUILive.IconResolver.Lucide`) usa classes de
-  máscara `lucide-<nome>`, como o Frappe UI. Troque via config:
+  Contrato de como o nome de ícone usado no projeto vira um nome do catálogo Lucide
+  (`FrappeUILive.Icons`). Serve para apelidos do projeto (`"salvar"` -> `"save"`):
 
       config :frappe_ui_live, icon_resolver: MyApp.Icons
 
-  Os componentes chamam `resolve/1`; a implementação configurada fornece `class/1`.
+  Os componentes chamam `resolve/1`; a implementação configurada fornece `name/1`.
+  A implementação padrão (`FrappeUILive.IconResolver.Lucide`) devolve o nome como veio;
+  nomes antigos (aliases) e `-filled` já são entendidos pelo catálogo.
   """
 
-  @callback class(name :: String.t()) :: String.t()
+  @callback name(name :: String.t()) :: String.t()
 
-  @doc "Classe CSS do ícone `name`, pela implementação configurada (validada)."
+  @doc "Nome do catálogo para `name`, pela implementação configurada (validada)."
   @spec resolve(String.t()) :: String.t()
   def resolve(name) when is_binary(name) do
-    FrappeUILive.Config.module!(:icon_resolver, __MODULE__.Lucide, :class, 1).class(name)
+    FrappeUILive.Config.module!(:icon_resolver, __MODULE__.Lucide, :name, 1).name(name)
   end
 end
 
 defmodule FrappeUILive.IconResolver.Lucide do
-  @moduledoc "Resolvedor padrão: `\"plus\"` vira `\"lucide-plus\"`; nomes já prefixados passam direto."
+  @moduledoc "Resolvedor padrão: o nome já é do catálogo Lucide e passa direto."
   @behaviour FrappeUILive.IconResolver
 
   @impl true
-  def class("lucide-" <> _ = name), do: name
-  def class(name), do: "lucide-" <> name
+  def name(name), do: name
 end

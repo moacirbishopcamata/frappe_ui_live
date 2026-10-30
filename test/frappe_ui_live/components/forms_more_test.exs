@@ -109,8 +109,8 @@ defmodule FrappeUILive.Components.FormsMoreTest do
       html = rendered_to_string(~H|<Rating.rating field={@f} />|)
       assert Enum.count(query(html, "input[type=radio]")) == 5
       assert has?(html, "input[value='3'][checked]")
-      assert Enum.count(query(html, ".lucide-star-filled")) == 3
-      assert Enum.count(query(html, ".lucide-star")) == 2
+      assert Enum.count(query(html, ".lucide-star[fill=currentColor]")) == 3
+      assert Enum.count(query(html, ".lucide-star[fill=none]")) == 2
     end
 
     test "rating: current/2 normaliza e readonly desabilita; max fora da faixa viola" do

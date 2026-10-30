@@ -106,7 +106,7 @@ defmodule FrappeUILive.ChartsTest do
 
       error = rendered_to_string(~H|<Bar.bar_chart categories={@c} series={@s} error="falhou" />|)
       assert error =~ "falhou" and error =~ "Não foi possível"
-      refute has?(error, "svg")
+      refute has?(error, "svg:not(.lucide)")
     end
   end
 

@@ -61,12 +61,11 @@ mix deps.get
 mix frappe_ui_live.install            # idempotente; --dry-run mostra o que faria
 ```
 
-O instalador edita `assets/css/app.css` (tokens, ícones e `@source` dos componentes) e `assets/js/app.js`
+O instalador edita `assets/css/app.css` (tokens e `@source` dos componentes) e `assets/js/app.js`
 (hooks colocated) e só **verifica** o `mix.exs`. Manualmente, o equivalente é:
 
 ```css
 @import "../../deps/frappe_ui_live/priv/static/frappe_ui.css";        /* tokens, tema, utilitários */
-@import "../../deps/frappe_ui_live/priv/static/frappe_ui_icons.css";  /* ícones Lucide */
 @source "../../deps/frappe_ui_live/lib";   /* para o Tailwind enxergar as classes dos componentes */
 ```
 
@@ -120,7 +119,7 @@ Os controles aceitam `field={@form[:campo]}` e mostram erros de changeset **só 
 - **SOLID**: um módulo por componente; extensão por `@behaviour` (`IconResolver`, `ToastSink`, `ErrorTranslator`),
   sem herança de implementação; estilo e geometria em funções puras (`InputStyle`, `Button.classes/1`, `Charts.Scale`...).
 - **Testes**: `mix test --cover` (limite mínimo 90%; hoje ~98%). Inclui testes de **costura**:
-  tokens do Frappe UI (lidos por Node, da fonte) ⇄ CSS gerado; ícones renderizados ⇄ CSS de ícones;
+  tokens do Frappe UI (lidos por Node, da fonte) ⇄ CSS gerado; catálogo de ícones ⇄ `lucide-static` (arquivos, tags, aliases);
   Ecto changeset ⇄ `FormField` ⇄ componente; sessão ⇄ tema; DOM do editor ⇄ Markdown (executado em Node).
 
 ```sh
@@ -144,11 +143,39 @@ explicitamente ao componente (`label=`, `placeholder=`...) sempre vence o config
 
 ```sh
 mix tokens.sync   # lê vendor/frappe-ui-tokens (frappe-ui 1.1.0, MIT) -> priv/static/frappe_ui.css
-npm install && mix icons.sync   # scripts/icons.txt + lucide-static -> priv/static/frappe_ui_icons.css
+npm install && mix icons.sync   # lucide-static -> priv/icons.json (todos os ícones, tags e aliases)
 ```
 
 Os tokens são **dados vendorizados** do pacote `frappe-ui` (sem dependências npm, sem CVE).
-`priv/tokens.provenance.json` registra versão e hash. Para um ícone novo, acrescente o nome a `scripts/icons.txt`.
+`priv/tokens.provenance.json` registra versão e hash. Os ícones vêm do `lucide-static` fixado (ISC); `mix icons.sync` é determinístico e falha se algum
+SVG antigo não tiver ícone equivalente.
+
+## Ícones Lucide
+
+Todos os ícones do Lucide (veja `FrappeUILive.Icons.version/0`) são **componentes LiveView**, em SVG inline,
+sem JavaScript e sem CSS de ícones:
+
+```heex
+alias FrappeUILive.Icons.Lucide
+
+<Lucide.plus />
+<Lucide.circle_alert size={16} color="red" stroke_width={1.5} title="Erro" />
+<.icon name="alert-circle" size={20} absolute_stroke_width />   <%!-- por nome (string); aceita aliases e "-filled" --%>
+```
+
+Propriedades de todo ícone: `size` (24), `color` (`currentColor`), `stroke_width` (2), `absolute_stroke_width`
+(mantém a espessura visual em qualquer tamanho), `title` (nome acessível; sem ele o ícone é decorativo,
+`aria-hidden`), `class` e atributos globais. Valores inválidos (`size={0}`, nome inexistente) falham alto
+com `ArgumentError`. O nome da função é o do ícone com `-` trocado por `_` (`"1-circle"` → `i_1_circle`);
+a compilação do módulo com ~2.000 componentes leva ~35 s, uma vez, ao compilar a dependência.
+
+`FrappeUILive.Icons` expõe `names/0`, `get/1` (tags e aliases), `search/1` (nome ou tag) e `version/0`.
+As props `icon=` dos demais componentes aceitam qualquer ícone pelo nome. `config :frappe_ui_live, icon_resolver:`
+permite apelidos do projeto (callback `name/1`). O mostruário tem a página **Ícones** (`/icones`) com busca e controles ao vivo.
+O catálogo não traz as categorias do lucide.dev (o pacote não as inclui); use as tags.
+
+**Deprecado**: `priv/static/frappe_ui_icons.css` (`.lucide-*` por máscara, 82 ícones, congelado) deixa de ser
+necessário, não é mais importado pelo instalador e será removido na próxima versão.
 
 ## Limites conhecidos
 

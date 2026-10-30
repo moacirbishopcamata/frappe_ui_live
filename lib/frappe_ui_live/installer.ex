@@ -13,7 +13,7 @@ defmodule FrappeUILive.Installer do
   @type result :: {:ok, String.t(), boolean()} | {:error, atom()}
 
   @doc """
-  Acrescenta os `@import` do CSS de tokens/ícones e o `@source` dos componentes
+  Acrescenta os `@import` do CSS de tokens e o `@source` dos componentes
   logo depois de `@import "tailwindcss"`. `rel` é o caminho da dependência a partir
   do `app.css` (ex.: `"../../deps/frappe_ui_live"`).
   """
@@ -29,7 +29,6 @@ defmodule FrappeUILive.Installer do
       true ->
         block =
           ~s|@import "#{rel}/priv/static/frappe_ui.css";\n| <>
-            ~s|@import "#{rel}/priv/static/frappe_ui_icons.css";\n| <>
             ~s|@source "#{rel}/lib";|
 
         patched =

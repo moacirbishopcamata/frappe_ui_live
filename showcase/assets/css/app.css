@@ -1,6 +1,5 @@
 @import "tailwindcss" source(none);
 @import "../../../priv/static/frappe_ui.css";
-@import "../../../priv/static/frappe_ui_icons.css";
 
 /* Tailwind precisa enxergar as classes escritas nas views do mostruário e nos
    componentes (incluindo o JS dos hooks colocated, que vive nos .ex). */
