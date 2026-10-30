@@ -184,7 +184,7 @@ importantes). **Já corrigidos** (com testes de regressão):
   fachada e módulo configurado validado; `Field.assign_field/2` com precedência documentada; `List` com `selectable`/`selected`
   e `Tree` com `selected_id`; DatePicker alinhado aos outros campos.
 
-Sem pendências da revisão além de detalhes menores (ex.: o `default:` do `ThemeHook`).
+Sem pendências da revisão. O tema padrão também vale no LiveView: `on_mount: [{FrappeUILive.Live.ThemeHook, default: "dark"}]`.
 
 ## Licença
 

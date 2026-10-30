@@ -134,7 +134,7 @@ defmodule FrappeUILive.PureModulesTest do
     test "valid_id! aceita identificadores seguros e barra CSS injetado" do
       assert Anchor.valid_id!("menu-1", "x") == "menu-1"
       assert_raise ArgumentError, ~r/x id inválido/, fn -> Anchor.valid_id!("a; b", "x") end
-      assert_raise ArgumentError, fn -> Anchor.valid_id!(nil, "x") end
+      assert_raise ArgumentError, fn -> Anchor.valid_id!(List.first([]), "x") end
     end
 
     test "estilos de âncora e placement" do

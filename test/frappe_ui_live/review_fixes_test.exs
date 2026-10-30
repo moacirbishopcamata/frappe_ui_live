@@ -111,7 +111,7 @@ defmodule FrappeUILive.ReviewFixesTest do
         Field.require_id!(%{id: "a b"}, "x")
       end
 
-      assert_raise ArgumentError, fn -> Field.require_id!(%{}, "x") end
+      assert_raise ArgumentError, fn -> Field.require_id!(Map.new(), "x") end
     end
 
     test "Anchor valida o id dentro dos estilos (componente novo não esquece)" do
@@ -759,6 +759,32 @@ end")
         )
 
       assert has?(html, "#d.minha-classe")
+    end
+  end
+
+  describe "ThemeHook com default configurável" do
+    alias FrappeUILive.Live.ThemeHook
+
+    test "default: do hook vale quando a sessão não tem tema válido" do
+      socket = %Phoenix.LiveView.Socket{}
+      assert {:cont, s} = ThemeHook.on_mount([default: "dark"], %{}, %{}, socket)
+      assert s.assigns.frappe_ui_theme == "dark"
+
+      assert {:cont, s} =
+               ThemeHook.on_mount([default: "dark"], %{}, %{"frappe_ui_theme" => "xx"}, socket)
+
+      assert s.assigns.frappe_ui_theme == "dark"
+      # a sessão válida continua mandando
+      assert {:cont, s} =
+               ThemeHook.on_mount([default: "dark"], %{}, %{"frappe_ui_theme" => "light"}, socket)
+
+      assert s.assigns.frappe_ui_theme == "light"
+    end
+
+    test "default inválido viola o contrato" do
+      assert_raise ArgumentError, ~r/ThemeHook default/, fn ->
+        ThemeHook.on_mount([default: "sepia"], %{}, %{}, %Phoenix.LiveView.Socket{})
+      end
     end
   end
 end
