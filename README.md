@@ -163,11 +163,13 @@ sozinhas. `type` `:numeric` (padrão) ou `:alphanumeric`, `mask` esconde os cara
 `%{"id", "value"}` ao servidor quando todas as caixas estão preenchidas. `PinCode.sanitize/2` aplica no servidor a
 mesma regra de caracteres do cliente; o código recebido continua sendo entrada de usuário e deve ser validado.
 
-**`dice_bear_avatar`**: avatar do [DiceBear](https://www.dicebear.com/) (coleção 9.x, `FrappeUILive.DiceBear.styles/0`)
-sobre o `avatar`, com os mesmos `size`/`shape`. `options` repassa parâmetros da API (`%{backgroundColor: ["b6e3f4"], flip: true}`).
+**`dice_bear_avatar`**: avatar do [DiceBear](https://www.dicebear.com/) (API 10.x, 61 estilos em `FrappeUILive.DiceBear.styles/0`; não há biblioteca oficial Elixir, o componente monta a URL da API HTTP)
+sobre o `avatar`, com os mesmos `size`/`shape`. `options` repassa parâmetros da API (`%{backgroundColor: ["b6e3f4"], flip: "horizontal"}`).
 **A `seed` vai na URL** para o servidor do DiceBear: use `DiceBear.seed/1` (id opaco), nunca e-mail ou nome, e para não
-depender de terceiros hospede a API e configure `config :frappe_ui_live, dice_bear_base_url: "https://avatars.meuapp.com/9.x"`.
-Com CSP, libere o host em `img-src`. As imagens carregam sob demanda e sem `Referer` (também no `avatar` comum).
+depender de terceiros hospede a API e configure `config :frappe_ui_live, dice_bear_base_url: "https://avatars.meuapp.com/10.x"`.
+A API pública é gratuita **só para uso não comercial**, sem garantia de disponibilidade e com limite por segundo; em produção hospede a
+sua ([guia](https://www.dicebear.com/recipes/self-host-the-http-api/)). Cada estilo tem licença própria (CC BY 4.0 exige atribuição; veja
+<https://www.dicebear.com/licenses/>). Com CSP, libere o host em `img-src`. As imagens carregam sob demanda e sem `Referer` (também no `avatar` comum).
 
 ## Ícones Lucide
 

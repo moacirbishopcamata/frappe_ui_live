@@ -126,17 +126,25 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
 
   describe "DiceBear.url/4" do
     test "monta a URL com seed e opções ordenadas e codificadas" do
-      assert DiceBear.url("thumbs", "ana", %{backgroundColor: ["b6e3f4", "c0aede"], flip: true}) ==
-               "https://api.dicebear.com/9.x/thumbs/svg?backgroundColor=b6e3f4%2Cc0aede&flip=true&seed=ana"
+      assert DiceBear.url("thumbs", "ana", %{
+               backgroundColor: ["b6e3f4", "c0aede"],
+               flip: "horizontal"
+             }) ==
+               "https://api.dicebear.com/10.x/thumbs/svg?backgroundColor=b6e3f4%2Cc0aede&flip=horizontal&seed=ana"
     end
 
     test "seed com caracteres especiais é codificada (sem injeção de parâmetros)" do
       url = DiceBear.url("initials", "a&radius=0 ü/?#", %{})
 
       assert url ==
-               "https://api.dicebear.com/9.x/initials/svg?seed=a%26radius%3D0+%C3%BC%2F%3F%23"
+               "https://api.dicebear.com/10.x/initials/svg?seed=a%26radius%3D0+%C3%BC%2F%3F%23"
 
       assert URI.decode_query(URI.parse(url).query) == %{"seed" => "a&radius=0 ü/?#"}
+    end
+
+    test "estilo novo, ainda fora da lista conhecida, não é recusado (o servidor decide)" do
+      assert DiceBear.url("estilo-do-futuro", "x") ==
+               "https://api.dicebear.com/10.x/estilo-do-futuro/svg?seed=x"
     end
 
     test "formato e servidor próprio" do
@@ -160,7 +168,9 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
     end
 
     test "contrato: estilo, seed, formato, base, chaves e valores das opções" do
-      assert_raise ArgumentError, ~r/dice_bear style/, fn -> DiceBear.url("nao-existe", "x") end
+      assert_raise ArgumentError, ~r/dice_bear style/, fn -> DiceBear.url("../x", "x") end
+      assert_raise ArgumentError, ~r/dice_bear style/, fn -> DiceBear.url("Thumbs", "x") end
+      assert_raise ArgumentError, ~r/dice_bear style/, fn -> DiceBear.url(:thumbs, "x") end
       assert_raise ArgumentError, ~r/dice_bear seed/, fn -> DiceBear.url("thumbs", "") end
       assert_raise ArgumentError, ~r/dice_bear seed/, fn -> DiceBear.url("thumbs", nil) end
 
@@ -194,7 +204,9 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
 
     test "styles/0 e formats/0 não têm duplicados" do
       assert DiceBear.styles() == Enum.uniq(DiceBear.styles())
+      assert length(DiceBear.styles()) == 61
       assert "thumbs" in DiceBear.styles() and "svg" in DiceBear.formats()
+      assert Enum.all?(DiceBear.styles(), &(&1 =~ ~r/\A[a-z][a-z0-9]*(-[a-z0-9]+)*\z/))
     end
   end
 
@@ -207,7 +219,7 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
           ~H|<DiceBearAvatar.dice_bear_avatar seed="ana" style="lorelei" label="Ana" size={:xl} />|
         )
 
-      assert html_attr(html, "img", "src") == "https://api.dicebear.com/9.x/lorelei/svg?seed=ana"
+      assert html_attr(html, "img", "src") == "https://api.dicebear.com/10.x/lorelei/svg?seed=ana"
       assert html_attr(html, "img", "alt") == "Ana"
       assert html_attr(html, "img", "loading") == "lazy"
       assert html_attr(html, "img", "referrerpolicy") == "no-referrer"
@@ -222,13 +234,13 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
         rendered_to_string(~H|<DiceBearAvatar.dice_bear_avatar
   seed="b"
   shape={:square}
-  options={%{radius: 20}}
+  options={%{borderRadius: 20}}
   base_url="/av"
   class="x"
 />|)
 
       assert html_attr(html, "img", "alt") == ""
-      assert html_attr(html, "img", "src") == "/av/thumbs/svg?radius=20&seed=b"
+      assert html_attr(html, "img", "src") == "/av/thumbs/svg?borderRadius=20&seed=b"
       assert html_attr(html, "span", "class") =~ "rounded-4"
       assert html_attr(html, "span", "class") =~ "x"
     end
@@ -237,7 +249,7 @@ defmodule FrappeUILive.Components.PinDiceBearTest do
       assigns = %{}
 
       assert_raise ArgumentError, ~r/dice_bear style/, fn ->
-        rendered_to_string(~H|<DiceBearAvatar.dice_bear_avatar seed="a" style="xx" />|)
+        rendered_to_string(~H|<DiceBearAvatar.dice_bear_avatar seed="a" style="../x" />|)
       end
 
       assert_raise ArgumentError, ~r/dice_bear seed/, fn ->

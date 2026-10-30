@@ -5,11 +5,13 @@ defmodule FrappeUILive.Components.DiceBearAvatar do
   formas do `FrappeUILive.Components.Avatar`, de quem herda o visual (composição).
 
       <.dice_bear_avatar seed={@user.public_id} style="thumbs" size={:xl} />
-      <.dice_bear_avatar seed={@user.public_id} options={%{backgroundColor: ["b6e3f4"], flip: true}} />
+      <.dice_bear_avatar seed={@user.public_id} options={%{backgroundColor: ["b6e3f4"], flip: "horizontal"}} />
 
   A imagem é buscada da API do DiceBear (`FrappeUILive.DiceBear`): **a `seed` vai na
   URL**. Não passe e-mail nem nome; use `FrappeUILive.DiceBear.seed/1` e, se preciso,
-  hospede a API (`config :frappe_ui_live, dice_bear_base_url: ...`). A imagem é
+  hospede a API (`config :frappe_ui_live, dice_bear_base_url: ...`). A API pública é gratuita só
+  para uso não comercial e tem limite de requisições; em produção, hospede a sua. Cada estilo tem
+  licença própria (alguns exigem atribuição). A imagem é
   carregada sob demanda e sem enviar o `Referer`. Se a página usa CSP, libere o
   host da API em `img-src`.
   """
@@ -23,7 +25,7 @@ defmodule FrappeUILive.Components.DiceBearAvatar do
   attr :style, :string,
     default: "thumbs",
     values: DiceBear.styles(),
-    doc: "estilo da coleção DiceBear 9.x"
+    doc: "estilo DiceBear (nome como \"thumbs\" ou \"pixel-art\"; veja DiceBear.styles/0)"
 
   attr :label, :string,
     default: nil,
@@ -34,7 +36,7 @@ defmodule FrappeUILive.Components.DiceBearAvatar do
 
   attr :options, :map,
     default: %{},
-    doc: "parâmetros da API (backgroundColor, radius, flip, scale...); listas viram a,b"
+    doc: "parâmetros da API (backgroundColor, borderRadius, flip, scale...); listas viram a,b"
 
   attr :base_url, :string, default: nil, doc: "servidor DiceBear (padrão: config ou API pública)"
   attr :class, :any, default: nil
