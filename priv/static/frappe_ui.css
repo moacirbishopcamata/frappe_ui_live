@@ -1,5 +1,7 @@
 /* Gerado por scripts/sync_tokens.mjs — não edite à mão. */
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   --surface-base: oklch(1 0 0);
   --surface-gray-1: oklch(0.979 0 0);
@@ -1201,11 +1203,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-2xs-medium {
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-2xs-semibold {
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-2xs-bold {
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
 @utility fui-text-xs {
   font-size: 12px;
   line-height: 1.35;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-xs-medium {
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-xs-semibold {
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-xs-bold {
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
 }
 
 @utility fui-text-sm {
@@ -1215,11 +1259,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-sm-medium {
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-sm-semibold {
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-sm-bold {
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
+}
+
 @utility fui-text-base {
   font-size: 14px;
   line-height: 1.35;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-base-medium {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-base-semibold {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-base-bold {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
 }
 
 @utility fui-text-md {
@@ -1229,11 +1315,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-md-medium {
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-md-semibold {
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-md-bold {
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
+}
+
 @utility fui-text-lg {
   font-size: 16px;
   line-height: 1.35;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-lg-medium {
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-lg-semibold {
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-lg-bold {
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
 }
 
 @utility fui-text-xl {
@@ -1243,11 +1371,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-xl-medium {
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-xl-semibold {
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-xl-bold {
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+  font-weight: 700;
+}
+
 @utility fui-text-2xl {
   font-size: 18px;
   line-height: 1.35;
   letter-spacing: 0.01em;
   font-weight: 420;
+}
+
+@utility fui-text-2xl-medium {
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-2xl-semibold {
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-2xl-bold {
+  font-size: 18px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 700;
 }
 
 @utility fui-text-3xl {
@@ -1257,11 +1427,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-3xl-medium {
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-3xl-semibold {
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-3xl-bold {
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
 @utility fui-text-4xl {
   font-size: 24px;
   line-height: 1.35;
   letter-spacing: 0.005em;
   font-weight: 420;
+}
+
+@utility fui-text-4xl-medium {
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+@utility fui-text-4xl-semibold {
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  font-weight: 600;
+}
+
+@utility fui-text-4xl-bold {
+  font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  font-weight: 700;
 }
 
 @utility fui-text-5xl {
@@ -1271,11 +1483,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-5xl-medium {
+  font-size: 26px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+@utility fui-text-5xl-semibold {
+  font-size: 26px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  font-weight: 600;
+}
+
+@utility fui-text-5xl-bold {
+  font-size: 26px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  font-weight: 700;
+}
+
 @utility fui-text-6xl {
   font-size: 28px;
   line-height: 1.6;
   letter-spacing: 0.01em;
   font-weight: 420;
+}
+
+@utility fui-text-6xl-medium {
+  font-size: 28px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+@utility fui-text-6xl-semibold {
+  font-size: 28px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-6xl-bold {
+  font-size: 28px;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  font-weight: 700;
 }
 
 @utility fui-text-7xl {
@@ -1285,11 +1539,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-7xl-medium {
+  font-size: 32px;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-7xl-semibold {
+  font-size: 32px;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-7xl-bold {
+  font-size: 32px;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+  font-weight: 700;
+}
+
 @utility fui-text-8xl {
   font-size: 40px;
   line-height: 1.4;
   letter-spacing: 0em;
   font-weight: 420;
+}
+
+@utility fui-text-8xl-medium {
+  font-size: 40px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 500;
+}
+
+@utility fui-text-8xl-semibold {
+  font-size: 40px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 600;
+}
+
+@utility fui-text-8xl-bold {
+  font-size: 40px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 700;
 }
 
 @utility fui-text-9xl {
@@ -1299,11 +1595,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-9xl-medium {
+  font-size: 44px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 500;
+}
+
+@utility fui-text-9xl-semibold {
+  font-size: 44px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 600;
+}
+
+@utility fui-text-9xl-bold {
+  font-size: 44px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 700;
+}
+
 @utility fui-text-10xl {
   font-size: 48px;
   line-height: 1.4;
   letter-spacing: 0em;
   font-weight: 420;
+}
+
+@utility fui-text-10xl-medium {
+  font-size: 48px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 500;
+}
+
+@utility fui-text-10xl-semibold {
+  font-size: 48px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 600;
+}
+
+@utility fui-text-10xl-bold {
+  font-size: 48px;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  font-weight: 700;
 }
 
 @utility fui-text-11xl {
@@ -1313,11 +1651,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-11xl-medium {
+  font-size: 52px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 500;
+}
+
+@utility fui-text-11xl-semibold {
+  font-size: 52px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 600;
+}
+
+@utility fui-text-11xl-bold {
+  font-size: 52px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 700;
+}
+
 @utility fui-text-12xl {
   font-size: 56px;
   line-height: 1.4;
   letter-spacing: 0.005em;
   font-weight: 420;
+}
+
+@utility fui-text-12xl-medium {
+  font-size: 56px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 500;
+}
+
+@utility fui-text-12xl-semibold {
+  font-size: 56px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 600;
+}
+
+@utility fui-text-12xl-bold {
+  font-size: 56px;
+  line-height: 1.4;
+  letter-spacing: 0em;
+  font-weight: 700;
 }
 
 @utility fui-text-p-2xs {
@@ -1327,11 +1707,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-p-2xs-medium {
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-2xs-semibold {
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-2xs-bold {
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
 @utility fui-text-p-xs {
   font-size: 12px;
   line-height: 1.6;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-p-xs-medium {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-xs-semibold {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-xs-bold {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 @utility fui-text-p-sm {
@@ -1341,11 +1763,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-p-sm-medium {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-sm-semibold {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-sm-bold {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  font-weight: 700;
+}
+
 @utility fui-text-p-base {
   font-size: 14px;
   line-height: 1.5;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-p-base-medium {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-base-semibold {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-base-bold {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 @utility fui-text-p-md {
@@ -1355,11 +1819,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-p-md-medium {
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-md-semibold {
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-md-bold {
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
 @utility fui-text-p-lg {
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: 0.02em;
   font-weight: 420;
+}
+
+@utility fui-text-p-lg-medium {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-lg-semibold {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-lg-bold {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 @utility fui-text-p-xl {
@@ -1369,11 +1875,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-p-xl-medium {
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-xl-semibold {
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-xl-bold {
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
 @utility fui-text-p-2xl {
   font-size: 18px;
   line-height: 1.5;
   letter-spacing: 0.01em;
   font-weight: 420;
+}
+
+@utility fui-text-p-2xl-medium {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-2xl-semibold {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-2xl-bold {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  font-weight: 700;
 }
 
 @utility fui-text-p-3xl {
@@ -1383,11 +1931,53 @@
   font-weight: 420;
 }
 
+@utility fui-text-p-3xl-medium {
+  font-size: 20px;
+  line-height: 1.48;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-3xl-semibold {
+  font-size: 20px;
+  line-height: 1.48;
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-3xl-bold {
+  font-size: 20px;
+  line-height: 1.48;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
 @utility fui-text-p-4xl {
   font-size: 24px;
   line-height: 1.4;
   letter-spacing: 0.005em;
   font-weight: 420;
+}
+
+@utility fui-text-p-4xl-medium {
+  font-size: 24px;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+@utility fui-text-p-4xl-semibold {
+  font-size: 24px;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  font-weight: 600;
+}
+
+@utility fui-text-p-4xl-bold {
+  font-size: 24px;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  font-weight: 700;
 }
 
 @utility focus-ring {

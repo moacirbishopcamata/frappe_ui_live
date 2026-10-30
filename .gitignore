@@ -6,3 +6,4 @@
 /cover/
 erl_crash.dump
 .DS_Store
+.claude/

@@ -1,0 +1,29 @@
+defmodule FrappeUILive.Toast do
+  @moduledoc """
+  API de servidor para toasts (substitui `toast()` do Frappe UI).
+
+      def handle_event("salvar", params, socket) do
+        {:noreply, FrappeUILive.Toast.put_toast(socket, :success, "Salvo!")}
+      end
+
+  Requer `<.toast_container id="toasts" />` no layout.
+  """
+  alias FrappeUILive.{Contract, ToastSink}
+
+  @kinds ~w(info success warning error)a
+  @default_timeout 4_000
+
+  @doc "Tipos de toast aceitos."
+  def kinds, do: @kinds
+
+  @spec put_toast(Phoenix.LiveView.Socket.t(), atom(), String.t(), keyword()) ::
+          Phoenix.LiveView.Socket.t()
+  def put_toast(socket, kind, message, opts \\ []) do
+    Contract.require!(kind, @kinds, "toast kind")
+    Contract.ensure!(is_binary(message) and message != "", "toast: mensagem vazia")
+    timeout = Keyword.get(opts, :timeout, @default_timeout)
+    Contract.ensure!(is_integer(timeout) and timeout > 0, "toast: timeout deve ser inteiro positivo")
+
+    ToastSink.sink().deliver(socket, %{kind: Atom.to_string(kind), message: message, timeout: timeout})
+  end
+end

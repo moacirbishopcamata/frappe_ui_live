@@ -10,11 +10,12 @@ const block = (selector, vars) =>
 const pick = (vars, pred) =>
   Object.fromEntries(Object.entries(vars).filter(([k]) => pred(k)))
 
-export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSize, focusRing, fontWeight, tracking }) {
+export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSize, focusRing, fontWeight: fontWeightTable, tracking }) {
   const out = ['/* Gerado por scripts/sync_tokens.mjs — não edite à mão. */\n']
 
   const light = pick(cssVariables.light, (k) => isSemanticVar(k) || k.startsWith('--focus-outline-'))
   const dark = pick(cssVariables.dark, (k) => isSemanticVar(k) || k.startsWith('--focus-outline-'))
+  out.push('@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));\n')
   out.push(block(':root', light))
   out.push(block('[data-theme="dark"]', dark))
 
@@ -41,6 +42,14 @@ export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSi
     if (letterSpacing) lines.push(`  letter-spacing: ${letterSpacing};`)
     if (fontWeight) lines.push(`  font-weight: ${fontWeight};`)
     out.push(`@utility fui-text-${key} {\n${lines.join('\n')}\n}\n`)
+    for (const weight of ['medium', 'semibold', 'bold']) {
+      const spacing = tracking?.text?.[key]?.[weight] ?? letterSpacing
+      const variant = [`  font-size: ${size};`]
+      if (lineHeight) variant.push(`  line-height: ${lineHeight};`)
+      if (spacing) variant.push(`  letter-spacing: ${spacing};`)
+      variant.push(`  font-weight: ${fontWeightTable?.[weight] ?? 500};`)
+      out.push(`@utility fui-text-${key}-${weight} {\n${variant.join('\n')}\n}\n`)
+    }
   }
 
   for (const name of Object.keys(focusRing.light)) {
@@ -50,4 +59,3 @@ export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSi
   return out.join('\n')
 }
 
-const fontWeight_ = (name, table) => String(table?.[name] ?? { medium: 500, semibold: 600, bold: 700 }[name])

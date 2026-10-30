@@ -7,7 +7,7 @@ defmodule FrappeUILive.Field do
   depois que o campo foi usado (`Phoenix.Component.used_input?/1`), igual ao
   `core_components` gerado pelo Phoenix.
   """
-  import Phoenix.Component, only: [assign: 2, assign: 3, assign_new: 3]
+  import Phoenix.Component, only: [assign: 3, assign_new: 3]
 
   alias FrappeUILive.ErrorTranslator
   alias Phoenix.HTML.FormField
@@ -24,5 +24,18 @@ defmodule FrappeUILive.Field do
     |> assign_new(:value, fn -> field.value end)
   end
 
-  def assign_field(assigns), do: assign(assigns, :errors, assigns[:errors] || [])
+  def assign_field(assigns) do
+    assigns
+    |> assign_new(:value, fn -> nil end)
+    |> assign_new(:name, fn -> nil end)
+    |> assign(:errors, assigns[:errors] || [])
+  end
+
+  @doc "Mensagens de erro já traduzidas de um `FormField`, só se o campo foi usado."
+  @spec errors(FormField.t()) :: [String.t()]
+  def errors(%FormField{} = field) do
+    if Phoenix.Component.used_input?(field),
+      do: Enum.map(field.errors, &ErrorTranslator.translate/1),
+      else: []
+  end
 end
