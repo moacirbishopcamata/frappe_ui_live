@@ -29,6 +29,12 @@ defmodule FrappeUILive.Components.Dialog do
   attr :open, :boolean, default: false
   attr :title, :string, default: nil
   attr :size, :atom, default: :lg, values: @sizes
+
+  attr :placement, :atom,
+    default: :center,
+    values: ~w(center bottom)a,
+    doc: "`:bottom` vira uma folha inferior (BottomSheet)"
+
   attr :on_close, :string, default: nil, doc: "evento enviado ao servidor quando o diálogo fecha"
   attr :close_on_backdrop, :boolean, default: true
   attr :class, :any, default: nil
@@ -43,7 +49,17 @@ defmodule FrappeUILive.Components.Dialog do
     )
 
     Contract.require!(assigns.size, @sizes, "dialog size")
-    assigns = assign(assigns, :size_class, @size_classes[assigns.size])
+    Contract.require!(assigns.placement, ~w(center bottom)a, "dialog placement")
+
+    assigns =
+      assign(
+        assigns,
+        :size_class,
+        if(assigns.placement == :bottom,
+          do: "max-w-none mb-0 rounded-b-none",
+          else: @size_classes[assigns.size]
+        )
+      )
 
     ~H"""
     <dialog
@@ -55,7 +71,9 @@ defmodule FrappeUILive.Components.Dialog do
       data-backdrop-close={to_string(@close_on_backdrop)}
       aria-labelledby={@title && "#{@id}-title"}
       class={[
-        "bg-surface-elevation-1 text-ink-gray-8 m-auto w-full rounded-6 p-0 shadow-elevation-xl backdrop:bg-black/50",
+        "bg-surface-elevation-1 text-ink-gray-8 w-full rounded-6 p-0 shadow-elevation-xl backdrop:bg-black/50",
+        @placement == :center && "m-auto",
+        @placement == :bottom && "mx-auto mt-auto",
         @size_class,
         @class
       ]}

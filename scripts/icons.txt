@@ -70,3 +70,16 @@ bold
 italic
 list
 code
+star:filled
+grip-vertical
+file-text
+cloud-upload
+file-up
+chevrons-up-down
+circle-dot
+trending-up
+trending-down
+keyboard
+layers
+heading-2
+list-ordered

@@ -12,11 +12,14 @@ const names = readFileSync(join(root, 'scripts/icons.txt'), 'utf8')
   .filter((line) => line && !line.startsWith('#'))
 
 const icons = {}
-for (const name of names) {
+for (const entry of names) {
+  // `nome:filled` gera `.lucide-nome-filled` com preenchimento (ex.: estrela cheia).
+  const [name, variant] = entry.split(':')
   const file = join(root, 'node_modules/lucide-static/icons', `${name}.svg`)
   // Pré-condição: o nome existe no Lucide; erro de digitação falha alto.
   if (!existsSync(file)) throw new Error(`ícone Lucide inexistente: ${name}`)
-  icons[name] = readFileSync(file, 'utf8')
+  const svg = readFileSync(file, 'utf8')
+  icons[variant === 'filled' ? `${name}-filled` : name] = variant === 'filled' ? svg.replace('fill="none"', 'fill="currentColor"') : svg
 }
 
 const css = buildIconsCss(icons)

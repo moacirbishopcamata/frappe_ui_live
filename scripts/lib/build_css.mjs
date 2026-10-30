@@ -56,6 +56,9 @@ export function buildCss({ cssVariables, semanticColors, radius, shadows, fontSi
     const cls = name === 'default' ? 'focus-ring' : `focus-ring-${name}`
     out.push(`@utility ${cls} {\n  outline: var(--focus-outline-${name});\n  outline-offset: 0;\n}\n`)
   }
+  // Confirmação transitória (SavedIndicator): remonta por :key e some sozinha.
+  out.push('@keyframes fui-fade-out {\n  0%, 70% { opacity: 1; }\n  100% { opacity: 0; }\n}\n')
+  out.push('@utility fui-saved {\n  animation: fui-fade-out 2.5s ease-out forwards;\n}\n')
   return out.join('\n')
 }
 

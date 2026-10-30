@@ -2009,3 +2009,12 @@
   outline: var(--focus-outline-violet);
   outline-offset: 0;
 }
+
+@keyframes fui-fade-out {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@utility fui-saved {
+  animation: fui-fade-out 2.5s ease-out forwards;
+}

@@ -4,18 +4,20 @@ Componentes **Phoenix LiveView** com a identidade visual do [Frappe UI](https://
 mesmos design tokens (`surface-*`, `ink-*`, `outline-*`, dark mode), mesmo markup e classes,
 sem Vue — estado autoritativo no servidor, JS só onde `Phoenix.LiveView.JS` e o HTML nativo não chegam.
 
-> **Status: v0.1 (fase 1).** 24 componentes portados (formulários, feedback, overlays, navegação),
-> integrações com Ecto e Plug, e um **mostruário navegável**. Charts, editores, List/Tree, DatePicker,
-> Combobox etc. estão planejados em `openspec/changes/frappe-ui-phoenix-components`.
+> **Status: v0.1.** ~80 componentes/blocos (formulários, feedback, overlays, navegação, dados, charts, editores),
+> integrações com Ecto e Plug, instalador e um **mostruário navegável**. Veja "Limites" no fim.
 
 ## Componentes
 
 | Categoria | Componentes |
 |---|---|
-| Formulários | `button`, `text_input`, `textarea`, `select`, `checkbox`, `switch`, `form_control`, `form_label` |
-| Feedback e exibição | `badge`, `alert`, `progress`, `skeleton`, `spinner`, `avatar`, `icon`, `error_message`, `toast_container` |
-| Overlays | `dialog` (`<dialog>` nativo), `dropdown` (Popover API + CSS Anchor Positioning), `tooltip` |
-| Navegação e layout | `tabs`, `breadcrumbs`, `page_header`, `divider` |
+| Formulários | `button`, `text_input`, `textarea`, `password`, `select`, `combobox`, `multi_select`, `checkbox`, `radio_group`, `switch`, `slider`, `rating`, `date_picker`, `time_picker`, `duration`, `file_uploader`, `form_control`, `form_label` |
+| Feedback e exibição | `badge`, `alert`, `progress`, `skeleton`, `spinner`, `loading_text`, `avatar`, `icon`, `keyboard_shortcut`, `item_list_row`, `saved_indicator`, `error_message`, `toast_container` |
+| Overlays | `dialog`, `bottom_sheet`, `settings_dialog`, `keyboard_shortcuts_dialog`, `dropdown`, `popover`, `context_menu`, `hover_card`, `tooltip` |
+| Navegação e layout | `tabs`, `tab_buttons`, `breadcrumbs`, `page_header`, `sidebar`, `sidebar_rail`, `desktop_shell`, `mobile_shell`, `scroll_area`, `divider` |
+| Dados | `list` (seleção, ações, arrastar-e-soltar), `tree`, `sortable` |
+| Charts (SVG no servidor) | `bar_chart`, `line_chart`, `area_chart`, `donut_chart`, `percentage_bar_chart`, `funnel_chart`, `heatmap_chart`, `calendar_heatmap_chart`, `scatter_chart`, `sankey_chart`, `number_card`, `chart_card`, `chart_legend`, `chart_tooltip`, `chart_frame` (estados loading/empty/error) |
+| Editores | `editor` (Markdown seguro), `code_editor` |
 
 A especificação de cada um (atributos, tipos, valores permitidos, slots) está no mostruário e é
 **lida do código** (`FrappeUILive.Spec`), então não diverge.
@@ -31,37 +33,42 @@ mix phx.server     # http://localhost:4010
 - **Índice** por categoria; menu lateral para navegar.
 - **Playground**: um *formulário gerado dos `attr` reais* altera a prévia ao vivo e o trecho de uso.
 - **Especificação**: tabela de atributos e slots.
+- Estado no servidor: listas, árvore, ordenação, upload real, "salvo", abas ativas.
 - Valor fora do contrato (ex.: `variant` inválido) aparece como **"Contrato violado"**, sem derrubar a página.
 - Tema claro/escuro via `?theme=dark` (usa `FrappeUILive.Plug.Theme`).
 
 ## Instalação em um app Phoenix 1.8
 
-Requisitos: `phoenix_live_view ~> 1.2` (colocated hooks, LV ≥ 1.1), Tailwind v4 (padrão do Phoenix 1.8).
+Requisitos: `phoenix_live_view ~> 1.2` (colocated hooks, LV ≥ 1.1), Tailwind v4 (padrão do Phoenix 1.8),
+`compilers: [:phoenix_live_view] ++ Mix.compilers()` no `mix.exs` (já vem no Phoenix 1.8).
 
 ```elixir
 # mix.exs
-compilers: [:phoenix_live_view] ++ Mix.compilers(),   # necessário para os colocated hooks
-deps: [{:frappe_ui_live, path: "../frappe_ui_live"}]
+{:frappe_ui_live, path: "../frappe_ui_live"}
 ```
 
+```sh
+mix deps.get
+mix frappe_ui_live.install            # idempotente; --dry-run mostra o que faria
+```
+
+O instalador edita `assets/css/app.css` (tokens, ícones e `@source` dos componentes) e `assets/js/app.js`
+(hooks colocated) e só **verifica** o `mix.exs`. Manualmente, o equivalente é:
+
 ```css
-/* assets/css/app.css */
 @import "../../deps/frappe_ui_live/priv/static/frappe_ui.css";        /* tokens, tema, utilitários */
 @import "../../deps/frappe_ui_live/priv/static/frappe_ui_icons.css";  /* ícones Lucide */
 @source "../../deps/frappe_ui_live/lib";   /* para o Tailwind enxergar as classes dos componentes */
 ```
 
 ```js
-// assets/js/app.js
 import {hooks as frappeUiHooks} from "phoenix-colocated/frappe_ui_live"
-const liveSocket = new LiveSocket("/live", Socket, {
-  hooks: {...colocatedHooks, ...frappeUiHooks}, ...
-})
+// ... hooks: {...colocatedHooks, ...frappeUiHooks}
 ```
 
 ```elixir
 # lib/my_app_web.ex — em html_helpers
-use FrappeUILive, except: [button: 1, icon: 1]   # `except` evita conflito com o core_components
+use FrappeUILive, except: [button: 1, icon: 1, list: 1]   # evita conflito com o core_components
 ```
 
 ```elixir
@@ -75,11 +82,14 @@ live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do ... end
 > os tokens entram em namespaces próprios (`bg-surface-*`, `fui-text-*`, `shadow-elevation-*`),
 > então o `daisyUI` e as classes do host continuam intactos.
 
+**Verificado** num app gerado do zero (`mix phx.new`, Phoenix 1.8.16): instalador, `use FrappeUILive` ao lado do
+`core_components`, compilação sem warnings, `assets.build` e `GET /` com os componentes renderizados.
+
 ## Integrações Ecto e Plug
 
 | Módulo | Para quê |
 |---|---|
-| `FrappeUILive.Ecto.Duration` | `Ecto.Type`: `"1h 30m"`, `"1:30"`, `"90m"` ⇄ segundos (`humanize/1` faz a volta) |
+| `FrappeUILive.Ecto.Duration` | `Ecto.Type`: `"1h 30m"`, `"1:30"`, `"90m"` ⇄ segundos (mesmo parser do componente `duration`) |
 | `FrappeUILive.Ecto.Rating` | `Ecto.ParameterizedType`: avaliação `0..max` (`max: 5`) |
 | `FrappeUILive.Ecto.StringList` | `Ecto.Type`: lista de textos a partir de `"a, b"` ou lista (tags/MultiSelect) |
 | `FrappeUILive.Ecto.Options.from_enum/2` | opções de `Select` a partir de um `Ecto.Enum` |
@@ -88,6 +98,8 @@ live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do ... end
 | `FrappeUILive.Plug.Static` | serve `frappe_ui.css` direto da dependência |
 | `FrappeUILive.Live.ThemeHook` | `on_mount` que leva o tema da sessão aos assigns |
 | `FrappeUILive.Toast` | `put_toast(socket, :success, "Salvo!")` (substitui o `toast()` do Frappe UI) |
+| `FrappeUILive.Markdown` | Markdown restrito → HTML seguro (para exibir o que o `editor` salva) |
+| `FrappeUILive.Components.Sortable.move/5` | reordena uma lista a partir do evento de drop |
 
 Os controles aceitam `field={@form[:campo]}` e mostram erros de changeset **só depois que o campo foi usado**.
 
@@ -95,12 +107,12 @@ Os controles aceitam `field={@form[:campo]}` e mostram erros de changeset **só 
 
 - **DbC**: `FrappeUILive.Contract` — `require!/3` (pré-condição: `variant: :sombrio` levanta `ArgumentError`,
   não renderiza errado em silêncio) e `ensure!/2` (pós-condição/invariante). Entrada de usuário nunca levanta:
-  vira `errors` do `FormField`.
+  vira `errors` do `FormField`; eventos forjados do cliente (ex.: data fora de `min`/`max`) são ignorados.
 - **SOLID**: um módulo por componente; extensão por `@behaviour` (`IconResolver`, `ToastSink`, `ErrorTranslator`),
-  sem herança de implementação; classes de estilo em funções puras (`InputStyle`, `Button.classes/1`).
-- **Testes**: `mix test --cover` (limite mínimo 90%). Inclui testes de **costura**:
+  sem herança de implementação; estilo e geometria em funções puras (`InputStyle`, `Button.classes/1`, `Charts.Scale`...).
+- **Testes**: `mix test --cover` (limite mínimo 90%; hoje ~98%). Inclui testes de **costura**:
   tokens do Frappe UI (lidos por Node, da fonte) ⇄ CSS gerado; ícones renderizados ⇄ CSS de ícones;
-  Ecto changeset ⇄ `FormField` ⇄ componente; sessão ⇄ tema.
+  Ecto changeset ⇄ `FormField` ⇄ componente; sessão ⇄ tema; DOM do editor ⇄ Markdown (executado em Node).
 
 ```sh
 mix quality   # format --check-formatted, compile --warnings-as-errors, test --cover, deps.audit
@@ -114,15 +126,21 @@ npm install && mix icons.sync   # scripts/icons.txt + lucide-static -> priv/stat
 ```
 
 Os tokens são **dados vendorizados** do pacote `frappe-ui` (sem dependências npm, sem CVE).
-`priv/tokens.provenance.json` registra versão e hash.
+`priv/tokens.provenance.json` registra versão e hash. Para um ícone novo, acrescente o nome a `scripts/icons.txt`.
 
-## Paridade com o Frappe UI (limites conhecidos)
+## Limites conhecidos
 
-- Tipografia usa `fui-text-*` (não `text-sm`/`text-base`) para não colidir com o Tailwind do host.
-- Foco preso, Esc e backdrop do `Dialog` vêm do `<dialog>` nativo; o Reka UI (Vue) não tem equivalente em Elixir.
-- Dropdown usa CSS Anchor Positioning (navegadores recentes); sem suporte, o menu aparece sem ancoragem.
-- Classes de `Tabs`, `Breadcrumbs`, `Tooltip` e `Dialog` foram aproximadas dos tokens, não copiadas 1:1 do original.
+- **Tipografia**: `fui-text-*` (não `text-sm`/`text-base`) para não colidir com o Tailwind do host.
+- **Dialog**: foco preso, Esc e backdrop vêm do `<dialog>` nativo; o Reka UI (Vue) não tem equivalente em Elixir.
+- **Dropdown/Popover/DatePicker/MultiSelect** usam Popover API + CSS Anchor Positioning (navegadores recentes).
+- **Charts** são SVG sem animação/zoom; séries muito grandes devem ser agregadas no servidor.
+- **Editor** usa `document.execCommand` (API legada, porém universal) e guarda **Markdown**; sem tabelas/imagens.
+- **CodeEditor** não faz realce de sintaxe (exigiria CodeMirror e suas dependências).
+- **DatePicker** usa meses e dias da semana em português.
+- Classes de `Tabs`, `Breadcrumbs`, `Tooltip`, `Dialog` e dos componentes de layout foram aproximadas dos tokens,
+  não copiadas 1:1 do original.
 - Fora do escopo: data fetching (`useCall`/`useDoc`/`useList`) — no LiveView o dado chega pelos assigns.
+- Pendente: revisão de arquitetura por reviewer externo (task 12.2 do OpenSpec).
 
 ## Licença
 

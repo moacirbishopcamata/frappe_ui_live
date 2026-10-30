@@ -26,13 +26,14 @@ defmodule FrappeUILive.CatalogTest do
 
     publicos =
       for mod <- mods,
-          String.starts_with?(inspect(mod), "FrappeUILive.Components."),
+          String.starts_with?(inspect(mod), "FrappeUILive.Components.") or
+            String.starts_with?(inspect(mod), "FrappeUILive.Charts."),
           Code.ensure_loaded?(mod),
           function_exported?(mod, :__components__, 0),
           {name, %{kind: :def}} <- mod.__components__(),
           do: {mod, name}
 
-    catalogados = for e <- Catalog.catalog(), do: {e.module, e.fun}
+    catalogados = for(e <- Catalog.catalog(), do: {e.module, e.fun}) ++ Catalog.internal()
 
     assert publicos -- catalogados == [], "componentes fora do catálogo"
   end

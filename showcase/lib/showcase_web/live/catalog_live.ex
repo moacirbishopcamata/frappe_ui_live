@@ -11,6 +11,7 @@ defmodule ShowcaseWeb.CatalogLive do
 
   alias FrappeUILive.{Spec, Toast}
   alias FrappeUILive.Components, as: Catalog
+  alias FrappeUILive.Components.Sortable
   alias ShowcaseWeb.{Samples, Snippet}
 
   @tabs ~w(playground spec)
@@ -24,7 +25,13 @@ defmodule ShowcaseWeb.CatalogLive do
      |> assign(:specs, Map.new(specs, &{Atom.to_string(&1.id), &1}))
      |> assign(:groups, groups(specs))
      |> assign(spec: nil, tab: "playground", page_title: "Componentes")
-     |> assign(attrs: %{}, params: %{}, form: to_form(%{}, as: :pg), preview: nil, snippet: "")}
+     |> assign(attrs: %{}, params: %{}, form: to_form(%{}, as: :pg))
+     |> assign(demo: Samples.demo_state(), saved_at: nil)
+     |> allow_upload(:demo,
+       accept: ~w(.png .jpg .jpeg .pdf),
+       max_entries: 2,
+       max_file_size: 2_000_000
+     )}
   end
 
   @impl true
@@ -62,6 +69,64 @@ defmodule ShowcaseWeb.CatalogLive do
     end
   end
 
+  def handle_event("saved", _params, socket) do
+    {:noreply, assign(socket, :saved_at, System.unique_integer([:positive, :monotonic]))}
+  end
+
+  def handle_event("sel", %{"id" => id}, socket) do
+    with {:ok, id} <- known_id(socket.assigns.demo.rows, id) do
+      selected = socket.assigns.demo.selected
+      selected = if id in selected, do: List.delete(selected, id), else: selected ++ [id]
+      {:noreply, update(socket, :demo, &%{&1 | selected: selected})}
+    else
+      _ -> {:noreply, socket}
+    end
+  end
+
+  def handle_event("reorder", %{"id" => id, "to" => to, "position" => position}, socket) do
+    {:noreply,
+     update(
+       socket,
+       :demo,
+       &%{&1 | rows: Sortable.move(&1.rows, fn r -> r.id end, id, to, position)}
+     )}
+  end
+
+  def handle_event("reorder_items", %{"id" => id, "to" => to, "position" => position}, socket) do
+    {:noreply,
+     update(
+       socket,
+       :demo,
+       &%{&1 | items: Sortable.move(&1.items, fn r -> r.id end, id, to, position)}
+     )}
+  end
+
+  def handle_event("tog", %{"id" => id}, socket) do
+    case Integer.parse(id) do
+      {id, ""} ->
+        expanded = socket.assigns.demo.expanded
+        expanded = if id in expanded, do: List.delete(expanded, id), else: expanded ++ [id]
+        {:noreply, update(socket, :demo, &%{&1 | expanded: expanded})}
+
+      _ ->
+        {:noreply, socket}
+    end
+  end
+
+  def handle_event("tsel", %{"id" => id}, socket) do
+    case Integer.parse(id) do
+      {id, ""} -> {:noreply, update(socket, :demo, &%{&1 | tree_selected: id})}
+      _ -> {:noreply, socket}
+    end
+  end
+
+  def handle_event("validate-upload", _params, socket), do: {:noreply, socket}
+  def handle_event("noop", _params, socket), do: {:noreply, socket}
+
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :demo, ref)}
+  end
+
   def handle_event("demo", _params, socket) do
     {:noreply, Toast.put_toast(socket, :info, "Evento recebido no servidor")}
   end
@@ -84,15 +149,15 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   defp put_attrs(socket, attrs, params) do
-    spec = socket.assigns.spec
+    assign(socket, attrs: attrs, params: params, form: to_form(params, as: :pg))
+  end
 
-    assign(socket,
-      attrs: attrs,
-      params: params,
-      form: to_form(params, as: :pg),
-      preview: Samples.render(spec, attrs),
-      snippet: Snippet.build(spec, attrs)
-    )
+  defp known_id(rows, id) do
+    with {int, ""} <- Integer.parse(id), true <- Enum.any?(rows, &(&1.id == int)) do
+      {:ok, int}
+    else
+      _ -> :error
+    end
   end
 
   defp to_params(attrs),
@@ -153,8 +218,8 @@ defmodule ShowcaseWeb.CatalogLive do
           spec={@spec}
           tab={@tab}
           form={@form}
-          preview={@preview}
-          snippet={@snippet}
+          attrs={@attrs}
+          extras={extras(assigns)}
           groups={@groups}
         />
       </main>
@@ -199,8 +264,8 @@ defmodule ShowcaseWeb.CatalogLive do
   attr :spec, :map, required: true
   attr :tab, :string, required: true
   attr :form, :any, required: true
-  attr :preview, :any, required: true
-  attr :snippet, :string, required: true
+  attr :attrs, :map, required: true
+  attr :extras, :map, required: true
   attr :groups, :list, required: true
 
   defp detail(assigns) do
@@ -227,8 +292,8 @@ defmodule ShowcaseWeb.CatalogLive do
           :if={@tab == "playground"}
           spec={@spec}
           form={@form}
-          preview={@preview}
-          snippet={@snippet}
+          attrs={@attrs}
+          extras={@extras}
         />
         <.specification :if={@tab == "spec"} spec={@spec} />
       </.tabs>
@@ -238,10 +303,15 @@ defmodule ShowcaseWeb.CatalogLive do
 
   attr :spec, :map, required: true
   attr :form, :any, required: true
-  attr :preview, :any, required: true
-  attr :snippet, :string, required: true
+  attr :attrs, :map, required: true
+  attr :extras, :map, required: true
 
   defp playground(assigns) do
+    assigns =
+      assigns
+      |> assign(:preview, Samples.render(assigns.spec, assigns.attrs, assigns.extras))
+      |> assign(:snippet, Snippet.build(assigns.spec, assigns.attrs))
+
     ~H"""
     <div class="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
       <.form for={@form} id="playground-form" phx-change="playground" class="space-y-3">
@@ -263,6 +333,8 @@ defmodule ShowcaseWeb.CatalogLive do
           <%= case @preview do %>
             <% {:ok, html} -> %>
               {html}
+            <% {:live, rendered} -> %>
+              {rendered}
             <% {:error, message} -> %>
               <.alert theme={:red} title="Contrato violado (falha alto, não renderiza errado)">
                 {message}
@@ -363,6 +435,11 @@ defmodule ShowcaseWeb.CatalogLive do
       </section>
     </div>
     """
+  end
+
+  # Estado do servidor que as amostras exibem (upload, "salvo", listas/árvore).
+  defp extras(assigns) do
+    %{upload: assigns.uploads.demo, saved_at: assigns.saved_at, demo: assigns.demo}
   end
 
   # ---- apresentação (puro) -----------------------------------------------------

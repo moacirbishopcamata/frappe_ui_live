@@ -7,13 +7,15 @@ defmodule FrappeUILive do
       defmodule MyAppWeb do
         defp html_helpers do
           quote do
-            use FrappeUILive, except: [button: 1, icon: 1]   # evita conflito com core_components
+            use FrappeUILive, except: [button: 1, icon: 1, list: 1]   # evita conflito com o core_components
           end
         end
       end
 
-  Componentes que conflitam com os do seu `core_components` podem ser
-  chamados com o módulo: `<FrappeUILive.Components.Button.button>`.
+  Importa apenas os componentes do catálogo (`FrappeUILive.Components.catalog/0`)
+  e `show_dialog/1`/`hide_dialog/1`. Componentes que conflitam com os do seu
+  `core_components` podem ser chamados com o módulo:
+  `<FrappeUILive.Components.Button.button>`.
 
   Veja o `README.md` para instalar CSS, hooks (colocated) e Tailwind.
   """
@@ -22,9 +24,11 @@ defmodule FrappeUILive do
     except = Keyword.get(opts, :except, [])
 
     imports =
-      for module <- FrappeUILive.Components.modules() do
+      for {module, funs} <- FrappeUILive.Components.imports(),
+          only = funs -- except,
+          only != [] do
         quote do
-          import unquote(module), except: unquote(except)
+          import unquote(module), only: unquote(only)
         end
       end
 
