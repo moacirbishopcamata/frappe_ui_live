@@ -60,7 +60,7 @@ defmodule FrappeUILive.MixProject do
     [
       licenses: ["MIT"],
       links: %{"Frappe UI" => "https://ui.frappe.io"},
-      files: ~w(lib priv scripts mix.exs README.md LICENSE .formatter.exs)
+      files: ~w(lib priv scripts mix.exs README.md LICENSE THIRD_PARTY_LICENSES.md .formatter.exs)
     ]
   end
 end

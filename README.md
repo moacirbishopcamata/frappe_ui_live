@@ -247,4 +247,5 @@ Sem pendências da revisão. O tema padrão também vale no LiveView: `on_mount:
 
 MIT. Contém tokens e markup derivados do [Frappe UI](https://github.com/frappe/frappe-ui) (MIT,
 © Frappe Technologies Pvt. Ltd. — veja `vendor/frappe-ui-tokens/LICENSE.md`) e ícones do
-[Lucide](https://lucide.dev) (ISC).
+[Lucide](https://lucide.dev) (ISC, com ícones derivados do Feather, MIT). Os avisos completos estão em `THIRD_PARTY_LICENSES.md`.
+O DiceBear não é distribuído aqui (só URLs da API); veja a seção sobre licenças dos estilos acima.
