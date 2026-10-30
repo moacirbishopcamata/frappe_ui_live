@@ -153,15 +153,20 @@ Os tokens são **dados vendorizados** do pacote `frappe-ui` (sem dependências n
 
 ## Revisão de arquitetura
 
-Feita com três revisores (OO design, Clean Architecture, API design). Sem ciclos de dependência e sem XSS explorável; extensão
-por `@behaviour`, funções puras e `Contract` estão consistentes. Veredito: **mudanças solicitadas**, com 1 ponto crítico e
-20 importantes, registrados como tasks 17.x no OpenSpec. Os principais:
+Feita com três revisores (OO design, Clean Architecture, API design): sem ciclos de dependência e sem XSS explorável;
+extensão por `@behaviour`, funções puras e `Contract` consistentes. Veredito inicial: mudanças solicitadas (1 crítico, 20
+importantes). **Já corrigidos** (com testes de regressão):
 
-- **Crítico:** `mix frappe_ui_live.install` ignora opção inválida (`--dryrun`) e grava os arquivos.
-- `active` vindo da URL (`?tab=lixo`) derruba Tabs/TabButtons/SettingsDialog/Sidebar; `DatePicker` sem fallback em `handle_event`.
-- `id` obrigatório com erro uniforme e validação de id centralizada (hoje duplicada); acoplamento por string do hook do Sortable.
-- Markdown: `/\evil.com` passa como link relativo (open-redirect); Toast: hook sem container `phx-update=ignore`.
-- `use FrappeUILive` sem `only:`; `Spec` e `Samples` aumentam o custo de cada componente novo.
+- mix task grava arquivos mesmo com opção inválida (`--dryrun`);
+- `?tab=lixo` derrubava Tabs/TabButtons/SettingsDialog/Sidebar; `DatePicker` sem fallback para evento forjado;
+- `id` obrigatório com erro uniforme e validação central (`Anchor`, `Dialog`, `Field.require_id!/2`);
+- protocolo de DOM do Sortable encapsulado, nome do hook derivado e Tree só reordena entre irmãos;
+- Markdown (open-redirect `/\`, ordem de ênfase/links, `to_safe/1`) e Toast (contêiner `phx-update=ignore`, paleta única);
+- `use FrappeUILive` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`.
+
+**Pendentes** (tasks 17.6, 17.8 e 17.9 do OpenSpec): unificar o item de navegação (link ou botão) entre
+`Tabs`/`NavItem`/`MenuItem`, mover `Spec` para fora do pacote, `rest` global uniforme, textos fixos em português sem
+ponto de extensão e semântica de `selected`/`expanded`.
 
 ## Licença
 

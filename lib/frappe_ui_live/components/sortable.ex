@@ -9,8 +9,34 @@ defmodule FrappeUILive.Components.Sortable do
   """
   use Phoenix.Component
 
-  @doc "Nome do hook colocated, para componentes que reutilizam o arrastar-e-soltar."
-  def hook_name, do: "FrappeUILive.Components.Sortable.Sortable"
+  @doc """
+  Nome do hook colocated, derivado do módulo (renomear o módulo não quebra `List`/`Tree`
+  em silêncio; um teste confere que o nome existe no manifesto de hooks).
+  """
+  def hook_name, do: inspect(__MODULE__) <> ".Sortable"
+
+  @doc """
+  Atributos da raiz da lista reordenável (`phx-hook` e o evento de drop). Vazio sem `on_drop`.
+  Único dono do protocolo de DOM, usado por `sortable`, `list` e `tree`.
+  """
+  @spec root_attrs(String.t() | nil) :: map()
+  def root_attrs(nil), do: %{}
+
+  def root_attrs(on_drop) when is_binary(on_drop),
+    do: %{"phx-hook" => hook_name(), "data-on-drop" => on_drop}
+
+  @doc """
+  Atributos de um item arrastável. `parent` identifica o nível (Tree): o hook só aceita
+  soltar entre itens com o mesmo `parent`. Vazio quando `enabled?` é falso.
+  """
+  @spec item_attrs(term(), boolean(), term()) :: map()
+  def item_attrs(id, enabled?, parent \\ nil)
+  def item_attrs(_id, false, _parent), do: %{}
+
+  def item_attrs(id, true, parent) do
+    base = %{"data-sortable-id" => to_string(id), "draggable" => "true"}
+    if parent == nil, do: base, else: Map.put(base, "data-sortable-parent", to_string(parent))
+  end
 
   attr :id, :string, required: true
   attr :items, :list, required: true
@@ -33,8 +59,7 @@ defmodule FrappeUILive.Components.Sortable do
       <div
         :for={item <- @items}
         :key={@item_id.(item)}
-        data-sortable-id={@item_id.(item)}
-        draggable="true"
+        {item_attrs(@item_id.(item), true)}
         class="cursor-grab active:cursor-grabbing"
       >
         {render_slot(@item, item)}
@@ -67,6 +92,8 @@ defmodule FrappeUILive.Components.Sortable do
             event.preventDefault()
             const target = event.target.closest("[data-sortable-id]")
             if (!target || target === dragged) return
+            // só reordena entre irmãos (mesmo nível); Tree marca o pai em data-sortable-parent
+            if (target.dataset.sortableParent !== dragged.dataset.sortableParent) return
             const rect = target.getBoundingClientRect()
             const after = event.clientY - rect.top > rect.height / 2
             // payload mínimo: só ids e posição; quem persiste é o servidor

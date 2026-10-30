@@ -35,7 +35,8 @@ defmodule FrappeUILive.Components.Popover do
         popover
         style={@panel_style}
         class={[
-          "bg-surface-elevation-1 rounded-5 border-outline-gray-1 shadow-elevation-md border p-3",
+          Anchor.panel_classes(),
+          "p-3",
           @class
         ]}
       >

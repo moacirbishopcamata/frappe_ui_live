@@ -30,7 +30,7 @@ defmodule FrappeUILive.Components.CodeEditor do
     )
 
     Contract.ensure!(assigns.rows in 1..200, "code_editor: rows deve estar entre 1 e 200")
-    assigns = Field.assign_field(assigns)
+    assigns = assigns |> Field.assign_field() |> Field.require_id!("code_editor")
     text = to_string(assigns.value || "")
     assigns = assigns |> assign(:text, text) |> assign(:lines, line_count(text))
 

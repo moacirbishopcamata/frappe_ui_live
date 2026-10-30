@@ -17,7 +17,7 @@ defmodule FrappeUILive.Components.Combobox do
   attr :class, :any, default: nil
 
   def combobox(assigns) do
-    assigns = Field.assign_field(assigns)
+    assigns = assigns |> Field.assign_field() |> Field.require_id!("combobox")
 
     ~H"""
     <OptionList.option_list

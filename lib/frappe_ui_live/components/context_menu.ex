@@ -35,7 +35,7 @@ defmodule FrappeUILive.Components.ContextMenu do
       id={@menu_id}
       popover
       role="menu"
-      class="bg-surface-elevation-1 rounded-5 border-outline-gray-1 shadow-elevation-md m-0 min-w-40 border p-1"
+      class={[Anchor.panel_classes(), "m-0 min-w-40 border p-1"]}
       style="inset: auto;"
     >
       <%= for item <- @item do %>

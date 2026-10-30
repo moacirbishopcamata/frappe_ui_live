@@ -187,4 +187,15 @@ defmodule ShowcaseWeb.DemoStateTest do
       assert view |> element("#preview section") |> render() =~ "avisos"
     end
   end
+
+  describe "eventos forjados" do
+    test "evento desconhecido ou malformado é ignorado e o LiveView continua vivo", %{conn: conn} do
+      {:ok, view, _} = live(conn, "/c/list")
+      render_click(view, "evento_que_nao_existe", %{})
+      render_click(view, "reorder", %{"id" => "1"})
+      render_click(view, "sel", %{})
+      assert Process.alive?(view.pid)
+      assert has_element?(view, "#preview")
+    end
+  end
 end

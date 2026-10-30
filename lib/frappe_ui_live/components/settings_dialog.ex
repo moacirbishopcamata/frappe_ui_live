@@ -6,7 +6,6 @@ defmodule FrappeUILive.Components.SettingsDialog do
   use Phoenix.Component
 
   alias FrappeUILive.Components.{Dialog, NavItem}
-  alias FrappeUILive.Contract
 
   attr :id, :string, required: true
   attr :open, :boolean, default: false
@@ -25,7 +24,12 @@ defmodule FrappeUILive.Components.SettingsDialog do
   end
 
   def settings_dialog(assigns) do
-    Contract.require!(assigns.active, Enum.map(assigns.tab, & &1.id), "settings_dialog active")
+    assigns =
+      assign(
+        assigns,
+        :active,
+        NavItem.known_active(assigns.active, Enum.map(assigns.tab, & &1.id))
+      )
 
     ~H"""
     <Dialog.dialog id={@id} open={@open} title={@title} on_close={@on_close} size={:"2xl"} {@rest}>

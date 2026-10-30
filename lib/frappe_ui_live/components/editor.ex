@@ -38,7 +38,7 @@ defmodule FrappeUILive.Components.Editor do
   attr :rest, :global, include: ~w(form)
 
   def editor(assigns) do
-    assigns = Field.assign_field(assigns)
+    assigns = assigns |> Field.assign_field() |> Field.require_id!("editor")
     markdown = to_string(assigns.value || "")
 
     assigns =
@@ -109,7 +109,7 @@ defmodule FrappeUILive.Components.Editor do
             case "BR": return "\n"
             case "A": {
               const href = node.getAttribute("href") || ""
-              return /^(https?:\/\/|mailto:|\/(?!\/))/i.test(href) ? "[" + inner + "](" + href + ")" : inner
+              return /^(https?:\/\/|mailto:|\/(?![\/\\]))/i.test(href) ? "[" + inner + "](" + href + ")" : inner
             }
             default: return inner
           }
@@ -140,7 +140,7 @@ defmodule FrappeUILive.Components.Editor do
       }
       // </md-converter>
 
-      const SAFE_URL = /^(https?:\/\/|mailto:|\/(?!\/))/i
+      const SAFE_URL = /^(https?:\/\/|mailto:|\/(?![\/\\]))/i
 
       export default {
         mounted() {

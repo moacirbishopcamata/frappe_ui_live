@@ -20,7 +20,11 @@ defmodule FrappeUILive.Components.MultiSelect do
   attr :class, :any, default: nil
 
   def multi_select(assigns) do
-    assigns = Field.assign_field(Map.put(assigns, :multiple, true))
+    assigns =
+      assigns
+      |> Map.put(:multiple, true)
+      |> Field.assign_field()
+      |> Field.require_id!("multi_select")
 
     ~H"""
     <OptionList.option_list

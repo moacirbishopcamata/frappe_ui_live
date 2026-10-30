@@ -6,7 +6,8 @@ defmodule FrappeUILive.Toast do
         {:noreply, FrappeUILive.Toast.put_toast(socket, :success, "Salvo!")}
       end
 
-  Requer `<.toast_container id="toasts" />` no layout.
+  Requer `<.toast_container />` no layout (id padrão `"frappe-ui-toasts"`; passe `id=` para mudar).
+  Este módulo é o lado do servidor; o container visual é `FrappeUILive.Components.Toast`.
   """
   alias FrappeUILive.{Contract, ToastSink}
 
@@ -16,6 +17,12 @@ defmodule FrappeUILive.Toast do
   @doc "Tipos de toast aceitos."
   def kinds, do: @kinds
 
+  @doc """
+  Envia um toast ao cliente.
+
+  `kind`: `:info | :success | :warning | :error`. Opções: `:timeout` em ms (padrão `4000`).
+  Violações (tipo desconhecido, mensagem vazia, timeout não positivo) levantam `ArgumentError`.
+  """
   @spec put_toast(Phoenix.LiveView.Socket.t(), atom(), String.t(), keyword()) ::
           Phoenix.LiveView.Socket.t()
   def put_toast(socket, kind, message, opts \\ []) do

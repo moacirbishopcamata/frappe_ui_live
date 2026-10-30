@@ -3,7 +3,6 @@ defmodule FrappeUILive.Components.SidebarRail do
   use Phoenix.Component
 
   alias FrappeUILive.Components.NavItem
-  alias FrappeUILive.Contract
 
   attr :active, :string, default: nil
   attr :class, :any, default: nil
@@ -22,9 +21,12 @@ defmodule FrappeUILive.Components.SidebarRail do
   end
 
   def sidebar_rail(assigns) do
-    if assigns.active,
-      do:
-        Contract.require!(assigns.active, Enum.map(assigns.item, & &1.id), "sidebar_rail active")
+    assigns =
+      assign(
+        assigns,
+        :active,
+        NavItem.known_active(assigns.active, Enum.map(assigns.item, & &1.id))
+      )
 
     ~H"""
     <aside

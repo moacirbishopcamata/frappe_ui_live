@@ -6,7 +6,7 @@ defmodule FrappeUILive.Components.Password do
   use Phoenix.Component
 
   alias FrappeUILive.Components.{Icon, InputStyle, TextInput}
-  alias FrappeUILive.{Contract, Field}
+  alias FrappeUILive.Field
   alias Phoenix.LiveView.JS
 
   attr :field, Phoenix.HTML.FormField, default: nil
@@ -24,7 +24,7 @@ defmodule FrappeUILive.Components.Password do
 
   def password(assigns) do
     assigns = Field.assign_field(assigns)
-    Contract.ensure!(is_binary(assigns.id), "password: requer `id` ou `field`")
+    Field.require_id!(assigns, "password")
 
     ~H"""
     <div class="relative w-full">

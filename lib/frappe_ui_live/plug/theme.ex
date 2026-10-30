@@ -42,11 +42,21 @@ defmodule FrappeUILive.Plug.Theme do
       _ ->
         theme = pick([get_session(conn, @session_key), conn.req_cookies[@cookie_key]], default)
 
+        # só grava a sessão quando muda (evita Set-Cookie em toda requisição)
         conn
-        |> put_session(@session_key, theme)
+        |> maybe_put_session(theme)
         |> assign(:frappe_ui_theme, theme)
     end
   end
+
+  defp maybe_put_session(conn, theme) do
+    if get_session(conn, @session_key) == theme,
+      do: conn,
+      else: put_session(conn, @session_key, theme)
+  end
+
+  @doc "Chave da sessão onde o tema é guardado (compartilhada com `FrappeUILive.Live.ThemeHook`)."
+  def session_key, do: @session_key
 
   defp pick(candidates, default), do: Enum.find(candidates, default, &(&1 in @themes))
 end

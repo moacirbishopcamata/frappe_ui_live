@@ -7,7 +7,7 @@ defmodule FrappeUILive.Components.Tabs do
   use Phoenix.Component
 
   alias FrappeUILive.Components.Icon
-  alias FrappeUILive.Contract
+  alias FrappeUILive.Components.NavItem
 
   attr :id, :string, required: true
   attr :active, :string, required: true, doc: "id da aba ativa"
@@ -27,7 +27,7 @@ defmodule FrappeUILive.Components.Tabs do
 
   def tabs(assigns) do
     ids = Enum.map(assigns.tab, & &1.id)
-    Contract.require!(assigns.active, ids, "tabs active")
+    assigns = assign(assigns, :active, NavItem.known_active(assigns.active, ids))
 
     ~H"""
     <div class={@class} {@rest}>

@@ -3,7 +3,6 @@ defmodule FrappeUILive.Components.MobileShell do
   use Phoenix.Component
 
   alias FrappeUILive.Components.NavItem
-  alias FrappeUILive.Contract
 
   attr :active, :string, default: nil, doc: "id da aba inferior ativa"
   attr :class, :any, default: nil
@@ -22,8 +21,12 @@ defmodule FrappeUILive.Components.MobileShell do
   end
 
   def mobile_shell(assigns) do
-    if assigns.active,
-      do: Contract.require!(assigns.active, Enum.map(assigns.nav, & &1.id), "mobile_shell active")
+    assigns =
+      assign(
+        assigns,
+        :active,
+        NavItem.known_active(assigns.active, Enum.map(assigns.nav, & &1.id))
+      )
 
     ~H"""
     <div class={["bg-surface-base text-ink-gray-8 flex h-dvh w-full flex-col", @class]} {@rest}>

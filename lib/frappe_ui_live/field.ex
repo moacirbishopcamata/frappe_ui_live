@@ -31,6 +31,16 @@ defmodule FrappeUILive.Field do
     |> assign(:errors, assigns[:errors] || [])
   end
 
+  @doc """
+  Garante um `id` DOM válido (de `id` ou do `field`) em componentes que o usam em
+  hooks, popovers ou seletores. Falha alto, nomeando o componente.
+  """
+  @spec require_id!(map(), String.t()) :: map()
+  def require_id!(assigns, component) do
+    FrappeUILive.Components.Anchor.valid_id!(assigns[:id], component)
+    assigns
+  end
+
   @doc "Mensagens de erro já traduzidas de um `FormField`, só se o campo foi usado."
   @spec errors(FormField.t()) :: [String.t()]
   def errors(%FormField{} = field) do

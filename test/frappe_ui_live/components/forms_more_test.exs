@@ -32,7 +32,7 @@ defmodule FrappeUILive.Components.FormsMoreTest do
     test "sem id nem field viola o contrato" do
       assigns = %{}
 
-      assert_raise ArgumentError, ~r/requer `id`/, fn ->
+      assert_raise ArgumentError, ~r/password id inválido/, fn ->
         rendered_to_string(~H|<Password.password name="x" />|)
       end
     end
@@ -219,7 +219,7 @@ defmodule FrappeUILive.Components.FormsMoreTest do
     test "id inválido (vai para CSS) viola o contrato" do
       assigns = %{o: @opts}
 
-      assert_raise ArgumentError, ~r/option_list id/, fn ->
+      assert_raise ArgumentError, ~r/combobox id/, fn ->
         rendered_to_string(~H|<Combobox.combobox id="a; b" name="x" options={@o} />|)
       end
     end

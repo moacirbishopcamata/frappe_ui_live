@@ -97,6 +97,9 @@ defmodule FrappeUILive.Components.DatePicker do
     end
   end
 
+  # Evento forjado ou malformado (sem a chave esperada): ignora, não derruba o componente.
+  def handle_event("pick", _params, socket), do: {:noreply, socket}
+
   def handle_event("clear", _params, socket),
     do: {:noreply, assign(socket, selected: nil, value: nil)}
 
@@ -145,7 +148,7 @@ defmodule FrappeUILive.Components.DatePicker do
         id={@panel}
         popover
         style={Anchor.panel_style(@id)}
-        class="bg-surface-elevation-1 rounded-5 border-outline-gray-1 shadow-elevation-md w-64 border p-3"
+        class={[Anchor.panel_classes(), "w-64 border p-3"]}
       >
         <div class="mb-2 flex items-center justify-between">
           <button

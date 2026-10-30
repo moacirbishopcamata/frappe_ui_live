@@ -58,7 +58,7 @@ defmodule FrappeUILive.Components.Dropdown do
         popover
         role="menu"
         style={@menu_style}
-        class="bg-surface-elevation-1 rounded-5 border-outline-gray-1 shadow-elevation-md min-w-40 border p-1"
+        class={[Anchor.panel_classes(), "min-w-40 border p-1"]}
       >
         <%= for item <- @item do %>
           <MenuItem.menu_item item={item} popover_id={@id} />

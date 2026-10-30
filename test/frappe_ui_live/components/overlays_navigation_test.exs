@@ -163,8 +163,10 @@ defmodule FrappeUILive.Components.OverlaysNavigationTest do
       assert has?(a, "button[role=tab][aria-selected=false]")
     end
 
-    test "aba ativa inexistente viola o contrato" do
-      assert_raise ArgumentError, ~r/tabs active/, fn -> tabs_html("zzz") end
+    test "aba ativa desconhecida (ex.: ?tab=lixo) não derruba: nenhuma fica ativa" do
+      html = tabs_html("zzz")
+      refute has?(html, "[aria-selected=true]")
+      assert Enum.count(query(html, "[role=tab]")) == 2
     end
   end
 

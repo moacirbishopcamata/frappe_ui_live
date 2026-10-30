@@ -13,7 +13,7 @@ defmodule FrappeUILive.Live.ThemeHook do
   @spec on_mount(atom(), map(), map(), Phoenix.LiveView.Socket.t()) ::
           {:cont, Phoenix.LiveView.Socket.t()}
   def on_mount(:default, _params, session, socket) do
-    theme = session["frappe_ui_theme"]
+    theme = session[FrappeUILive.Plug.Theme.session_key()]
     theme = if theme in FrappeUILive.Plug.Theme.themes(), do: theme, else: "light"
     {:cont, assign(socket, :frappe_ui_theme, theme)}
   end

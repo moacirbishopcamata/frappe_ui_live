@@ -1,6 +1,6 @@
 defmodule FrappeUILive.Plug.Static do
   @moduledoc """
-  Serve `frappe_ui.css` (tokens) da própria dependência em `/frappe_ui/frappe_ui.css`,
+  Serve `frappe_ui.css` (tokens) e `frappe_ui_icons.css` da própria dependência em `/frappe_ui/`,
   para quem prefere `<link>` a `@import` no `app.css`.
 
       plug FrappeUILive.Plug.Static
@@ -12,7 +12,7 @@ defmodule FrappeUILive.Plug.Static do
     Plug.Static.init(
       at: Keyword.get(opts, :at, "/frappe_ui"),
       from: {:frappe_ui_live, "priv/static"},
-      only: ~w(frappe_ui.css),
+      only: ~w(frappe_ui.css frappe_ui_icons.css),
       gzip: false
     )
   end

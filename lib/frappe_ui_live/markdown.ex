@@ -9,6 +9,13 @@ defmodule FrappeUILive.Markdown do
   chega ao DOM. É por isso que o Editor guarda Markdown, não HTML.
   """
 
+  @doc """
+  Markdown → HTML seguro, já marcado como seguro para o HEEx (`{FrappeUILive.Markdown.to_safe(@texto)}`).
+  Evita o escape duplo de passar a string de `to_html/1` direto ao template.
+  """
+  @spec to_safe(String.t() | nil) :: Phoenix.HTML.safe()
+  def to_safe(markdown), do: markdown |> to_html() |> Phoenix.HTML.raw()
+
   @doc "Markdown → HTML seguro (string)."
   @spec to_html(String.t() | nil) :: String.t()
   def to_html(nil), do: ""
@@ -44,17 +51,30 @@ defmodule FrappeUILive.Markdown do
     "<#{tag}>#{items}</#{tag}>"
   end
 
+  # Código e links são isolados ANTES da ênfase: `_` ou `*` dentro de um href ou de um
+  # trecho de código nunca vira <em>/<strong> (o que quebrava o link ou alterava o código).
+  @token ~r/`[^`]+`|\[[^\]]+\]\([^)\s]+\)/
+
   defp inline(text) do
     text
     |> escape()
-    |> then(&Regex.replace(~r/`([^`]+)`/, &1, "<code>\\1</code>"))
+    |> then(&Regex.split(@token, &1, include_captures: true))
+    |> Enum.map_join("", &segment/1)
+  end
+
+  defp segment("`" <> rest), do: "<code>#{String.trim_trailing(rest, "`")}</code>"
+
+  defp segment("[" <> _ = token) do
+    case Regex.run(~r/\A\[([^\]]+)\]\(([^)\s]+)\)\z/, token) do
+      [whole, label, url] -> link(whole, label, url)
+      nil -> token
+    end
+  end
+
+  defp segment(plain) do
+    plain
     |> then(&Regex.replace(~r/\*\*([^*]+)\*\*/, &1, "<strong>\\1</strong>"))
     |> then(&Regex.replace(~r/(?<![\w])_([^_]+)_(?![\w])/, &1, "<em>\\1</em>"))
-    |> then(
-      &Regex.replace(~r/\[([^\]]+)\]\(([^)\s]+)\)/, &1, fn whole, label, url ->
-        link(whole, label, url)
-      end)
-    )
   end
 
   defp link(whole, label, url) do
@@ -66,7 +86,7 @@ defmodule FrappeUILive.Markdown do
   @doc "A URL é segura para `href`? (`http(s)://`, `mailto:` ou caminho relativo `/…`)"
   @spec safe_url?(String.t()) :: boolean()
   def safe_url?(url) do
-    Regex.match?(~r{\A(https?://|mailto:|/(?!/))}i, url) and
+    Regex.match?(~r{\A(https?://|mailto:|/(?![/\\]))}i, url) and
       not String.contains?(url, ["\"", "<", ">"])
   end
 

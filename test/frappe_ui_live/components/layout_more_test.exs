@@ -91,7 +91,7 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
       end
     end
 
-    test "settings_dialog: seção ativa por assign e contrato" do
+    test "settings_dialog: seção ativa por assign; desconhecida não derruba" do
       assigns = %{}
 
       html =
@@ -106,11 +106,12 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
       assert html_attr(html, "a[href='/cfg/perfil']", "href") == "/cfg/perfil"
       assert html =~ "Conteúdo da conta" and html =~ "Configurações"
 
-      assert_raise ArgumentError, ~r/settings_dialog active/, fn ->
-        rendered_to_string(~H|<SettingsDialog.settings_dialog id="c" active="x">
+      refute has?(
+               rendered_to_string(~H|<SettingsDialog.settings_dialog id="c" active="x">
   <:tab id="a" label="A" click="a" />c
-</SettingsDialog.settings_dialog>|)
-      end
+</SettingsDialog.settings_dialog>|),
+               "[aria-current=page], [aria-selected=true]"
+             )
     end
 
     test "keyboard_shortcuts_dialog lista atalhos e valida o formato" do
@@ -233,7 +234,7 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
              ) =~ "flex-col"
     end
 
-    test "tab_buttons: ativo vem do assign e contrato do id" do
+    test "tab_buttons: ativo vem do assign; ativo desconhecido não derruba" do
       assigns = %{}
 
       html =
@@ -247,14 +248,15 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
       assert html_attr(html, "[aria-selected=true]", "phx-click") == "b"
       assert Enum.count(query(html, "[aria-selected=false]")) == 1
 
-      assert_raise ArgumentError, ~r/tab_buttons active/, fn ->
-        rendered_to_string(
-          ~H|<TabButtons.tab_buttons active="z"><:button id="a" label="A" click="a" /></TabButtons.tab_buttons>|
-        )
-      end
+      refute has?(
+               rendered_to_string(
+                 ~H|<TabButtons.tab_buttons active="z"><:button id="a" label="A" click="a" /></TabButtons.tab_buttons>|
+               ),
+               "[aria-current=page], [aria-selected=true]"
+             )
     end
 
-    test "sidebar: expandida, recolhida, cabeçalho/rodapé e contrato" do
+    test "sidebar: expandida, recolhida, cabeçalho/rodapé; ativo desconhecido não derruba" do
       assigns = %{}
 
       full =
@@ -277,11 +279,12 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
       assert html_attr(collapsed, "aside", "class") =~ "w-14"
       assert has?(collapsed, "span.sr-only")
 
-      assert_raise ArgumentError, ~r/sidebar active/, fn ->
-        rendered_to_string(
-          ~H|<Sidebar.sidebar active="z"><:item id="a" label="A" click="a" /></Sidebar.sidebar>|
-        )
-      end
+      refute has?(
+               rendered_to_string(
+                 ~H|<Sidebar.sidebar active="z"><:item id="a" label="A" click="a" /></Sidebar.sidebar>|
+               ),
+               "[aria-current=page], [aria-selected=true]"
+             )
     end
 
     test "sidebar_rail e mobile_shell" do
@@ -305,11 +308,12 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
       assert has?(mobile, "nav[aria-label=Principal]")
       assert Enum.count(query(mobile, "nav a, nav button")) == 2
 
-      assert_raise ArgumentError, ~r/mobile_shell active/, fn ->
-        rendered_to_string(~H|<MobileShell.mobile_shell active="z">
+      refute has?(
+               rendered_to_string(~H|<MobileShell.mobile_shell active="z">
   <:nav id="a" label="A" click="a" />x
-</MobileShell.mobile_shell>|)
-      end
+</MobileShell.mobile_shell>|),
+               "[aria-current=page], [aria-selected=true]"
+             )
     end
 
     test "desktop_shell e scroll_area" do

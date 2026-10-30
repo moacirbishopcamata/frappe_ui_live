@@ -12,7 +12,7 @@ defmodule FrappeUILive.Components.Dialog do
   """
   use Phoenix.Component
 
-  alias FrappeUILive.Components.Icon
+  alias FrappeUILive.Components.{Anchor, Icon}
   alias FrappeUILive.Contract
   alias Phoenix.LiveView.JS
 
@@ -46,10 +46,7 @@ defmodule FrappeUILive.Components.Dialog do
   slot :actions
 
   def dialog(assigns) do
-    Contract.ensure!(
-      Regex.match?(~r/\A[A-Za-z][\w-]*\z/, assigns.id),
-      "dialog id inválido: #{inspect(assigns.id)}"
-    )
+    Anchor.valid_id!(assigns.id, "dialog")
 
     Contract.require!(assigns.size, @sizes, "dialog size")
     Contract.require!(assigns.placement, ~w(center bottom)a, "dialog placement")
@@ -139,9 +136,11 @@ defmodule FrappeUILive.Components.Dialog do
 
   @doc "Comando `JS` que abre o diálogo `id`."
   @spec show_dialog(String.t()) :: JS.t()
-  def show_dialog(id) when is_binary(id), do: JS.dispatch("fui:dialog-open", to: "##{id}")
+  def show_dialog(id),
+    do: JS.dispatch("fui:dialog-open", to: "##{Anchor.valid_id!(id, "dialog")}")
 
   @doc "Comando `JS` que fecha o diálogo `id`."
   @spec hide_dialog(String.t()) :: JS.t()
-  def hide_dialog(id) when is_binary(id), do: JS.dispatch("fui:dialog-close", to: "##{id}")
+  def hide_dialog(id),
+    do: JS.dispatch("fui:dialog-close", to: "##{Anchor.valid_id!(id, "dialog")}")
 end

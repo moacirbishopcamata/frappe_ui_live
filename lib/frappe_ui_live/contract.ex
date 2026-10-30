@@ -12,8 +12,8 @@ defmodule FrappeUILive.Contract do
   """
 
   @doc "Pré-condição: `value` deve estar em `allowed`. Devolve `value`."
-  @spec require!(term(), [term()], atom() | String.t()) :: term()
-  def require!(value, allowed, name) when is_list(allowed) do
+  @spec require!(term(), Enumerable.t(), atom() | String.t()) :: term()
+  def require!(value, allowed, name) do
     if value in allowed do
       value
     else

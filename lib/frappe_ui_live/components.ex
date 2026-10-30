@@ -400,7 +400,7 @@ defmodule FrappeUILive.Components do
   Funções importadas por `use FrappeUILive` de cada módulo: só os componentes do
   catálogo (e helpers como `show_dialog/1`), nunca funções utilitárias do módulo.
   """
-  @spec imports() :: [{module(), [{atom(), 1 | 2}]}]
+  @spec imports() :: [{module(), [{atom(), 1}]}]
   def imports do
     @catalog
     |> Enum.group_by(& &1.module, &{&1.fun, 1})

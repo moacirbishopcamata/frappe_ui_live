@@ -84,7 +84,7 @@ defmodule FrappeUILive.Components.OptionList do
         id={@panel}
         popover
         style={Anchor.panel_style(@id)}
-        class="bg-surface-elevation-1 rounded-5 border-outline-gray-1 shadow-elevation-md w-64 border p-1.5"
+        class={[Anchor.panel_classes(), "w-64 border p-1.5"]}
       >
         <input
           type="search"

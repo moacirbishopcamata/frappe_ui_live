@@ -6,7 +6,6 @@ defmodule FrappeUILive.Components.Sidebar do
   use Phoenix.Component
 
   alias FrappeUILive.Components.NavItem
-  alias FrappeUILive.Contract
 
   attr :active, :string, default: nil, doc: "id do item ativo (precisa existir se informado)"
   attr :collapsed, :boolean, default: false
@@ -26,8 +25,12 @@ defmodule FrappeUILive.Components.Sidebar do
   end
 
   def sidebar(assigns) do
-    if assigns.active,
-      do: Contract.require!(assigns.active, Enum.map(assigns.item, & &1.id), "sidebar active")
+    assigns =
+      assign(
+        assigns,
+        :active,
+        NavItem.known_active(assigns.active, Enum.map(assigns.item, & &1.id))
+      )
 
     ~H"""
     <aside

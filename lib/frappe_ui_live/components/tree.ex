@@ -25,8 +25,7 @@ defmodule FrappeUILive.Components.Tree do
     <ul
       id={@id}
       role="tree"
-      phx-hook={@on_drop && Sortable.hook_name()}
-      data-on-drop={@on_drop}
+      {Sortable.root_attrs(@on_drop)}
       class={["fui-text-base", @class]}
     >
       <.branch
@@ -46,6 +45,7 @@ defmodule FrappeUILive.Components.Tree do
   attr :selected, :any, required: true
   attr :tree, :map, required: true
   attr :level, :integer, required: true
+  attr :parent, :any, default: nil
 
   defp branch(assigns) do
     node = assigns.node
@@ -65,8 +65,7 @@ defmodule FrappeUILive.Components.Tree do
       role="treeitem"
       aria-expanded={@expandable? && to_string(@expanded?)}
       aria-selected={to_string(@selected?)}
-      data-sortable-id={@tree.on_drop && @node_id}
-      draggable={@tree.on_drop && "true"}
+      {Sortable.item_attrs(@node_id, @tree.on_drop != nil, @parent)}
     >
       <div
         class={[
@@ -105,6 +104,7 @@ defmodule FrappeUILive.Components.Tree do
           selected={@selected}
           tree={@tree}
           level={@level + 1}
+          parent={@node_id}
         />
       </ul>
     </li>

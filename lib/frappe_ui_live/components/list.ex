@@ -54,15 +54,13 @@ defmodule FrappeUILive.Components.List do
         </thead>
         <tbody
           id={@id}
-          phx-hook={@sortable? && Sortable.hook_name()}
-          data-on-drop={@on_drop}
+          {Sortable.root_attrs(@on_drop)}
         >
           <tr
             :for={row <- @rows}
             :key={@row_id.(row)}
             id={"#{@id}-#{@row_id.(row)}"}
-            data-sortable-id={@sortable? && @row_id.(row)}
-            draggable={@sortable? && "true"}
+            {Sortable.item_attrs(@row_id.(row), @sortable?)}
             aria-selected={
               @selectable? && to_string(to_string(@row_id.(row)) in Enum.map(@selected, &to_string/1))
             }

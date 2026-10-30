@@ -182,6 +182,9 @@ defmodule ShowcaseWeb.CatalogLive do
     {:noreply, Toast.put_toast(socket, :info, "Evento recebido no servidor")}
   end
 
+  # Evento desconhecido ou malformado (cliente forjado): ignora, nunca derruba o LiveView.
+  def handle_event(_event, _params, socket), do: {:noreply, socket}
+
   # ---- estado ----------------------------------------------------------------
 
   defp tab(%{"tab" => tab}) when tab in @tabs, do: tab

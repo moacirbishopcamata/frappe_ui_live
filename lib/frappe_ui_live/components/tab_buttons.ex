@@ -3,7 +3,6 @@ defmodule FrappeUILive.Components.TabButtons do
   use Phoenix.Component
 
   alias FrappeUILive.Components.NavItem
-  alias FrappeUILive.Contract
 
   attr :active, :string, required: true, doc: "id do botão ativo"
   attr :class, :any, default: nil
@@ -19,7 +18,12 @@ defmodule FrappeUILive.Components.TabButtons do
   end
 
   def tab_buttons(assigns) do
-    Contract.require!(assigns.active, Enum.map(assigns.button, & &1.id), "tab_buttons active")
+    assigns =
+      assign(
+        assigns,
+        :active,
+        NavItem.known_active(assigns.active, Enum.map(assigns.button, & &1.id))
+      )
 
     ~H"""
     <div

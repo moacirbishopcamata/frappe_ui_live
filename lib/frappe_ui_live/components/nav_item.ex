@@ -8,6 +8,15 @@ defmodule FrappeUILive.Components.NavItem do
 
   alias FrappeUILive.Components.Icon
 
+  @doc """
+  Item ativo seguro: devolve `active` se for um dos `ids`, senão `nil` (nenhum ativo).
+
+  `active` costuma vir da URL (`?tab=...`); valor desconhecido é entrada de usuário e
+  não pode derrubar a página.
+  """
+  @spec known_active(String.t() | nil, [String.t()]) :: String.t() | nil
+  def known_active(active, ids), do: if(active in ids, do: active)
+
   attr :item, :map, required: true, doc: "id, label, icon, patch, navigate, href, click"
   attr :active, :boolean, default: false
   attr :class, :any, default: nil

@@ -26,7 +26,21 @@ defmodule Mix.Tasks.FrappeUiLive.Install do
 
   @impl Mix.Task
   def run(args) do
-    {opts, _, _} = OptionParser.parse(args, strict: [dry_run: :boolean, dep_path: :string])
+    {opts, positional, invalid} =
+      OptionParser.parse(args, strict: [dry_run: :boolean, dep_path: :string, help: :boolean])
+
+    # Pré-condição: opção desconhecida (ex.: --dryrun) nunca pode virar "aplicar de verdade".
+    if invalid != [] or positional != [] do
+      bad = Enum.map(invalid, &elem(&1, 0)) ++ positional
+
+      Mix.raise(
+        "argumentos inválidos: #{Enum.join(bad, ", ")}. Veja `mix help frappe_ui_live.install`"
+      )
+    end
+
+    if opts[:help],
+      do: Mix.raise("uso: mix frappe_ui_live.install [--dry-run] [--dep-path CAMINHO]")
+
     dep_path = opts[:dep_path] || dep_path!()
     dry? = Keyword.get(opts, :dry_run, false)
 
@@ -79,6 +93,9 @@ defmodule Mix.Tasks.FrappeUiLive.Install do
 
   defp apply_patch(path, {:error, :no_hooks_option}, _),
     do: error("#{path}: não achei a opção `hooks:` do LiveSocket")
+
+  defp apply_patch(path, {:error, :no_imports}, _),
+    do: error("#{path}: não achei nenhum `import` (o app.js do Phoenix 1.8 tem vários)")
 
   defp apply_patch(path, {:error, reason}, _), do: error("#{path}: #{inspect(reason)}")
 
