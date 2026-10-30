@@ -19,6 +19,8 @@ defmodule FrappeUILive.Texts do
     loading: "Carregando",
     loading_text: "Carregando…",
     toggle_password: "Mostrar ou ocultar a senha",
+    pin_code: "Código de verificação",
+    pin_digit: "Caractere %{n} de %{total}",
     rating: "Avaliação",
     rating_item: "%{n} de %{max}",
     editor_placeholder: "Escreva aqui…",

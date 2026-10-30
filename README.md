@@ -12,8 +12,8 @@ sem Vue — estado autoritativo no servidor, JS só onde `Phoenix.LiveView.JS` e
 
 | Categoria | Componentes |
 |---|---|
-| Formulários | `button`, `text_input`, `textarea`, `password`, `select`, `combobox`, `multi_select`, `checkbox`, `radio_group`, `switch`, `slider`, `rating`, `date_picker`, `time_picker`, `duration`, `file_uploader`, `form_control`, `form_label` |
-| Feedback e exibição | `badge`, `alert`, `progress`, `skeleton`, `spinner`, `loading_text`, `avatar`, `icon`, `keyboard_shortcut`, `item_list_row`, `saved_indicator`, `error_message`, `toast_container` |
+| Formulários | `button`, `text_input`, `textarea`, `password`, `pin_code`, `select`, `combobox`, `multi_select`, `checkbox`, `radio_group`, `switch`, `slider`, `rating`, `date_picker`, `time_picker`, `duration`, `file_uploader`, `form_control`, `form_label` |
+| Feedback e exibição | `badge`, `alert`, `progress`, `skeleton`, `spinner`, `loading_text`, `avatar`, `dice_bear_avatar`, `icon`, `keyboard_shortcut`, `item_list_row`, `saved_indicator`, `error_message`, `toast_container` |
 | Overlays | `dialog`, `bottom_sheet`, `settings_dialog`, `keyboard_shortcuts_dialog`, `dropdown`, `popover`, `context_menu`, `hover_card`, `tooltip` |
 | Navegação e layout | `tabs`, `tab_buttons`, `breadcrumbs`, `page_header`, `sidebar`, `sidebar_rail`, `desktop_shell`, `mobile_shell`, `scroll_area`, `divider` |
 | Dados | `tree`, `sortable` (arrastar-e-soltar) |
@@ -149,6 +149,25 @@ npm install && mix icons.sync   # lucide-static -> priv/icons.json (todos os íc
 Os tokens são **dados vendorizados** do pacote `frappe-ui` (sem dependências npm, sem CVE).
 `priv/tokens.provenance.json` registra versão e hash. Os ícones vêm do `lucide-static` fixado (ISC); `mix icons.sync` é determinístico e falha se algum
 SVG antigo não tiver ícone equivalente.
+
+## PinCode e DiceBearAvatar
+
+```heex
+<.pin_code id="otp" field={@form[:codigo]} length={6} on_complete="verificar" />
+<.dice_bear_avatar seed={FrappeUILive.DiceBear.seed(@user.id)} style="thumbs" size={:xl} label={@user.name} />
+```
+
+**`pin_code`**: uma caixa por caractere (3 a 12), avanço automático, Backspace que volta, setas, colar o código inteiro
+e `autocomplete="one-time-code"` (SMS). O valor é **um campo só** (`name` do `field`); as caixas não são enviadas
+sozinhas. `type` `:numeric` (padrão) ou `:alphanumeric`, `mask` esconde os caracteres e `on_complete` envia
+`%{"id", "value"}` ao servidor quando todas as caixas estão preenchidas. `PinCode.sanitize/2` aplica no servidor a
+mesma regra de caracteres do cliente; o código recebido continua sendo entrada de usuário e deve ser validado.
+
+**`dice_bear_avatar`**: avatar do [DiceBear](https://www.dicebear.com/) (coleção 9.x, `FrappeUILive.DiceBear.styles/0`)
+sobre o `avatar`, com os mesmos `size`/`shape`. `options` repassa parâmetros da API (`%{backgroundColor: ["b6e3f4"], flip: true}`).
+**A `seed` vai na URL** para o servidor do DiceBear: use `DiceBear.seed/1` (id opaco), nunca e-mail ou nome, e para não
+depender de terceiros hospede a API e configure `config :frappe_ui_live, dice_bear_base_url: "https://avatars.meuapp.com/9.x"`.
+Com CSP, libere o host em `img-src`. As imagens carregam sob demanda e sem `Referer` (também no `avatar` comum).
 
 ## Ícones Lucide
 

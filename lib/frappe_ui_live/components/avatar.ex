@@ -45,7 +45,15 @@ defmodule FrappeUILive.Components.Avatar do
       title={@label}
       {@rest}
     >
-      <img :if={@image} src={@image} alt={@label || ""} class="size-full object-cover" />
+      <img
+        :if={@image}
+        src={@image}
+        alt={@label || ""}
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        class="size-full object-cover"
+      />
       <span :if={!@image}>{@initial}</span>
     </span>
     """

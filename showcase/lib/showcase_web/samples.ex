@@ -36,6 +36,8 @@ defmodule ShowcaseWeb.Samples do
     form_control: %{label: "Nome"},
     page_header: %{title: "Pedidos", subtitle: "Todos os pedidos"},
     password: %{id: "demo-senha"},
+    pin_code: %{id: "demo-pin"},
+    dice_bear_avatar: %{seed: "ana", label: "Ana"},
     combobox: %{id: "demo-combobox"},
     multi_select: %{id: "demo-multi"},
     date_picker: %{id: "demo-date"},
@@ -58,7 +60,7 @@ defmodule ShowcaseWeb.Samples do
   # Componentes sem slot obrigatório nem contexto: renderizam direto, só com os atributos.
   # Qualquer outro id do catálogo PRECISA ter uma clause própria de `sample/3`; sem ela, a
   # renderização falha alto (FunctionClauseError) em vez de cair num caminho genérico errado.
-  @generic ~w(button badge progress skeleton spinner loading_text avatar icon divider)a
+  @generic ~w(button badge progress skeleton spinner loading_text avatar dice_bear_avatar icon divider)a
 
   @doc "Ids que usam a amostra genérica (todos os outros têm clause própria)."
   @spec generic_ids() :: [atom()]
@@ -127,6 +129,11 @@ defmodule ShowcaseWeb.Samples do
   defp sample(%{id: :password}, a, _) do
     assigns = %{a: a}
     ~H|<.password name="senha" {@a} />|
+  end
+
+  defp sample(%{id: :pin_code}, a, _) do
+    assigns = %{a: a}
+    ~H|<.pin_code name="codigo" on_complete="demo" {@a} />|
   end
 
   defp sample(%{id: :select}, a, _) do

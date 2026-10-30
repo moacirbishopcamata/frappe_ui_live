@@ -20,6 +20,13 @@ defmodule FrappeUILive.Components do
     },
     %{id: :textarea, module: C.Textarea, fun: :textarea, category: :forms, title: "Textarea"},
     %{id: :password, module: C.Password, fun: :password, category: :forms, title: "Password"},
+    %{
+      id: :pin_code,
+      module: C.PinCode,
+      fun: :pin_code,
+      category: :forms,
+      title: "PinCode"
+    },
     %{id: :select, module: C.Select, fun: :select, category: :forms, title: "Select"},
     %{id: :combobox, module: C.Combobox, fun: :combobox, category: :forms, title: "Combobox"},
     %{
@@ -90,6 +97,13 @@ defmodule FrappeUILive.Components do
       title: "LoadingText"
     },
     %{id: :avatar, module: C.Avatar, fun: :avatar, category: :feedback, title: "Avatar"},
+    %{
+      id: :dice_bear_avatar,
+      module: C.DiceBearAvatar,
+      fun: :dice_bear_avatar,
+      category: :feedback,
+      title: "DiceBearAvatar"
+    },
     %{id: :icon, module: C.Icon, fun: :icon, category: :feedback, title: "Icon"},
     %{
       id: :keyboard_shortcut,
