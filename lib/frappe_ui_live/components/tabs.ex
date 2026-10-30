@@ -63,7 +63,14 @@ defmodule FrappeUILive.Components.Tabs do
       ])
 
     ~H"""
-    <.link :if={@link?} role="tab" aria-selected={to_string(@active)} aria-controls={@panel_id} class={@classes} {@nav}>
+    <.link
+      :if={@link?}
+      role="tab"
+      aria-selected={to_string(@active)}
+      aria-controls={@panel_id}
+      class={@classes}
+      {@nav}
+    >
       <Icon.icon :if={@icon} name={@icon} class="size-4" />{@tab.label}
     </.link>
     <button

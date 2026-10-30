@@ -27,6 +27,7 @@ defmodule FrappeUILive.Components.Avatar do
   def avatar(assigns) do
     Contract.require!(assigns.size, @sizes, "avatar size")
     Contract.require!(assigns.shape, @shapes, "avatar shape")
+
     assigns =
       assigns
       |> assign(:initial, initial(assigns.label))

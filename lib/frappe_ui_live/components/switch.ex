@@ -29,7 +29,12 @@ defmodule FrappeUILive.Components.Switch do
       end)
 
     ~H"""
-    <label class={["inline-flex items-center gap-2.5", @disabled && "cursor-not-allowed", !@disabled && "cursor-pointer", @class]}>
+    <label class={[
+      "inline-flex items-center gap-2.5",
+      @disabled && "cursor-not-allowed",
+      !@disabled && "cursor-pointer",
+      @class
+    ]}>
       <input type="hidden" name={@name} value="false" disabled={@disabled} />
       <input
         type="checkbox"
@@ -47,8 +52,7 @@ defmodule FrappeUILive.Components.Switch do
         @size == :sm && "h-4 w-[26px] [&>span]:size-3 peer-checked:[&>span]:translate-x-[10px]",
         @size == :md && "h-5 w-8 [&>span]:size-3.5 peer-checked:[&>span]:translate-x-3"
       ]}>
-        <span class="bg-surface-base pointer-events-none ml-0.5 inline-block rounded-full shadow-elevation-sm transition-transform duration-100">
-        </span>
+        <span class="bg-surface-base pointer-events-none ml-0.5 inline-block rounded-full shadow-elevation-sm transition-transform duration-100"></span>
       </span>
       <span :if={@label} class="fui-text-base text-ink-gray-8">{@label}</span>
     </label>

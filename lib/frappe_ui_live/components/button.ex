@@ -42,11 +42,14 @@ defmodule FrappeUILive.Components.Button do
       "text-ink-green-8 bg-surface-base border border-outline-green-3 hover:border-outline-green-5 active:border-outline-green-5 active:bg-surface-green-4",
     {:red, :outline} =>
       "text-ink-red-7 bg-surface-base border border-outline-red-1 hover:border-outline-red-3 active:border-outline-red-3 active:bg-surface-red-3",
-    {:gray, :ghost} => "text-ink-gray-8 bg-transparent hover:bg-surface-gray-3 active:bg-surface-gray-4",
-    {:blue, :ghost} => "text-ink-blue-5 bg-transparent hover:bg-surface-blue-3 active:bg-surface-blue-4",
+    {:gray, :ghost} =>
+      "text-ink-gray-8 bg-transparent hover:bg-surface-gray-3 active:bg-surface-gray-4",
+    {:blue, :ghost} =>
+      "text-ink-blue-5 bg-transparent hover:bg-surface-blue-3 active:bg-surface-blue-4",
     {:green, :ghost} =>
       "text-ink-green-8 bg-transparent hover:bg-surface-green-3 active:bg-surface-green-4",
-    {:red, :ghost} => "text-ink-red-7 bg-transparent hover:bg-surface-red-3 active:bg-surface-red-4"
+    {:red, :ghost} =>
+      "text-ink-red-7 bg-transparent hover:bg-surface-red-3 active:bg-surface-red-4"
   }
 
   @disabled_classes %{
@@ -120,6 +123,7 @@ defmodule FrappeUILive.Components.Button do
       |> assign(:inert?, inert?)
       |> assign(:link?, link?)
       |> assign(:icon_class, @icon_sizes[assigns.size])
+      |> assign(:slot?, assigns.inner_block != [])
 
     ~H"""
     <.link :if={@link?} class={@classes} {@rest}>
@@ -141,7 +145,10 @@ defmodule FrappeUILive.Components.Button do
 
     [
       "inline-flex items-center justify-center gap-2 transition-colors shrink-0",
-      if(Map.get(attrs, :disabled, false), do: @disabled_classes[key], else: @variant_classes[key]),
+      if(Map.get(attrs, :disabled, false),
+        do: @disabled_classes[key],
+        else: @variant_classes[key]
+      ),
       if(Map.get(attrs, :loading, false) and not Map.get(attrs, :disabled, false),
         do: "pointer-events-none"
       ),
@@ -152,7 +159,16 @@ defmodule FrappeUILive.Components.Button do
   end
 
   defp content_attrs(assigns) do
-    Map.take(assigns, [:loading, :loading_text, :icon, :icon_left, :icon_right, :label, :icon_class])
+    Map.take(assigns, [
+      :loading,
+      :loading_text,
+      :icon,
+      :icon_left,
+      :icon_right,
+      :label,
+      :icon_class,
+      :slot?
+    ])
   end
 
   attr :loading, :boolean, required: true
@@ -162,6 +178,7 @@ defmodule FrappeUILive.Components.Button do
   attr :icon_right, :string, default: nil
   attr :label, :string, default: nil
   attr :icon_class, :string, required: true
+  attr :slot?, :boolean, default: false, doc: "o botão recebeu conteúdo por slot (vence o label)"
   slot :inner_block
 
   defp content(assigns) do
@@ -173,7 +190,7 @@ defmodule FrappeUILive.Components.Button do
       <%= cond do %>
         <% @loading and @loading_text -> %>
           {@loading_text}
-        <% @inner_block != [] -> %>
+        <% @slot? -> %>
           {render_slot(@inner_block)}
         <% true -> %>
           {@label}

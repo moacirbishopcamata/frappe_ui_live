@@ -29,7 +29,11 @@ defmodule FrappeUILive.Components.Dropdown do
   end
 
   def dropdown(assigns) do
-    Contract.ensure!(Regex.match?(~r/\A[A-Za-z][\w-]*\z/, assigns.id), "dropdown id inválido: #{inspect(assigns.id)}")
+    Contract.ensure!(
+      Regex.match?(~r/\A[A-Za-z][\w-]*\z/, assigns.id),
+      "dropdown id inválido: #{inspect(assigns.id)}"
+    )
+
     anchor = "--fui-#{assigns.id}"
 
     assigns =
@@ -112,8 +116,10 @@ defmodule FrappeUILive.Components.Dropdown do
 
   @doc false
   def item_classes(:red),
-    do: "fui-text-base text-ink-red-3 hover:bg-surface-red-2 flex w-full items-center gap-2 rounded-4 px-2 py-1.5 text-left"
+    do:
+      "fui-text-base text-ink-red-3 hover:bg-surface-red-2 flex w-full items-center gap-2 rounded-4 px-2 py-1.5 text-left"
 
   def item_classes(_gray),
-    do: "fui-text-base text-ink-gray-7 hover:bg-surface-gray-2 flex w-full items-center gap-2 rounded-4 px-2 py-1.5 text-left"
+    do:
+      "fui-text-base text-ink-gray-7 hover:bg-surface-gray-2 flex w-full items-center gap-2 rounded-4 px-2 py-1.5 text-left"
 end

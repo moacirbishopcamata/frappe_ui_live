@@ -37,7 +37,11 @@ defmodule FrappeUILive.Components.Dialog do
   slot :actions
 
   def dialog(assigns) do
-    Contract.ensure!(Regex.match?(~r/\A[A-Za-z][\w-]*\z/, assigns.id), "dialog id inválido: #{inspect(assigns.id)}")
+    Contract.ensure!(
+      Regex.match?(~r/\A[A-Za-z][\w-]*\z/, assigns.id),
+      "dialog id inválido: #{inspect(assigns.id)}"
+    )
+
     Contract.require!(assigns.size, @sizes, "dialog size")
     assigns = assign(assigns, :size_class, @size_classes[assigns.size])
 
@@ -59,7 +63,9 @@ defmodule FrappeUILive.Components.Dialog do
     >
       <div class="px-4 pt-4 pb-3 sm:px-6">
         <div class="flex items-start justify-between gap-3">
-          <h2 :if={@title} id={"#{@id}-title"} class="fui-text-xl-semibold text-ink-gray-9">{@title}</h2>
+          <h2 :if={@title} id={"#{@id}-title"} class="fui-text-xl-semibold text-ink-gray-9">
+            {@title}
+          </h2>
           <button
             type="button"
             phx-click={hide_dialog(@id)}

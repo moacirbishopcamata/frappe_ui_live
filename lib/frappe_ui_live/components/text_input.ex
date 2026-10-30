@@ -42,7 +42,11 @@ defmodule FrappeUILive.Components.TextInput do
       disabled={@disabled}
       aria-invalid={@errors != [] && "true"}
       class={
-        InputStyle.classes(@variant, @size, invalid: @errors != [], disabled: @disabled, class: @class)
+        InputStyle.classes(@variant, @size,
+          invalid: @errors != [],
+          disabled: @disabled,
+          class: @class
+        )
       }
       {@rest}
     />

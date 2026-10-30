@@ -18,7 +18,9 @@ defmodule FrappeUILive.Components.PageHeader do
           <h1 class="fui-text-xl-semibold text-ink-gray-9 truncate">{@title}</h1>
           <p :if={@subtitle} class="fui-text-p-base text-ink-gray-5">{@subtitle}</p>
         </div>
-        <div :if={@actions != []} class="flex shrink-0 items-center gap-2">{render_slot(@actions)}</div>
+        <div :if={@actions != []} class="flex shrink-0 items-center gap-2">
+          {render_slot(@actions)}
+        </div>
       </div>
     </header>
     """

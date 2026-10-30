@@ -10,7 +10,12 @@ defmodule FrappeUILive.Components.ErrorMessage do
     assigns = assign(assigns, :lines, lines(assigns.message))
 
     ~H"""
-    <p :if={@lines != []} id={@id} role="alert" class={["fui-text-sm text-ink-red-7 whitespace-pre-line", @class]}>
+    <p
+      :if={@lines != []}
+      id={@id}
+      role="alert"
+      class={["fui-text-sm text-ink-red-7 whitespace-pre-line", @class]}
+    >
       {Enum.join(@lines, "\n")}
     </p>
     """

@@ -20,5 +20,6 @@ defmodule FrappeUILive.ToastSink.PushEvent do
   @behaviour FrappeUILive.ToastSink
 
   @impl true
-  def deliver(socket, payload), do: Phoenix.LiveView.push_event(socket, "frappe-ui:toast", payload)
+  def deliver(socket, payload),
+    do: Phoenix.LiveView.push_event(socket, "frappe-ui:toast", payload)
 end

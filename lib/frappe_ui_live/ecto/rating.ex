@@ -14,7 +14,12 @@ if Code.ensure_loaded?(Ecto.ParameterizedType) do
     @impl true
     def init(opts) do
       max = Keyword.get(opts, :max, 5)
-      FrappeUILive.Contract.ensure!(is_integer(max) and max > 0, "Rating: :max deve ser inteiro positivo")
+
+      FrappeUILive.Contract.ensure!(
+        is_integer(max) and max > 0,
+        "Rating: :max deve ser inteiro positivo"
+      )
+
       %{max: max}
     end
 

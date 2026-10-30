@@ -36,7 +36,11 @@ defmodule FrappeUILive.Components.Select do
         disabled={@disabled}
         aria-invalid={@errors != [] && "true"}
         class={[
-          InputStyle.classes(@variant, @size, invalid: @errors != [], disabled: @disabled, class: @class),
+          InputStyle.classes(@variant, @size,
+            invalid: @errors != [],
+            disabled: @disabled,
+            class: @class
+          ),
           "appearance-none pr-7"
         ]}
         {@rest}

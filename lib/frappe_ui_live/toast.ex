@@ -22,8 +22,16 @@ defmodule FrappeUILive.Toast do
     Contract.require!(kind, @kinds, "toast kind")
     Contract.ensure!(is_binary(message) and message != "", "toast: mensagem vazia")
     timeout = Keyword.get(opts, :timeout, @default_timeout)
-    Contract.ensure!(is_integer(timeout) and timeout > 0, "toast: timeout deve ser inteiro positivo")
 
-    ToastSink.sink().deliver(socket, %{kind: Atom.to_string(kind), message: message, timeout: timeout})
+    Contract.ensure!(
+      is_integer(timeout) and timeout > 0,
+      "toast: timeout deve ser inteiro positivo"
+    )
+
+    ToastSink.sink().deliver(socket, %{
+      kind: Atom.to_string(kind),
+      message: message,
+      timeout: timeout
+    })
   end
 end

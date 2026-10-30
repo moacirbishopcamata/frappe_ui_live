@@ -34,7 +34,9 @@ defmodule FrappeUILive.Components.Toast do
           <button
             type="button"
             aria-label="Fechar"
-            phx-click={JS.push("lv:clear-flash", value: %{key: kind}) |> JS.hide(to: "##{@id}-flash-#{kind}")}
+            phx-click={
+              JS.push("lv:clear-flash", value: %{key: kind}) |> JS.hide(to: "##{@id}-flash-#{kind}")
+            }
           >
             <Icon.icon name="x" class="size-4" />
           </button>

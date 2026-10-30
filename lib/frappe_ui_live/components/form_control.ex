@@ -28,7 +28,11 @@ defmodule FrappeUILive.Components.FormControl do
   attr :prompt, :string, default: nil
   attr :variant, :atom, default: :subtle
   attr :size, :atom, default: :sm
-  attr :required, :boolean, default: false, doc: "espelha a regra `validate_required` do changeset"
+
+  attr :required, :boolean,
+    default: false,
+    doc: "espelha a regra `validate_required` do changeset"
+
   attr :disabled, :boolean, default: false
   attr :class, :any, default: nil
 
@@ -45,7 +49,11 @@ defmodule FrappeUILive.Components.FormControl do
 
     ~H"""
     <div class={["space-y-1.5", @class]}>
-      <FormLabel.form_label :if={@label && @type not in ~w(checkbox switch)} for={@control_id} required={@required}>
+      <FormLabel.form_label
+        :if={@label && @type not in ~w(checkbox switch)}
+        for={@control_id}
+        required={@required}
+      >
         {@label}
       </FormLabel.form_label>
 
@@ -59,13 +67,30 @@ defmodule FrappeUILive.Components.FormControl do
 
   defp control(%{type: "textarea"} = assigns) do
     ~H"""
-    <Textarea.textarea field={@field} errors={@errors} variant={@variant} size={@size} disabled={@disabled} required={@required} {@rest} />
+    <Textarea.textarea
+      field={@field}
+      errors={@errors}
+      variant={@variant}
+      size={@size}
+      disabled={@disabled}
+      required={@required}
+      {@rest}
+    />
     """
   end
 
   defp control(%{type: "select"} = assigns) do
     ~H"""
-    <Select.select field={@field} errors={@errors} options={@options} variant={@variant} size={@size} disabled={@disabled} required={@required} prompt={@prompt} />
+    <Select.select
+      field={@field}
+      errors={@errors}
+      options={@options}
+      variant={@variant}
+      size={@size}
+      disabled={@disabled}
+      required={@required}
+      prompt={@prompt}
+    />
     """
   end
 
@@ -83,7 +108,16 @@ defmodule FrappeUILive.Components.FormControl do
 
   defp control(assigns) do
     ~H"""
-    <TextInput.text_input field={@field} errors={@errors} type={@type} variant={@variant} size={@size} disabled={@disabled} required={@required} {@rest} />
+    <TextInput.text_input
+      field={@field}
+      errors={@errors}
+      type={@type}
+      variant={@variant}
+      size={@size}
+      disabled={@disabled}
+      required={@required}
+      {@rest}
+    />
     """
   end
 end

@@ -26,7 +26,10 @@ defmodule FrappeUILive.Components.Breadcrumbs do
             <%= if index == @last_index do %>
               <span aria-current="page" class="text-ink-gray-9 fui-text-base-medium">{item.label}</span>
             <% else %>
-              <.link class="text-ink-gray-5 hover:text-ink-gray-8 transition-colors" {Map.take(item, [:navigate, :patch, :href])}>
+              <.link
+                class="text-ink-gray-5 hover:text-ink-gray-8 transition-colors"
+                {Map.take(item, [:navigate, :patch, :href])}
+              >
                 {item.label}
               </.link>
             <% end %>

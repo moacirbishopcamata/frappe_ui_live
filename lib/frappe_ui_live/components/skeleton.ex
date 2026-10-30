@@ -7,7 +7,8 @@ defmodule FrappeUILive.Components.Skeleton do
 
   def skeleton(assigns) do
     ~H"""
-    <div class={["bg-surface-gray-3 animate-pulse rounded-4", @class]} aria-hidden="true" {@rest}></div>
+    <div class={["bg-surface-gray-3 animate-pulse rounded-4", @class]} aria-hidden="true" {@rest}>
+    </div>
     """
   end
 end

@@ -32,7 +32,11 @@ defmodule FrappeUILive.Components.Textarea do
       disabled={@disabled}
       aria-invalid={@errors != [] && "true"}
       class={[
-        InputStyle.classes(@variant, @size, invalid: @errors != [], disabled: @disabled, class: @class),
+        InputStyle.classes(@variant, @size,
+          invalid: @errors != [],
+          disabled: @disabled,
+          class: @class
+        ),
         "h-auto min-h-7"
       ]}
       {@rest}

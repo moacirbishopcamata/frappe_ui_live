@@ -28,7 +28,12 @@ defmodule FrappeUILive.Components.Checkbox do
       end)
 
     ~H"""
-    <label class={["inline-flex items-center gap-2", @disabled && "cursor-not-allowed", !@disabled && "cursor-pointer", @class]}>
+    <label class={[
+      "inline-flex items-center gap-2",
+      @disabled && "cursor-not-allowed",
+      !@disabled && "cursor-pointer",
+      @class
+    ]}>
       <input type="hidden" name={@name} value="false" disabled={@disabled} />
       <span class="relative mt-px inline-flex">
         <input

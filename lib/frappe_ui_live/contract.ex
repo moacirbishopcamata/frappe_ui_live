@@ -23,7 +23,7 @@ defmodule FrappeUILive.Contract do
   end
 
   @doc "Pós-condição ou invariante: levanta `ArgumentError` com `message` se `condition` for falsa."
-  @spec ensure!(as_boolean(term()), String.t()) :: :ok
+  @spec ensure!(term(), String.t()) :: :ok
   def ensure!(condition, message) when is_binary(message) do
     if condition, do: :ok, else: raise(ArgumentError, message)
   end

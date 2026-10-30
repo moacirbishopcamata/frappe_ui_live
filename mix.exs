@@ -33,6 +33,7 @@ defmodule FrappeUILive.MixProject do
       {:phoenix_live_view, "~> 1.2"},
       {:phoenix_html, "~> 4.3"},
       {:ecto, "~> 3.13", optional: true},
+      {:phoenix_ecto, "~> 4.7", optional: true},
       {:lazy_html, "~> 0.1", only: :test},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false},
       {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false}
@@ -42,7 +43,12 @@ defmodule FrappeUILive.MixProject do
   defp aliases do
     [
       "tokens.sync": ["cmd node scripts/sync_tokens.mjs"],
-      quality: ["format --check-formatted", "compile --warnings-as-errors", "test --cover", "deps.audit"]
+      quality: [
+        "format --check-formatted",
+        "compile --warnings-as-errors",
+        "test --cover",
+        "deps.audit"
+      ]
     ]
   end
 
