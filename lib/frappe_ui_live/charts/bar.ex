@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Bar do
   @moduledoc "Gráfico de barras agrupadas (SVG no servidor, cores do tema, estados loading/empty/error)."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Axes, Cartesian, Frame, Legend, Scale, Tooltip}
 
   attr :categories, :list, required: true
@@ -34,7 +36,7 @@ defmodule FrappeUILive.Charts.Bar do
           viewBox={"0 0 #{Cartesian.width()} #{@height}"}
           class="w-full"
           role="img"
-          aria-label="Gráfico de barras"
+          aria-label={Texts.t(:chart_bar)}
         >
           <Axes.axes layout={@layout} categories={@categories} />
           <g :for={bar <- @bars} class="group" data-bar tabindex="0">

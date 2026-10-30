@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Line do
   @moduledoc "Gráficos de linha e de área (SVG no servidor), com pontos, dicas e estados."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Axes, Cartesian, Frame, Legend, Scale, Tooltip}
 
   attr :categories, :list, required: true
@@ -51,7 +53,7 @@ defmodule FrappeUILive.Charts.Line do
           viewBox={"0 0 #{Cartesian.width()} #{@height}"}
           class="w-full"
           role="img"
-          aria-label={if @area?, do: "Gráfico de área", else: "Gráfico de linhas"}
+          aria-label={if @area?, do: Texts.t(:chart_area), else: Texts.t(:chart_line)}
         >
           <Axes.axes layout={@layout} categories={@categories} />
           <g :for={line <- @lines} data-series={line.name}>

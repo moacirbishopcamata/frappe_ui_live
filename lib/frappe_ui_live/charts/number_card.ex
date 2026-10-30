@@ -2,19 +2,22 @@ defmodule FrappeUILive.Charts.NumberCard do
   @moduledoc "Cartão de indicador: rótulo, valor grande e variação percentual opcional (verde sobe, vermelho cai)."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.Frame
   alias FrappeUILive.Components.{Icon, Skeleton}
 
   attr :label, :string, required: true
   attr :value, :any, required: true
   attr :delta, :float, default: nil, doc: "variação percentual (ex.: 12.5 ou -3.0)"
-  attr :delta_label, :string, default: "vs. período anterior"
+  attr :delta_label, :string, default: nil
   attr :loading, :boolean, default: false
   attr :error, :string, default: nil
   attr :class, :any, default: nil
   attr :rest, :global
 
   def number_card(assigns) do
+    assigns = assign(assigns, :delta_label, assigns.delta_label || Texts.t(:vs_previous))
     assigns = assign(assigns, :state, Frame.state(assigns.loading, assigns.error, false))
 
     ~H"""

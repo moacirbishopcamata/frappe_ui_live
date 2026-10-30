@@ -13,11 +13,14 @@ defmodule FrappeUILive.Components.MultiSelect do
   attr :name, :any
   attr :value, :any, doc: "lista de valores selecionados"
   attr :options, :list, required: true
-  attr :placeholder, :string, default: "Selecione…"
+  attr :placeholder, :string, default: nil
   attr :on_search, :string, default: nil
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
+  attr :form, :string, default: nil
+  attr :required, :boolean, default: false
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def multi_select(assigns) do
     assigns =
@@ -38,6 +41,9 @@ defmodule FrappeUILive.Components.MultiSelect do
       errors={@errors}
       disabled={@disabled}
       class={@class}
+      form={@form}
+      required={@required}
+      {@rest}
     />
     """
   end

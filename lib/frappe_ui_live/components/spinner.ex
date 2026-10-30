@@ -2,6 +2,8 @@ defmodule FrappeUILive.Components.Spinner do
   @moduledoc "Indicador de carregamento; herda a cor do texto."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   attr :class, :any, default: "size-4"
   attr :rest, :global
 
@@ -12,7 +14,7 @@ defmodule FrappeUILive.Components.Spinner do
       viewBox="0 0 24 24"
       fill="none"
       role="status"
-      aria-label="Carregando"
+      aria-label={Texts.t(:loading)}
       {@rest}
     >
       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />

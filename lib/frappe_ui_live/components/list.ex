@@ -13,6 +13,8 @@ defmodule FrappeUILive.Components.List do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Sortable
 
   attr :id, :string, required: true
@@ -25,8 +27,9 @@ defmodule FrappeUILive.Components.List do
     default: nil,
     doc: "liga o arrastar-e-soltar; evento: %{\"id\", \"to\", \"position\"}"
 
-  attr :empty_text, :string, default: "Nada por aqui."
+  attr :empty_text, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   slot :col, required: true do
     attr :label, :string, required: true
@@ -36,20 +39,28 @@ defmodule FrappeUILive.Components.List do
   slot :action
 
   def list(assigns) do
+    assigns = assign(assigns, :empty_text, assigns.empty_text || Texts.t(:empty_list))
+
     assigns =
       assigns
       |> assign(:selectable?, assigns.selected != nil)
       |> assign(:sortable?, assigns.on_drop != nil)
 
     ~H"""
-    <div class={["border-outline-gray-2 overflow-x-auto rounded-5 border", @class]}>
+    <div class={["border-outline-gray-2 overflow-x-auto rounded-5 border", @class]} {@rest}>
       <table class="fui-text-base w-full text-left">
         <thead class="bg-surface-gray-1 text-ink-gray-6 fui-text-sm">
           <tr>
-            <th :if={@sortable?} class="w-6 px-2"><span class="sr-only">Reordenar</span></th>
-            <th :if={@selectable?} class="w-8 px-3"><span class="sr-only">Selecionar</span></th>
+            <th :if={@sortable?} class="w-6 px-2">
+              <span class="sr-only">{Texts.t(:reorder)}</span>
+            </th>
+            <th :if={@selectable?} class="w-8 px-3">
+              <span class="sr-only">{Texts.t(:select_row)}</span>
+            </th>
             <th :for={col <- @col} class={["px-3 py-2 font-medium", col[:class]]}>{col.label}</th>
-            <th :if={@action != []} class="px-3 py-2"><span class="sr-only">Ações</span></th>
+            <th :if={@action != []} class="px-3 py-2">
+              <span class="sr-only">{Texts.t(:actions)}</span>
+            </th>
           </tr>
         </thead>
         <tbody
@@ -73,7 +84,7 @@ defmodule FrappeUILive.Components.List do
                 checked={to_string(@row_id.(row)) in Enum.map(@selected, &to_string/1)}
                 phx-click={@on_select}
                 phx-value-id={@row_id.(row)}
-                aria-label="Selecionar linha"
+                aria-label={Texts.t(:select_row)}
                 class="border-outline-gray-4 checked:bg-surface-gray-10 checked:border-surface-gray-10 size-4 rounded-1 border"
               />
             </td>

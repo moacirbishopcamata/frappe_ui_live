@@ -9,14 +9,17 @@ defmodule FrappeUILive.Components.CommandPalette do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Anchor, Dialog, Icon, KeyboardShortcut}
   alias Phoenix.LiveView.JS
 
   attr :id, :string, required: true
-  attr :placeholder, :string, default: "Buscar comandos…"
-  attr :empty_text, :string, default: "Nenhum comando encontrado."
+  attr :placeholder, :string, default: nil
+  attr :empty_text, :string, default: nil
   attr :shortcut, :boolean, default: true, doc: "liga Ctrl/⌘ + K para abrir"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   slot :item, required: true do
     attr :label, :string, required: true
@@ -31,6 +34,8 @@ defmodule FrappeUILive.Components.CommandPalette do
   end
 
   def command_palette(assigns) do
+    assigns = assign(assigns, :empty_text, assigns.empty_text || Texts.t(:command_empty))
+    assigns = assign(assigns, :placeholder, assigns.placeholder || Texts.t(:command_placeholder))
     Anchor.valid_id!(assigns.id, "command_palette")
 
     assigns =
@@ -45,11 +50,12 @@ defmodule FrappeUILive.Components.CommandPalette do
       phx-mounted={JS.ignore_attributes(["open"])}
       data-open="false"
       data-backdrop-close="true"
-      aria-label="Paleta de comandos"
+      aria-label={Texts.t(:command_palette)}
       class={[
         "bg-surface-elevation-1 shadow-elevation-xl rounded-6 mx-auto mt-[12vh] w-full max-w-lg p-0 backdrop:bg-black/50",
         @class
       ]}
+      {@rest}
     >
       <div
         id={"#{@id}-palette"}

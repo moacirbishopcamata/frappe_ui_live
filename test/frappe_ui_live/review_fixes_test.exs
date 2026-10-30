@@ -422,4 +422,197 @@ end")
       refute html_attr(plain, "button", "aria-selected")
     end
   end
+
+  describe "I-14: rest global uniforme" do
+    alias FrappeUILive.Charts.{Legend, Tooltip}
+    alias FrappeUILive.Components, as: Catalog
+
+    alias FrappeUILive.Components.{
+      CommandPalette,
+      ErrorMessage,
+      ListView,
+      MultiSelect,
+      SavedIndicator,
+      Stepper,
+      ThemeSwitcher
+    }
+
+    alias FrappeUILive.Components.{Tooltip, Tree}
+
+    # fragmentos sem elemento raiz próprio: não há onde espalhar atributos
+    @fragments [{FrappeUILive.Charts.Frame, :chart_frame}, {FrappeUILive.Charts.Axes, :axes}]
+
+    test "todo componente público (catálogo e blocos internos) aceita atributos globais" do
+      all = Enum.map(Catalog.catalog(), &{&1.module, &1.fun}) ++ Catalog.internal()
+
+      missing =
+        for {module, fun} <- Enum.uniq(all) -- @fragments,
+            comp = Map.fetch!(module.__components__(), fun),
+            not Enum.any?(comp.attrs, &(&1.type == :global)),
+            do: {module, fun}
+
+      assert missing == [], "sem `attr :rest, :global`: #{inspect(missing)}"
+    end
+
+    test "data-* e aria-* chegam ao elemento raiz" do
+      assigns = %{}
+
+      cases = [
+        {~H|<ErrorMessage.error_message message="x" data-t="1" />|, "p[data-t='1']"},
+        {~H|<SavedIndicator.saved_indicator at={1} data-t="1" />|, "span[data-t='1']"},
+        {~H|<Tooltip.tooltip text="t" data-t="1">x</Tooltip.tooltip>|, "span[data-t='1']"},
+        {~H|<Stepper.stepper current={0} data-t="1"><:step label="A" /></Stepper.stepper>|,
+         "ol[data-t='1']"},
+        {~H|<ThemeSwitcher.theme_switcher current="light" data-t="1" />|, "div[data-t='1']"},
+        {~H|<Legend.chart_legend items={[%{label: "a", color: "red"}]} data-t="1" />|,
+         "ul[data-t='1']"},
+        {~H|<Tree.tree id="t" nodes={[]} data-t="1" />|, "ul[data-t='1']"},
+        {~H|<ListView.list_view id="lv" rows={[]} data-t="1">
+  <:col label="N">x</:col>
+</ListView.list_view>|, "div[data-t='1']"},
+        {~H|<CommandPalette.command_palette id="cp" data-t="1">
+  <:item label="x" click="x" />
+</CommandPalette.command_palette>|, "dialog[data-t='1']"},
+        {~H|<MultiSelect.multi_select id="ms" name="x" options={[]} data-t="1" />|,
+         "#ms[data-t='1']"}
+      ]
+
+      for {rendered, selector} <- cases do
+        assert has?(rendered_to_string(rendered), selector), "rest não chegou em #{selector}"
+      end
+    end
+
+    test "form e required chegam aos inputs nativos de Combobox/MultiSelect" do
+      assigns = %{o: [{"A", "a"}, {"B", "b"}]}
+
+      single =
+        rendered_to_string(
+          ~H|<FrappeUILive.Components.Combobox.combobox id="c" name="x" options={@o} form="f1" required />|
+        )
+
+      assert has?(single, "input[type=radio][form=f1][required]")
+
+      multi =
+        rendered_to_string(
+          ~H|<MultiSelect.multi_select id="m" name="x" options={@o} form="f1" required />|
+        )
+
+      assert has?(multi, "input[type=checkbox][form=f1]")
+      refute has?(multi, "input[type=checkbox][required]")
+    end
+
+    test "DatePicker espalha o rest na raiz do LiveComponent" do
+      html =
+        render_component(DatePicker,
+          id: "d",
+          name: "n",
+          rest: %{"data-t" => "1"},
+          today: ~D[2026-03-15]
+        )
+
+      assert has?(html, "#d[data-t='1']")
+    end
+  end
+
+  describe "I-18: textos fixos configuráveis" do
+    alias FrappeUILive.Components.{Dialog, Password, SavedIndicator, Stepper}
+    alias FrappeUILive.Texts
+
+    defmodule EnglishTranslator do
+      @behaviour FrappeUILive.Translator
+      @impl true
+      def translate(:close, _default, _bindings), do: "Close"
+      def translate(:go_back_to, _default, _bindings), do: "Back to %{label}"
+      def translate(_key, default, _bindings), do: default
+    end
+
+    setup do
+      on_exit(fn ->
+        Application.delete_env(:frappe_ui_live, :texts)
+        Application.delete_env(:frappe_ui_live, :translator)
+      end)
+    end
+
+    test "padrão em português, com todas as chaves preenchidas" do
+      assert Texts.t(:close) == "Fechar"
+      assert Enum.all?(Texts.keys(), &(Texts.default(&1) |> String.trim() != ""))
+      assert_raise KeyError, fn -> Texts.t(:chave_inexistente) end
+    end
+
+    test "interpolação de %{nome}" do
+      assert Texts.t(:rating_item, n: 3, max: 5) == "3 de 5"
+      assert Texts.t(:go_back_to, label: "Conta") == "Voltar para Conta"
+    end
+
+    test "config :texts sobrescreve pontualmente e chega ao componente" do
+      Application.put_env(:frappe_ui_live, :texts, %{saved: "Saved", close: "Close"})
+      assigns = %{}
+
+      assert text(rendered_to_string(~H|<SavedIndicator.saved_indicator at={1} />|), "span span") =~
+               "Saved"
+
+      assert html_attr(
+               rendered_to_string(~H|<Dialog.dialog id="d">x</Dialog.dialog>|),
+               "button[aria-label]",
+               "aria-label"
+             ) == "Close"
+
+      assert Texts.t(:today) == "Hoje"
+    end
+
+    test "módulo Translator tem prioridade e recebe o default já sobrescrito" do
+      Application.put_env(:frappe_ui_live, :translator, EnglishTranslator)
+      Application.put_env(:frappe_ui_live, :texts, %{search: "Find…"})
+      assert Texts.t(:close) == "Close"
+      assert Texts.t(:go_back_to, label: "Account") == "Back to Account"
+      assert Texts.t(:search) == "Find…"
+    end
+
+    test "texto explícito do chamador vence o configurado" do
+      Application.put_env(:frappe_ui_live, :texts, %{saved: "Saved"})
+      assigns = %{}
+      html = rendered_to_string(~H|<SavedIndicator.saved_indicator at={1} label="Guardado" />|)
+      assert html =~ "Guardado"
+      refute html =~ "Saved"
+    end
+
+    test "aria-labels e mensagens passam pelo Texts (senha, etapas, erros de upload)" do
+      Application.put_env(:frappe_ui_live, :translator, EnglishTranslator)
+      assigns = %{}
+
+      assert html_attr(
+               rendered_to_string(~H|<Stepper.stepper current={1} on_go="ir">
+  <:step label="Conta" /><:step label="B" />
+</Stepper.stepper>|),
+               "button[phx-click=ir]",
+               "aria-label"
+             ) == "Back to Conta"
+
+      pw = rendered_to_string(~H|<Password.password id="p" name="s" />|)
+      assert html_attr(pw, "button", "aria-label") == "Mostrar ou ocultar a senha"
+      assert FrappeUILive.Components.FileUploader.error_message(:too_large) =~ "maior"
+    end
+
+    test "todas as chaves usadas nos componentes existem (nenhum Texts.t com chave desconhecida)" do
+      used =
+        Path.wildcard(Path.expand("../../lib/**/*.ex", __DIR__))
+        |> Enum.flat_map(fn file ->
+          Regex.scan(~r/Texts\.t\(:([a-z_]+)/, File.read!(file), capture: :all_but_first)
+        end)
+        |> List.flatten()
+        |> Enum.uniq()
+        |> Enum.map(&String.to_atom/1)
+
+      assert used -- Texts.keys() == []
+
+      # e nenhuma chave definida ficou órfã (usada por átomo em qualquer lugar de lib/, exceto texts.ex)
+      source =
+        Path.wildcard(Path.expand("../../lib/**/*.ex", __DIR__))
+        |> Enum.reject(&String.ends_with?(&1, "texts.ex"))
+        |> Enum.map_join("\n", &File.read!/1)
+
+      orphans = Enum.reject(Texts.keys(), &Regex.match?(~r/:#{&1}\b/, source))
+      assert orphans == [], "chaves sem uso: #{inspect(orphans)}"
+    end
+  end
 end

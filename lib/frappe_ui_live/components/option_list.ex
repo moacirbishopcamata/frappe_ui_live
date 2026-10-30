@@ -10,6 +10,8 @@ defmodule FrappeUILive.Components.OptionList do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Anchor, Badge, Icon, InputStyle}
 
   @max_badges 3
@@ -19,15 +21,21 @@ defmodule FrappeUILive.Components.OptionList do
   attr :options, :list, required: true, doc: "strings ou {rótulo, valor}"
   attr :selected, :list, default: [], doc: "valores selecionados (strings)"
   attr :multiple, :boolean, default: false
-  attr :placeholder, :string, default: "Selecione…"
-  attr :search_placeholder, :string, default: "Buscar…"
-  attr :empty_text, :string, default: "Nenhum resultado"
+  attr :placeholder, :string, default: nil
+  attr :search_placeholder, :string, default: nil
+  attr :empty_text, :string, default: nil
   attr :on_search, :string, default: nil
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
+  attr :form, :string, default: nil
+  attr :required, :boolean, default: false, doc: "só vale na escolha única"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def option_list(assigns) do
+    assigns = assign(assigns, :empty_text, assigns.empty_text || Texts.t(:no_results))
+    assigns = assign(assigns, :search_placeholder, assigns.search_placeholder || Texts.t(:search))
+    assigns = assign(assigns, :placeholder, assigns.placeholder || Texts.t(:select))
     Anchor.valid_id!(assigns.id, "option_list")
     choices = Enum.map(assigns.options, &normalize/1)
     selected = Enum.map(assigns.selected, &to_string/1)
@@ -48,8 +56,9 @@ defmodule FrappeUILive.Components.OptionList do
       data-multiple={to_string(@multiple)}
       data-remote={to_string(@on_search != nil)}
       class={["relative w-full", @class]}
+      {@rest}
     >
-      <input :if={@multiple} type="hidden" name={@name} value="" />
+      <input :if={@multiple} type="hidden" name={@name} value="" form={@form} />
       <button
         type="button"
         popovertarget={@panel}
@@ -109,6 +118,8 @@ defmodule FrappeUILive.Components.OptionList do
               <input
                 type={@input_type}
                 name={@name}
+                form={@form}
+                required={@required and !@multiple}
                 value={value}
                 checked={value in @selected}
                 class="peer sr-only"

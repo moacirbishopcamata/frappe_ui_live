@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Scatter do
   @moduledoc "Gráfico de dispersão: séries de pontos `{x, y}` em eixos numéricos."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Frame, Legend, Scale, Tooltip}
   alias FrappeUILive.Contract
 
@@ -40,7 +42,7 @@ defmodule FrappeUILive.Charts.Scatter do
           viewBox={"0 0 #{@width} #{@height}"}
           class="w-full"
           role="img"
-          aria-label="Gráfico de dispersão"
+          aria-label={Texts.t(:chart_scatter)}
         >
           <g aria-hidden="true" font-size="11">
             <g :for={tick <- @geometry.y_ticks}>

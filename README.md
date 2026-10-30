@@ -127,6 +127,19 @@ Os controles aceitam `field={@form[:campo]}` e mostram erros de changeset **só 
 mix quality   # format --check-formatted, compile --warnings-as-errors, test --cover, deps.audit
 ```
 
+## Textos e tradução
+
+Rótulos de acessibilidade e mensagens auxiliares (ex.: "Fechar", "Mês anterior", erros de upload) vêm de
+`FrappeUILive.Texts`, em português por padrão. Para mudar sem copiar componentes:
+
+```elixir
+config :frappe_ui_live, texts: %{close: "Close", today: "Today"}   # sobrescritas pontuais
+config :frappe_ui_live, translator: MeuApp.Translator              # ou um módulo (ex.: Gettext)
+```
+
+`MeuApp.Translator` implementa `FrappeUILive.Translator` (`translate(key, default, bindings)`). Um texto passado
+explicitamente ao componente (`label=`, `placeholder=`...) sempre vence o configurado. `FrappeUILive.Texts.keys/0` lista as chaves.
+
 ## Tokens e ícones (geração)
 
 ```sh
@@ -165,8 +178,10 @@ importantes). **Já corrigidos** (com testes de regressão):
 - `use FrappeUILive` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`;
 - item de navegação unificado: `Action` decide link ou botão (`NavItem`, `MenuItem`, `Tabs`) e os slots usam o mesmo vocabulário.
 
-**Pendentes** (tasks 17.8 e 17.9 do OpenSpec): mover `Spec` para fora do pacote, `rest` global uniforme, textos
-fixos em português sem ponto de extensão e semântica de `selected`/`expanded`.
+- `rest` global uniforme em todos os componentes com elemento raiz e textos fixos configuráveis (`FrappeUILive.Texts`).
+
+**Pendentes** (tasks 17.8 e 17.9 do OpenSpec): mover `Spec` para fora do pacote, precedência documentada de
+`Field.assign_field/1`, DatePicker alinhado aos outros campos e semântica de `selected`/`expanded`.
 
 ## Licença
 

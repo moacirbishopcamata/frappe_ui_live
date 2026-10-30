@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Donut do
   @moduledoc "Gráfico de rosca (SVG no servidor). `data` é `[%{label, value}]`; valores ≤ 0 são ignorados."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Frame, Legend, Scale}
 
   @size 200
@@ -35,7 +37,7 @@ defmodule FrappeUILive.Charts.Donut do
           viewBox="0 0 200 200"
           class="mx-auto w-full max-w-60"
           role="img"
-          aria-label="Gráfico de rosca"
+          aria-label={Texts.t(:chart_donut)}
         >
           <path
             :for={slice <- @slices}

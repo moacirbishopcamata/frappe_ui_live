@@ -5,6 +5,8 @@ defmodule FrappeUILive.Components.Toast do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
   alias Phoenix.LiveView.JS
 
@@ -28,6 +30,7 @@ defmodule FrappeUILive.Components.Toast do
   attr :id, :string, default: "frappe-ui-toasts"
   attr :flash, :map, default: %{}
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def toast_container(assigns) do
     assigns = assign(assigns, :styles, @styles)
@@ -39,6 +42,7 @@ defmodule FrappeUILive.Components.Toast do
       data-styles={Jason.encode!(@styles)}
       aria-live="polite"
       class={["pointer-events-none fixed top-4 right-4 z-[100] flex w-80 flex-col gap-2", @class]}
+      {@rest}
     >
       <%= for {kind, message} <- @flash, kind in ~w(info error), message not in [nil, ""] do %>
         <div
@@ -53,7 +57,7 @@ defmodule FrappeUILive.Components.Toast do
           <p class="flex-1">{message}</p>
           <button
             type="button"
-            aria-label="Fechar"
+            aria-label={Texts.t(:close)}
             phx-click={
               JS.push("lv:clear-flash", value: %{key: kind}) |> JS.hide(to: "##{@id}-flash-#{kind}")
             }

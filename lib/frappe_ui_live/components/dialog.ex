@@ -12,6 +12,8 @@ defmodule FrappeUILive.Components.Dialog do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Anchor, Icon}
   alias FrappeUILive.Contract
   alias Phoenix.LiveView.JS
@@ -88,7 +90,7 @@ defmodule FrappeUILive.Components.Dialog do
             type="button"
             phx-click={hide_dialog(@id)}
             class="text-ink-gray-5 hover:bg-surface-gray-3 focus-visible:focus-ring ml-auto inline-flex size-7 items-center justify-center rounded-4"
-            aria-label="Fechar"
+            aria-label={Texts.t(:close)}
           >
             <Icon.icon name="x" class="size-4" />
           </button>

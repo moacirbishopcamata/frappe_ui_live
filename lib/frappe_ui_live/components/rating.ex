@@ -6,6 +6,8 @@ defmodule FrappeUILive.Components.Rating do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
   alias FrappeUILive.{Contract, Field}
 
@@ -27,7 +29,7 @@ defmodule FrappeUILive.Components.Rating do
     ~H"""
     <div
       role="radiogroup"
-      aria-label="Avaliação"
+      aria-label={Texts.t(:rating)}
       class={["inline-flex items-center gap-0.5", @class]}
     >
       <label :for={n <- 1..@max} :key={n} class={[!@readonly && "cursor-pointer"]}>
@@ -38,7 +40,7 @@ defmodule FrappeUILive.Components.Rating do
           checked={n == @current}
           disabled={@readonly}
           class="peer sr-only"
-          aria-label={"#{n} de #{@max}"}
+          aria-label={Texts.t(:rating_item, n: n, max: @max)}
           {@rest}
         />
         <Icon.icon

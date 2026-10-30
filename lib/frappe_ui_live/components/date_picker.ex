@@ -13,6 +13,7 @@ defmodule FrappeUILive.Components.DatePicker do
   use Phoenix.LiveComponent
 
   alias FrappeUILive.Calendar
+  alias FrappeUILive.Texts
   alias FrappeUILive.Components.{Anchor, Icon}
   alias FrappeUILive.Field
   alias Phoenix.LiveView.JS
@@ -23,15 +24,16 @@ defmodule FrappeUILive.Components.DatePicker do
   attr :value, :any, default: nil, doc: "data ISO (`2026-03-09`) ou `Date`"
   attr :min, :any, default: nil, doc: "primeira data permitida"
   attr :max, :any, default: nil, doc: "última data permitida"
-  attr :placeholder, :string, default: "Selecione a data"
+  attr :placeholder, :string, default: nil
   attr :disabled, :boolean, default: false
+  attr :rest, :global
 
   @doc "Função-componente que monta o LiveComponent (`<.date_picker id=... field=... />`)."
   def date_picker(assigns) do
     passthrough =
       assigns
-      |> Map.take([:id, :field, :name, :value, :min, :max, :placeholder, :disabled])
-      |> Map.reject(fn {_k, v} -> is_nil(v) end)
+      |> Map.take([:id, :field, :name, :value, :min, :max, :placeholder, :disabled, :rest])
+      |> Map.reject(fn {k, v} -> is_nil(v) or (k == :rest and v == %{}) end)
 
     assigns = assign(assigns, :passthrough, passthrough)
 
@@ -62,8 +64,9 @@ defmodule FrappeUILive.Components.DatePicker do
     {:ok,
      socket
      |> assign(min: min, max: max, selected: selected, month: month)
-     |> assign_new(:placeholder, fn -> "Selecione a data" end)
-     |> assign_new(:disabled, fn -> false end)}
+     |> assign_new(:placeholder, fn -> Texts.t(:select_date) end)
+     |> assign_new(:disabled, fn -> false end)
+     |> assign_new(:rest, fn -> %{} end)}
   end
 
   # Com `field`, o valor do formulário é a fonte da verdade a cada atualização.
@@ -119,7 +122,7 @@ defmodule FrappeUILive.Components.DatePicker do
       )
 
     ~H"""
-    <div class="relative inline-block w-full" id={@id}>
+    <div class="relative inline-block w-full" id={@id} {@rest}>
       <input
         type="hidden"
         id={@value_id}
@@ -153,7 +156,7 @@ defmodule FrappeUILive.Components.DatePicker do
         <div class="mb-2 flex items-center justify-between">
           <button
             type="button"
-            aria-label="Mês anterior"
+            aria-label={Texts.t(:prev_month)}
             phx-click="prev"
             phx-target={@myself}
             class="hover:bg-surface-gray-3 rounded-4 p-1"
@@ -165,7 +168,7 @@ defmodule FrappeUILive.Components.DatePicker do
           )}</span>
           <button
             type="button"
-            aria-label="Próximo mês"
+            aria-label={Texts.t(:next_month)}
             phx-click="next"
             phx-target={@myself}
             class="hover:bg-surface-gray-3 rounded-4 p-1"
@@ -211,7 +214,7 @@ defmodule FrappeUILive.Components.DatePicker do
           phx-target={@myself}
           class="fui-text-sm text-ink-gray-5 hover:text-ink-gray-8 mt-2"
         >
-          Limpar
+          {Texts.t(:clear)}
         </button>
       </div>
     </div>

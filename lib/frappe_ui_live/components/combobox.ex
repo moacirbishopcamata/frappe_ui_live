@@ -10,11 +10,14 @@ defmodule FrappeUILive.Components.Combobox do
   attr :name, :any
   attr :value, :any
   attr :options, :list, required: true
-  attr :placeholder, :string, default: "Selecione…"
+  attr :placeholder, :string, default: nil
   attr :on_search, :string, default: nil, doc: "evento do servidor para busca remota"
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
+  attr :form, :string, default: nil
+  attr :required, :boolean, default: false
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def combobox(assigns) do
     assigns = assigns |> Field.assign_field() |> Field.require_id!("combobox")
@@ -30,6 +33,9 @@ defmodule FrappeUILive.Components.Combobox do
       errors={@errors}
       disabled={@disabled}
       class={@class}
+      form={@form}
+      required={@required}
+      {@rest}
     />
     """
   end

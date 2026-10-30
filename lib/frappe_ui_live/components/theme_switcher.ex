@@ -6,16 +6,19 @@ defmodule FrappeUILive.Components.ThemeSwitcher do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
   alias FrappeUILive.Contract
   alias FrappeUILive.Plug.Theme
 
   @icons %{"light" => "sun", "dark" => "moon"}
-  @labels %{"light" => "Claro", "dark" => "Escuro"}
+  @labels %{"light" => :theme_light, "dark" => :theme_dark}
 
   attr :current, :string, required: true, doc: "tema ativo: \"light\" ou \"dark\""
   attr :param, :string, default: "theme", doc: "nome do parâmetro lido pelo Plug"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def theme_switcher(assigns) do
     Contract.require!(assigns.current, Theme.themes(), "theme_switcher current")
@@ -24,8 +27,9 @@ defmodule FrappeUILive.Components.ThemeSwitcher do
     ~H"""
     <div
       role="group"
-      aria-label="Tema"
+      aria-label={Texts.t(:theme)}
       class={["bg-surface-gray-2 inline-flex gap-0.5 rounded-5 p-0.5", @class]}
+      {@rest}
     >
       <.link
         :for={theme <- @themes}
@@ -48,5 +52,5 @@ defmodule FrappeUILive.Components.ThemeSwitcher do
   @spec href(String.t(), String.t()) :: String.t()
   def href(param, theme), do: "?#{URI.encode_www_form(param)}=#{theme}"
 
-  defp label(theme), do: Map.fetch!(@labels, theme)
+  defp label(theme), do: Texts.t(Map.fetch!(@labels, theme))
 end

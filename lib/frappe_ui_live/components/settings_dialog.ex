@@ -5,11 +5,13 @@ defmodule FrappeUILive.Components.SettingsDialog do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Dialog, NavItem}
 
   attr :id, :string, required: true
   attr :open, :boolean, default: false
-  attr :title, :string, default: "Configurações"
+  attr :title, :string, default: nil
   attr :active, :string, required: true, doc: "id da seção ativa"
   attr :on_close, :string, default: nil
   attr :rest, :global
@@ -26,6 +28,8 @@ defmodule FrappeUILive.Components.SettingsDialog do
   end
 
   def settings_dialog(assigns) do
+    assigns = assign(assigns, :title, assigns.title || Texts.t(:settings))
+
     assigns =
       assign(
         assigns,

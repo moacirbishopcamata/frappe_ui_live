@@ -7,6 +7,8 @@ defmodule FrappeUILive.Components.ListView do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Icon, Sortable}
 
   attr :id, :string, required: true
@@ -15,8 +17,9 @@ defmodule FrappeUILive.Components.ListView do
   attr :collapsed, :list, default: [], doc: "rótulos dos grupos recolhidos"
   attr :on_toggle, :string, default: nil
   attr :row_id, :any, default: &Sortable.default_id/1
-  attr :empty_text, :string, default: "Nada por aqui."
+  attr :empty_text, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   slot :col, required: true do
     attr :label, :string, required: true
@@ -24,10 +27,11 @@ defmodule FrappeUILive.Components.ListView do
   end
 
   def list_view(assigns) do
+    assigns = assign(assigns, :empty_text, assigns.empty_text || Texts.t(:empty_list))
     assigns = assign(assigns, :groups, groups(assigns.rows, assigns.group_by))
 
     ~H"""
-    <div class={["border-outline-gray-2 overflow-x-auto rounded-5 border", @class]}>
+    <div class={["border-outline-gray-2 overflow-x-auto rounded-5 border", @class]} {@rest}>
       <table id={@id} class="fui-text-base w-full text-left">
         <thead class="bg-surface-gray-1 text-ink-gray-6 fui-text-sm">
           <tr>

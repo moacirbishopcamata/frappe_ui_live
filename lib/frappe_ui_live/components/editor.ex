@@ -14,30 +14,33 @@ defmodule FrappeUILive.Components.Editor do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
   alias FrappeUILive.{Field, Markdown}
 
   @commands [
-    {"bold", "bold", "Negrito"},
-    {"italic", "italic", "Itálico"},
-    {"heading", "heading-2", "Título"},
-    {"ul", "list", "Lista"},
-    {"ol", "list-ordered", "Lista numerada"},
-    {"code", "code", "Código"},
-    {"link", "link", "Link"}
+    {"bold", "bold", :bold},
+    {"italic", "italic", :italic},
+    {"heading", "heading-2", :heading},
+    {"ul", "list", :list},
+    {"ol", "list-ordered", :ordered_list},
+    {"code", "code", :code},
+    {"link", "link", :link}
   ]
 
   attr :field, Phoenix.HTML.FormField, default: nil
   attr :id, :any, default: nil
   attr :name, :any
   attr :value, :any
-  attr :placeholder, :string, default: "Escreva aqui…"
+  attr :placeholder, :string, default: nil
   attr :errors, :list, default: []
   attr :disabled, :boolean, default: false
   attr :class, :any, default: nil
   attr :rest, :global, include: ~w(form)
 
   def editor(assigns) do
+    assigns = assign(assigns, :placeholder, assigns.placeholder || Texts.t(:editor_placeholder))
     assigns = assigns |> Field.assign_field() |> Field.require_id!("editor")
     markdown = to_string(assigns.value || "")
 
@@ -51,6 +54,7 @@ defmodule FrappeUILive.Components.Editor do
     <div
       id={@id}
       phx-hook=".Editor"
+      data-link-prompt={Texts.t(:link_prompt)}
       data-disabled={to_string(@disabled)}
       class={[
         "bg-surface-base rounded-5 border",
@@ -61,15 +65,15 @@ defmodule FrappeUILive.Components.Editor do
     >
       <div
         role="toolbar"
-        aria-label="Formatação"
+        aria-label={Texts.t(:formatting)}
         class="border-outline-gray-2 flex gap-0.5 border-b p-1"
       >
         <button
           :for={{command, icon, label} <- @commands}
           type="button"
           data-command={command}
-          title={label}
-          aria-label={label}
+          title={Texts.t(label)}
+          aria-label={Texts.t(label)}
           disabled={@disabled}
           class="text-ink-gray-6 hover:bg-surface-gray-3 hover:text-ink-gray-9 rounded-3 p-1.5 disabled:opacity-50"
         >
@@ -187,7 +191,7 @@ defmodule FrappeUILive.Components.Editor do
               break
             }
             case "link": {
-              const url = window.prompt("Endereço do link (https://…)")
+              const url = window.prompt(this.el.dataset.linkPrompt)
               if (url && SAFE_URL.test(url)) document.execCommand("createLink", false, url)
               break
             }

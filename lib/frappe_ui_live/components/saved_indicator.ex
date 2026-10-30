@@ -6,15 +6,20 @@ defmodule FrappeUILive.Components.SavedIndicator do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
 
   attr :at, :any, default: nil, doc: "muda a cada sucesso; `nil` não mostra nada"
-  attr :label, :string, default: "Salvo"
+  attr :label, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def saved_indicator(assigns) do
+    assigns = assign(assigns, :label, assigns.label || Texts.t(:saved))
+
     ~H"""
-    <span aria-live="polite" class={["inline-flex h-5 items-center", @class]}>
+    <span aria-live="polite" class={["inline-flex h-5 items-center", @class]} {@rest}>
       <span
         :for={stamp <- List.wrap(@at)}
         :key={stamp}

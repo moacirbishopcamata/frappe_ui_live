@@ -10,6 +10,7 @@ defmodule FrappeUILive.Charts.Tooltip do
   attr :x, :float, required: true, doc: "centro horizontal"
   attr :y, :float, required: true, doc: "base da dica (acima do ponto)"
   attr :text, :string, required: true
+  attr :rest, :global
 
   def chart_tooltip(assigns) do
     width = String.length(assigns.text) * 6.4 + 14
@@ -25,6 +26,7 @@ defmodule FrappeUILive.Charts.Tooltip do
     <g
       class="pointer-events-none invisible group-hover:visible group-focus:visible"
       aria-hidden="true"
+      {@rest}
     >
       <rect
         x={@left}

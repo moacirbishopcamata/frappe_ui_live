@@ -5,6 +5,7 @@ defmodule FrappeUILive.Components.ErrorMessage do
   attr :message, :any, default: nil, doc: "String ou lista de strings"
   attr :id, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def error_message(assigns) do
     assigns = assign(assigns, :lines, lines(assigns.message))
@@ -15,6 +16,7 @@ defmodule FrappeUILive.Components.ErrorMessage do
       id={@id}
       role="alert"
       class={["fui-text-sm text-ink-red-7 whitespace-pre-line", @class]}
+      {@rest}
     >
       {Enum.join(@lines, "\n")}
     </p>

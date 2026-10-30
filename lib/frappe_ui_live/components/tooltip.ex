@@ -16,6 +16,7 @@ defmodule FrappeUILive.Components.Tooltip do
   attr :text, :string, required: true
   attr :placement, :atom, default: :top, values: @placements
   attr :class, :any, default: nil
+  attr :rest, :global
   slot :inner_block, required: true
 
   def tooltip(assigns) do
@@ -23,7 +24,7 @@ defmodule FrappeUILive.Components.Tooltip do
     assigns = assign(assigns, :placement_class, @placement_classes[assigns.placement])
 
     ~H"""
-    <span class={["group/tooltip relative inline-flex", @class]}>
+    <span class={["group/tooltip relative inline-flex", @class]} {@rest}>
       {render_slot(@inner_block)}
       <span
         role="tooltip"

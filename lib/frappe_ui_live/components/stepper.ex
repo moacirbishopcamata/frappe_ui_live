@@ -7,6 +7,8 @@ defmodule FrappeUILive.Components.Stepper do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
   alias FrappeUILive.Contract
 
@@ -16,6 +18,7 @@ defmodule FrappeUILive.Components.Stepper do
   attr :orientation, :atom, default: :horizontal, values: @orientations
   attr :on_go, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   slot :step, required: true do
     attr :label, :string, required: true
@@ -34,12 +37,15 @@ defmodule FrappeUILive.Components.Stepper do
     assigns = assign(assigns, :steps, Enum.with_index(assigns.step))
 
     ~H"""
-    <ol class={[
-      "flex",
-      @orientation == :horizontal && "items-start gap-2",
-      @orientation == :vertical && "flex-col gap-4",
-      @class
-    ]}>
+    <ol
+      class={[
+        "flex",
+        @orientation == :horizontal && "items-start gap-2",
+        @orientation == :vertical && "flex-col gap-4",
+        @class
+      ]}
+      {@rest}
+    >
       <li
         :for={{step, index} <- @steps}
         data-step={index}
@@ -85,7 +91,7 @@ defmodule FrappeUILive.Components.Stepper do
       type="button"
       phx-click={@on_go}
       phx-value-step={@index}
-      aria-label={"Voltar para #{@label}"}
+      aria-label={Texts.t(:go_back_to, label: @label)}
       class={marker_class(:done)}
     >
       <Icon.icon name="check" class="size-4" />

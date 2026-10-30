@@ -2,6 +2,8 @@ defmodule FrappeUILive.Components.SidebarRail do
   @moduledoc "Trilho estreito só com ícones (rótulo acessível e `title`); ativo por assign."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.NavItem
 
   attr :active, :string, default: nil
@@ -37,7 +39,7 @@ defmodule FrappeUILive.Components.SidebarRail do
       {@rest}
     >
       <div :if={@header != []} class="mb-2">{render_slot(@header)}</div>
-      <nav aria-label="Principal" class="flex flex-1 flex-col items-center gap-1">
+      <nav aria-label={Texts.t(:main_nav)} class="flex flex-1 flex-col items-center gap-1">
         <NavItem.nav_item
           :for={item <- @item}
           item={item}

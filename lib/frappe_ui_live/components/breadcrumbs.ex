@@ -2,6 +2,8 @@ defmodule FrappeUILive.Components.Breadcrumbs do
   @moduledoc "Trilha de navegação; o último item é a página atual (`aria-current=\"page\"`)."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.Icon
 
   attr :class, :any, default: nil
@@ -18,7 +20,7 @@ defmodule FrappeUILive.Components.Breadcrumbs do
     assigns = assign(assigns, :last_index, length(assigns.item) - 1)
 
     ~H"""
-    <nav aria-label="Trilha de navegação" class={@class} {@rest}>
+    <nav aria-label={Texts.t(:breadcrumbs)} class={@class} {@rest}>
       <ol class="fui-text-base flex items-center gap-1">
         <%= for {item, index} <- Enum.with_index(@item) do %>
           <li class="flex items-center gap-1">

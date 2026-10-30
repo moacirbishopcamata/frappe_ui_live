@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Proportion do
   @moduledoc "Gráficos de proporção: barra percentual empilhada e funil."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Frame, Legend, Scale}
 
   attr :data, :list, required: true, doc: "[%{label, value}]"
@@ -27,7 +29,7 @@ defmodule FrappeUILive.Charts.Proportion do
         <div
           class="flex h-3 w-full overflow-hidden rounded-full"
           role="img"
-          aria-label="Barra percentual"
+          aria-label={Texts.t(:chart_percentage)}
         >
           <div
             :for={part <- @parts}
@@ -76,7 +78,12 @@ defmodule FrappeUILive.Charts.Proportion do
     ~H"""
     <div class={@class} {@rest}>
       <Frame.chart_frame state={@state} error={@error} height={@height}>
-        <svg viewBox={"0 0 600 #{@height}"} class="w-full" role="img" aria-label="Gráfico de funil">
+        <svg
+          viewBox={"0 0 600 #{@height}"}
+          class="w-full"
+          role="img"
+          aria-label={Texts.t(:chart_funnel)}
+        >
           <g :for={shape <- @shapes} data-step>
             <polygon points={shape.points} style={"fill: #{shape.color}"} class="hover:opacity-80">
               <title>{shape.label}: {shape.value} ({shape.percent}% da etapa inicial)</title>

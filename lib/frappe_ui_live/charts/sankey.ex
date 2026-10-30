@@ -5,6 +5,8 @@ defmodule FrappeUILive.Charts.Sankey do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Charts.{Frame, Scale}
 
   @width 600
@@ -38,7 +40,7 @@ defmodule FrappeUILive.Charts.Sankey do
           viewBox={"0 0 #{@width} #{@height}"}
           class="w-full"
           role="img"
-          aria-label="Diagrama de Sankey"
+          aria-label={Texts.t(:chart_sankey)}
         >
           <path
             :for={link <- @layout.links}

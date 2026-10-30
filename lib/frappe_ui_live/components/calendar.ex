@@ -8,6 +8,8 @@ defmodule FrappeUILive.Components.Calendar do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Calendar, as: Dates
   alias FrappeUILive.Components.{Badge, Icon}
 
@@ -24,6 +26,7 @@ defmodule FrappeUILive.Components.Calendar do
   attr :on_today, :string, default: nil
   attr :on_select, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def calendar(assigns) do
     today = Dates.to_date(assigns.today) || Date.utc_today()
@@ -39,7 +42,7 @@ defmodule FrappeUILive.Components.Calendar do
       |> assign(:max_events, @max_events)
 
     ~H"""
-    <div id={@id} class={["border-outline-gray-2 bg-surface-base rounded-6 border", @class]}>
+    <div id={@id} class={["border-outline-gray-2 bg-surface-base rounded-6 border", @class]} {@rest}>
       <div class="border-outline-gray-2 flex items-center justify-between border-b px-3 py-2">
         <span class="fui-text-lg-semibold text-ink-gray-9" aria-live="polite">{Dates.label(
           @month_date
@@ -50,16 +53,16 @@ defmodule FrappeUILive.Components.Calendar do
             type="button"
             phx-click={@on_today}
             class="fui-text-sm text-ink-gray-7 hover:bg-surface-gray-2 rounded-4 px-2 py-1"
-          >Hoje</button>
+          >{Texts.t(:today)}</button>
           <button
             type="button"
-            aria-label="Mês anterior"
+            aria-label={Texts.t(:prev_month)}
             phx-click={@on_prev}
             class="hover:bg-surface-gray-2 rounded-4 p-1.5"
           ><Icon.icon name="chevron-left" class="size-4" /></button>
           <button
             type="button"
-            aria-label="Próximo mês"
+            aria-label={Texts.t(:next_month)}
             phx-click={@on_next}
             class="hover:bg-surface-gray-2 rounded-4 p-1.5"
           ><Icon.icon name="chevron-right" class="size-4" /></button>

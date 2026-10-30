@@ -7,6 +7,8 @@ defmodule FrappeUILive.Components.Tree do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Icon, Sortable}
 
   attr :id, :string, required: true
@@ -17,6 +19,7 @@ defmodule FrappeUILive.Components.Tree do
   attr :on_select, :string, default: nil
   attr :on_drop, :string, default: nil
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def tree(assigns) do
     assigns = assign(assigns, :open, MapSet.new(assigns.expanded, &to_string/1))
@@ -27,6 +30,7 @@ defmodule FrappeUILive.Components.Tree do
       role="tree"
       {Sortable.root_attrs(@on_drop)}
       class={["fui-text-base", @class]}
+      {@rest}
     >
       <.branch
         :for={node <- @nodes}
@@ -80,7 +84,7 @@ defmodule FrappeUILive.Components.Tree do
           type="button"
           phx-click={@tree.on_toggle}
           phx-value-id={@node_id}
-          aria-label={if @expanded?, do: "Recolher", else: "Expandir"}
+          aria-label={if @expanded?, do: Texts.t(:collapse), else: Texts.t(:expand)}
           class="hover:bg-surface-gray-3 rounded-3 p-0.5"
         >
           <Icon.icon name={if @expanded?, do: "chevron-down", else: "chevron-right"} class="size-4" />

@@ -10,17 +10,22 @@ defmodule FrappeUILive.Components.FileUploader do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{ErrorMessage, Icon, Progress}
 
   attr :upload, Phoenix.LiveView.UploadConfig, required: true
-  attr :label, :string, default: "Arraste arquivos ou clique para enviar"
+  attr :label, :string, default: nil
   attr :on_cancel, :string, default: "cancel-upload", doc: "evento do servidor; recebe `ref`"
   attr :class, :any, default: nil
+  attr :rest, :global
   slot :hint
 
   def file_uploader(assigns) do
+    assigns = assign(assigns, :label, assigns.label || Texts.t(:upload_label))
+
     ~H"""
-    <div class={@class}>
+    <div class={@class} {@rest}>
       <label
         phx-drop-target={@upload.ref}
         class="border-outline-gray-3 bg-surface-gray-1 hover:bg-surface-gray-2 rounded-6 focus-within:focus-ring flex cursor-pointer flex-col items-center gap-1.5 border border-dashed px-4 py-6 text-center transition-colors"
@@ -49,7 +54,7 @@ defmodule FrappeUILive.Components.FileUploader do
               type="button"
               phx-click={@on_cancel}
               phx-value-ref={entry.ref}
-              aria-label={"Cancelar #{entry.client_name}"}
+              aria-label={Texts.t(:upload_cancel, name: entry.client_name)}
               class="text-ink-gray-5 hover:text-ink-gray-8"
             >
               <Icon.icon name="x" class="size-4" />
@@ -68,9 +73,9 @@ defmodule FrappeUILive.Components.FileUploader do
 
   @doc "Mensagem em português para os erros de upload do LiveView."
   @spec error_message(atom() | term()) :: String.t()
-  def error_message(:too_large), do: "Arquivo maior que o permitido."
-  def error_message(:not_accepted), do: "Tipo de arquivo não aceito."
-  def error_message(:too_many_files), do: "Há arquivos demais selecionados."
-  def error_message(:external_client_failure), do: "Falha no envio. Tente novamente."
-  def error_message(other), do: "Erro no envio (#{inspect(other)})."
+  def error_message(:too_large), do: Texts.t(:upload_too_large)
+  def error_message(:not_accepted), do: Texts.t(:upload_not_accepted)
+  def error_message(:too_many_files), do: Texts.t(:upload_too_many_files)
+  def error_message(:external_client_failure), do: Texts.t(:upload_failure)
+  def error_message(other), do: Texts.t(:upload_error, reason: inspect(other))
 end

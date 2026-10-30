@@ -5,6 +5,8 @@ defmodule FrappeUILive.Components.Sidebar do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.NavItem
 
   attr :active, :string, default: nil, doc: "id do item ativo (precisa existir se informado)"
@@ -43,7 +45,7 @@ defmodule FrappeUILive.Components.Sidebar do
       {@rest}
     >
       <div :if={@header != []} class="px-3 py-3">{render_slot(@header)}</div>
-      <nav aria-label="Principal" class="flex-1 space-y-0.5 overflow-y-auto px-2">
+      <nav aria-label={Texts.t(:main_nav)} class="flex-1 space-y-0.5 overflow-y-auto px-2">
         <NavItem.nav_item
           :for={item <- @item}
           item={item}

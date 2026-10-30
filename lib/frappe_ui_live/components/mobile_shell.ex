@@ -2,6 +2,8 @@ defmodule FrappeUILive.Components.MobileShell do
   @moduledoc "Casca para telas estreitas: cabeçalho, conteúdo rolável e navegação inferior (`:nav`)."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.NavItem
 
   attr :active, :string, default: nil, doc: "id da aba inferior ativa"
@@ -36,7 +38,7 @@ defmodule FrappeUILive.Components.MobileShell do
       <main class="min-h-0 flex-1 overflow-auto">{render_slot(@inner_block)}</main>
       <nav
         :if={@nav != []}
-        aria-label="Principal"
+        aria-label={Texts.t(:main_nav)}
         class="border-outline-gray-2 bg-surface-base flex border-t pb-[env(safe-area-inset-bottom)]"
       >
         <NavItem.nav_item

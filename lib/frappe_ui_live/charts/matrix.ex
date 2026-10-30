@@ -2,6 +2,8 @@ defmodule FrappeUILive.Charts.Matrix do
   @moduledoc "Mapas de calor: matriz linhas × colunas e calendário (estilo contribuições)."
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Calendar
   alias FrappeUILive.Charts.{Frame, Scale}
   alias FrappeUILive.Contract
@@ -48,7 +50,12 @@ defmodule FrappeUILive.Charts.Matrix do
     ~H"""
     <div class={@class} {@rest}>
       <Frame.chart_frame state={@state} error={@error}>
-        <svg viewBox={"0 0 #{@width} #{@height}"} class="w-full" role="img" aria-label="Mapa de calor">
+        <svg
+          viewBox={"0 0 #{@width} #{@height}"}
+          class="w-full"
+          role="img"
+          aria-label={Texts.t(:chart_heatmap)}
+        >
           <g font-size="11" style="fill: var(--ink-gray-5)">
             <text
               :for={{col, i} <- Enum.with_index(@cols)}
@@ -133,7 +140,7 @@ defmodule FrappeUILive.Charts.Matrix do
           viewBox={"0 0 #{@width} 100"}
           class="w-full"
           role="img"
-          aria-label="Calendário de atividade"
+          aria-label={Texts.t(:chart_calendar)}
         >
           <rect
             :for={day <- @days}

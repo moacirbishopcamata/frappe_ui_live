@@ -12,6 +12,7 @@ defmodule FrappeUILive.Components.MenuItem do
     doc: "mapa do slot: label, icon, click, navigate, patch, href, theme"
 
   attr :popover_id, :string, required: true
+  attr :rest, :global
 
   def menu_item(assigns) do
     assigns =
@@ -20,7 +21,7 @@ defmodule FrappeUILive.Components.MenuItem do
       |> assign(:classes, classes(Map.get(assigns.item, :theme, :gray)))
 
     ~H"""
-    <Action.action item={@item} role="menuitem" popover_id={@popover_id} class={@classes}>
+    <Action.action item={@item} role="menuitem" popover_id={@popover_id} class={@classes} {@rest}>
       <Icon.icon :if={@icon} name={@icon} class="size-4" />{@item.label}
     </Action.action>
     """

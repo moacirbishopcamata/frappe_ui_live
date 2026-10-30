@@ -5,6 +5,8 @@ defmodule FrappeUILive.Components.Password do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Icon, InputStyle, TextInput}
   alias FrappeUILive.Field
   alias Phoenix.LiveView.JS
@@ -42,7 +44,7 @@ defmodule FrappeUILive.Components.Password do
       />
       <button
         type="button"
-        aria-label="Mostrar ou ocultar a senha"
+        aria-label={Texts.t(:toggle_password)}
         disabled={@disabled}
         phx-click={JS.toggle_attribute({"type", "password", "text"}, to: "##{@id}")}
         class="text-ink-gray-5 hover:text-ink-gray-8 absolute top-1/2 right-1.5 -translate-y-1/2"

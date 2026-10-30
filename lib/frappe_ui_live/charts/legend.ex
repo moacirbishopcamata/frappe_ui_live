@@ -6,12 +6,14 @@ defmodule FrappeUILive.Charts.Legend do
 
   attr :items, :list, required: true, doc: "[%{label: String, color: String}]"
   attr :class, :any, default: nil
+  attr :rest, :global
 
   def chart_legend(assigns) do
     ~H"""
     <ul
       :if={@items != []}
       class={["fui-text-sm text-ink-gray-6 flex flex-wrap gap-x-4 gap-y-1", @class]}
+      {@rest}
     >
       <li :for={item <- @items} class="flex items-center gap-1.5">
         <span class="size-2.5 rounded-full" style={"background: #{item.color}"}></span>{item.label}

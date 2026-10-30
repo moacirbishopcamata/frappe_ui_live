@@ -5,6 +5,8 @@ defmodule FrappeUILive.Charts.Frame do
   """
   use Phoenix.Component
 
+  alias FrappeUILive.Texts
+
   alias FrappeUILive.Components.{Alert, Skeleton}
 
   @doc "Estado a partir dos atributos de um gráfico (erro vence carregamento, que vence vazio)."
@@ -16,11 +18,13 @@ defmodule FrappeUILive.Charts.Frame do
 
   attr :state, :atom, required: true, values: ~w(ready loading empty error)a
   attr :error, :string, default: nil
-  attr :empty_text, :string, default: "Sem dados para exibir."
+  attr :empty_text, :string, default: nil
   attr :height, :integer, default: 240
   slot :inner_block, required: true
 
   def chart_frame(assigns) do
+    assigns = assign(assigns, :empty_text, assigns.empty_text || Texts.t(:chart_empty))
+
     ~H"""
     <div :if={@state == :ready}>{render_slot(@inner_block)}</div>
     <div :if={@state == :loading} data-chart-state="loading" aria-busy="true">
@@ -34,7 +38,7 @@ defmodule FrappeUILive.Charts.Frame do
     >
       {@empty_text}
     </div>
-    <Alert.alert :if={@state == :error} theme={:red} title="Não foi possível carregar o gráfico">
+    <Alert.alert :if={@state == :error} theme={:red} title={Texts.t(:chart_error_title)}>
       {@error}
     </Alert.alert>
     """
