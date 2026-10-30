@@ -20,6 +20,8 @@ defmodule FrappeUILive.Components.SettingsDialog do
     attr :label, :string, required: true
     attr :icon, :string
     attr :patch, :string
+    attr :navigate, :string
+    attr :href, :string
     attr :click, :any
   end
 

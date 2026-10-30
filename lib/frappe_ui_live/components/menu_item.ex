@@ -5,7 +5,7 @@ defmodule FrappeUILive.Components.MenuItem do
   """
   use Phoenix.Component
 
-  alias FrappeUILive.Components.Icon
+  alias FrappeUILive.Components.{Action, Icon}
 
   attr :item, :map,
     required: true,
@@ -14,32 +14,15 @@ defmodule FrappeUILive.Components.MenuItem do
   attr :popover_id, :string, required: true
 
   def menu_item(assigns) do
-    item = assigns.item
-    nav = Map.take(item, [:navigate, :patch, :href])
-
     assigns =
       assigns
-      |> assign(:nav, nav)
-      |> assign(:link?, nav != %{})
-      |> assign(:click, Map.get(item, :click))
-      |> assign(:icon, Map.get(item, :icon))
-      |> assign(:classes, classes(Map.get(item, :theme, :gray)))
+      |> assign(:icon, Map.get(assigns.item, :icon))
+      |> assign(:classes, classes(Map.get(assigns.item, :theme, :gray)))
 
     ~H"""
-    <.link :if={@link?} role="menuitem" class={@classes} {@nav}>
+    <Action.action item={@item} role="menuitem" popover_id={@popover_id} class={@classes}>
       <Icon.icon :if={@icon} name={@icon} class="size-4" />{@item.label}
-    </.link>
-    <button
-      :if={!@link?}
-      type="button"
-      role="menuitem"
-      popovertarget={@popover_id}
-      popovertargetaction="hide"
-      phx-click={@click}
-      class={@classes}
-    >
-      <Icon.icon :if={@icon} name={@icon} class="size-4" />{@item.label}
-    </button>
+    </Action.action>
     """
   end
 

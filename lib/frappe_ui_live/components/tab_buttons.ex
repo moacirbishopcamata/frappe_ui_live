@@ -14,6 +14,7 @@ defmodule FrappeUILive.Components.TabButtons do
     attr :icon, :string
     attr :patch, :string
     attr :navigate, :string
+    attr :href, :string
     attr :click, :any
   end
 

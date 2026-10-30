@@ -162,11 +162,11 @@ importantes). **Já corrigidos** (com testes de regressão):
 - `id` obrigatório com erro uniforme e validação central (`Anchor`, `Dialog`, `Field.require_id!/2`);
 - protocolo de DOM do Sortable encapsulado, nome do hook derivado e Tree só reordena entre irmãos;
 - Markdown (open-redirect `/\`, ordem de ênfase/links, `to_safe/1`) e Toast (contêiner `phx-update=ignore`, paleta única);
-- `use FrappeUILive` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`.
+- `use FrappeUILive` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`;
+- item de navegação unificado: `Action` decide link ou botão (`NavItem`, `MenuItem`, `Tabs`) e os slots usam o mesmo vocabulário.
 
-**Pendentes** (tasks 17.6, 17.8 e 17.9 do OpenSpec): unificar o item de navegação (link ou botão) entre
-`Tabs`/`NavItem`/`MenuItem`, mover `Spec` para fora do pacote, `rest` global uniforme, textos fixos em português sem
-ponto de extensão e semântica de `selected`/`expanded`.
+**Pendentes** (tasks 17.8 e 17.9 do OpenSpec): mover `Spec` para fora do pacote, `rest` global uniforme, textos
+fixos em português sem ponto de extensão e semântica de `selected`/`expanded`.
 
 ## Licença
 

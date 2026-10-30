@@ -372,6 +372,7 @@ defmodule FrappeUILive.Components do
 
   # Blocos de construção públicos que não são componentes de catálogo (sem exemplo isolado).
   @internal [
+    {C.Action, :action},
     {C.NavItem, :nav_item},
     {C.MenuItem, :menu_item},
     {C.OptionList, :option_list},

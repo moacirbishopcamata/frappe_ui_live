@@ -1,12 +1,16 @@
 defmodule FrappeUILive.Components.NavItem do
   @moduledoc """
-  Item de navegação com ícone e rótulo (Sidebar, SidebarRail, TabButtons,
-  MobileShell). Navega por `patch`/`navigate`/`href` ou dispara `click`. O
-  estado ativo é decidido por quem chama (assign do servidor).
+  Item de navegação com ícone e rótulo (Tabs, TabButtons, Sidebar, SidebarRail,
+  SettingsDialog, MobileShell). Navega por `patch`/`navigate`/`href` ou dispara `click`
+  (evento ou `%JS{}`) — a decisão "link ou botão" é de `FrappeUILive.Components.Action`.
+  O estado ativo é decidido por quem chama (assign do servidor).
+
+  Vocabulário **único** dos slots de item (todos os componentes de navegação o aceitam):
+  `id`, `label`, `icon`, `patch`, `navigate`, `href`, `click`.
   """
   use Phoenix.Component
 
-  alias FrappeUILive.Components.Icon
+  alias FrappeUILive.Components.{Action, Icon}
 
   @doc """
   Item ativo seguro: devolve `active` se for um dos `ids`, senão `nil` (nenhum ativo).
@@ -23,43 +27,28 @@ defmodule FrappeUILive.Components.NavItem do
   attr :icon_only, :boolean, default: false, doc: "esconde o rótulo (continua acessível)"
   attr :stacked, :boolean, default: false, doc: "ícone acima do rótulo"
   attr :role, :string, default: nil
+  attr :rest, :global, doc: "ex.: aria-controls"
 
   def nav_item(assigns) do
-    item = assigns.item
-    nav = Map.take(item, [:patch, :navigate, :href])
-
     assigns =
       assigns
-      |> assign(:nav, nav)
-      |> assign(:link?, nav != %{})
-      |> assign(:click, Map.get(item, :click))
-      |> assign(:icon, Map.get(item, :icon))
+      |> assign(:icon, Map.get(assigns.item, :icon))
       |> assign(:aria_current, if(assigns.active, do: "page"))
+      |> assign(:aria_selected, assigns.role == "tab" && to_string(assigns.active))
+      |> assign(:title, assigns.icon_only && assigns.item.label)
 
     ~H"""
-    <.link
-      :if={@link?}
+    <Action.action
+      item={@item}
       role={@role}
       aria-current={@aria_current}
-      aria-selected={@role == "tab" && to_string(@active)}
-      title={@icon_only && @item.label}
+      aria-selected={@aria_selected}
+      title={@title}
       class={[classes(@stacked), @class]}
-      {@nav}
+      {@rest}
     >
       <.inner item={@item} icon={@icon} icon_only={@icon_only} />
-    </.link>
-    <button
-      :if={!@link?}
-      type="button"
-      role={@role}
-      aria-current={@aria_current}
-      aria-selected={@role == "tab" && to_string(@active)}
-      title={@icon_only && @item.label}
-      phx-click={@click}
-      class={[classes(@stacked), @class]}
-    >
-      <.inner item={@item} icon={@icon} icon_only={@icon_only} />
-    </button>
+    </Action.action>
     """
   end
 

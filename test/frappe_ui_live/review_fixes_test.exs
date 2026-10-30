@@ -127,7 +127,11 @@ defmodule FrappeUILive.ReviewFixesTest do
 
     test "show_dialog/hide_dialog validam o id (vira seletor)" do
       assert_raise ArgumentError, ~r/dialog id inválido/, fn -> Dialog.show_dialog("a b") end
-      assert_raise ArgumentError, ~r/dialog id inválido/, fn -> Dialog.hide_dialog(List.first([])) end
+
+      assert_raise ArgumentError, ~r/dialog id inválido/, fn ->
+        Dialog.hide_dialog(List.first([]))
+      end
+
       assert %Phoenix.LiveView.JS{} = Dialog.show_dialog("ok")
     end
 
@@ -311,6 +315,111 @@ end")
       assert FrappeUILive.Contract.require!(3, 1..5, "n") == 3
       assert FrappeUILive.Contract.require!(:a, MapSet.new([:a]), "n") == :a
       assert_raise ArgumentError, fn -> FrappeUILive.Contract.require!(9, 1..5, "n") end
+    end
+  end
+
+  describe "I-7: item de navegação unificado (Action)" do
+    alias FrappeUILive.Components.{Action, MenuItem, SettingsDialog, TabButtons, Tabs}
+    alias Phoenix.LiveView.JS
+
+    test "Action decide link ou botão em um só lugar" do
+      assert Action.link_attrs(%{patch: "/a", label: "x", click: "c"}) == %{patch: "/a"}
+      assert Action.link?(%{navigate: "/x"})
+      assert Action.link?(%{href: "https://a.b"})
+      refute Action.link?(%{click: "evento", label: "x"})
+    end
+
+    test "link, botão com evento e botão com comando JS" do
+      assigns = %{js: JS.push("outro")}
+
+      link =
+        rendered_to_string(
+          ~H|<Action.action item={%{navigate: "/x"}} class="c">ir</Action.action>|
+        )
+
+      assert html_attr(link, "a", "href") == "/x"
+      refute has?(link, "button")
+
+      evento = rendered_to_string(~H|<Action.action item={%{click: "salvar"}}>go</Action.action>|)
+      assert html_attr(evento, "button", "phx-click") == "salvar"
+      assert html_attr(evento, "button", "type") == "button"
+
+      js = rendered_to_string(~H|<Action.action item={%{click: @js}}>go</Action.action>|)
+      assert html_attr(js, "button", "phx-click") =~ "outro"
+    end
+
+    test "popover_id só existe nos botões e fecha o popover" do
+      assigns = %{}
+
+      button =
+        rendered_to_string(
+          ~H|<Action.action item={%{click: "a"}} popover_id="menu">x</Action.action>|
+        )
+
+      assert html_attr(button, "button", "popovertarget") == "menu"
+      assert html_attr(button, "button", "popovertargetaction") == "hide"
+
+      link =
+        rendered_to_string(
+          ~H|<Action.action item={%{patch: "/a"}} popover_id="menu">x</Action.action>|
+        )
+
+      refute html_attr(link, "a", "popovertarget")
+    end
+
+    test "o mesmo vocabulário vale em Tabs, TabButtons, SettingsDialog e MenuItem (inclui href)" do
+      assigns = %{js: JS.push("ir")}
+
+      tabs =
+        rendered_to_string(~H"""
+        <Tabs.tabs id="t" active="a">
+          <:tab id="a" label="A" href="https://a.b" />
+          <:tab id="b" label="B" click={@js} />
+        </Tabs.tabs>
+        """)
+
+      assert html_attr(tabs, "a[role=tab]", "href") == "https://a.b"
+      assert html_attr(tabs, "button[role=tab]", "phx-click") =~ "ir"
+      assert html_attr(tabs, "[aria-selected=true]", "aria-controls") == "t-panel"
+
+      tb =
+        rendered_to_string(
+          ~H|<TabButtons.tab_buttons active="a"><:button id="a" label="A" href="/x" /></TabButtons.tab_buttons>|
+        )
+
+      assert html_attr(tb, "a[role=tab]", "href") == "/x"
+
+      sd = rendered_to_string(~H|<SettingsDialog.settings_dialog id="s" active="a">
+  <:tab id="a" label="A" navigate="/conta" />x
+</SettingsDialog.settings_dialog>|)
+      assert html_attr(sd, "a[href='/conta']", "href") == "/conta"
+
+      menu =
+        rendered_to_string(
+          ~H|<MenuItem.menu_item item={%{label: "Sair", click: "sair"}} popover_id="p" />|
+        )
+
+      assert html_attr(menu, "button[role=menuitem]", "phx-click") == "sair"
+    end
+
+    test "NavItem repassa atributos extras (aria-controls) e mantém aria-selected só em abas" do
+      assigns = %{}
+      tab = rendered_to_string(~H|<FrappeUILive.Components.NavItem.nav_item
+  item={%{label: "A", click: "a"}}
+  role="tab"
+  active
+  aria-controls="p"
+/>|)
+      assert html_attr(tab, "button", "aria-controls") == "p"
+      assert html_attr(tab, "button", "aria-selected") == "true"
+
+      plain =
+        rendered_to_string(
+          ~H|<FrappeUILive.Components.NavItem.nav_item item={%{label: "A", click: "a"}} active />|
+        )
+
+      assert html_attr(plain, "button", "aria-current") == "page"
+      refute html_attr(plain, "button", "aria-selected")
     end
   end
 end
