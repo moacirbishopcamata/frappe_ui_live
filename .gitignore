@@ -6,4 +6,6 @@
 /cover/
 erl_crash.dump
 .DS_Store
-.claude/
+.claude/worktrees/
+.claude/settings.local.json
+.claude/agent-memory-local/
