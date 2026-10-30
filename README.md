@@ -169,7 +169,16 @@ sobre o `avatar`, com os mesmos `size`/`shape`. `options` repassa parâmetros da
 depender de terceiros hospede a API e configure `config :frappe_ui_live, dice_bear_base_url: "https://avatars.meuapp.com/10.x"`.
 A API pública é gratuita **só para uso não comercial**, sem garantia de disponibilidade e com limite por segundo; em produção hospede a
 sua ([guia](https://www.dicebear.com/recipes/self-host-the-http-api/)). Cada estilo tem licença própria (CC BY 4.0 exige atribuição; veja
-<https://www.dicebear.com/licenses/>). Com CSP, libere o host em `img-src`. As imagens carregam sob demanda e sem `Referer` (também no `avatar` comum).
+<https://www.dicebear.com/licenses/>). Com CSP, libere o host em `img-src`.
+
+Opções do núcleo são atributos tipados, validados nos intervalos da documentação: `flip`, `rotate` (-360..360), `scale` (0..10),
+`border_radius` (0..50), `translate_x`/`translate_y`, `background_color` (hex) e `tags`; as do estilo (`hairVariant`...) vão em `options`.
+`idRandomization`, `fontFamily`, `fontWeight` e `title` só existem em instância própria e são recusados na API pública.
+**Receita "avatar placeholder"**: `image={@user.photo_url}` mostra a foto quando existe e o avatar gerado quando não (decidido no
+servidor, sem `onerror` inline, compatível com CSP); para iniciais use `seed={DiceBear.initials(@user.name)} style="initials"`.
+A mesma `seed` + `style` dá sempre o mesmo avatar (FNV-1a + Mulberry32), mas a seed não serve como segredo.
+Gerar localmente (sem requisição externa) exigiria a biblioteca JS `@dicebear/core` (Node 22+, ESM puro), uma dependência npm que este
+projeto não tem; a alternativa suportada é hospedar a API. As imagens carregam sob demanda e sem `Referer` (também no `avatar` comum).
 
 ## Ícones Lucide
 

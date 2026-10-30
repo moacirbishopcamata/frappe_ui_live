@@ -34,9 +34,24 @@ defmodule FrappeUILive.Components.DiceBearAvatar do
   attr :size, :atom, default: :md, values: ~w(xs sm md lg xl 2xl 3xl)a
   attr :shape, :atom, default: :circle, values: ~w(circle square)a
 
+  attr :image, :string,
+    default: nil,
+    doc:
+      "foto real do usuário; quando presente ela é exibida no lugar do avatar gerado (placeholder)"
+
+  attr :flip, :string, default: nil, doc: "none | horizontal | vertical | both"
+  attr :rotate, :any, default: nil, doc: "-360 a 360 graus"
+  attr :scale, :any, default: nil, doc: "0 a 10 (1 = tamanho original)"
+  attr :border_radius, :any, default: nil, doc: "0 a 50 (% do canvas; 50 = círculo)"
+  attr :translate_x, :any, default: nil, doc: "-1000 a 1000 (% da largura)"
+  attr :translate_y, :any, default: nil, doc: "-1000 a 1000 (% da altura)"
+  attr :background_color, :any, default: nil, doc: "hex (#RRGGBB), texto ou lista"
+  attr :tags, :any, default: nil, doc: "filtro de variantes, ex.: \"animation\""
+
   attr :options, :map,
     default: %{},
-    doc: "parâmetros da API (backgroundColor, borderRadius, flip, scale...); listas viram a,b"
+    doc:
+      "outros parâmetros da API, inclusive os do estilo (hairVariant...); listas viram a,b. Os atributos acima têm prioridade"
 
   attr :base_url, :string, default: nil, doc: "servidor DiceBear (padrão: config ou API pública)"
   attr :class, :any, default: nil
@@ -45,8 +60,20 @@ defmodule FrappeUILive.Components.DiceBearAvatar do
   def dice_bear_avatar(assigns) do
     config = if assigns.base_url, do: [base_url: assigns.base_url], else: []
 
+    typed =
+      for key <-
+            ~w(flip rotate scale border_radius translate_x translate_y background_color tags)a,
+          assigns[key] != nil,
+          do: {key, assigns[key]}
+
+    options = Map.merge(assigns.options, DiceBear.options(typed))
+
     assigns =
-      assign(assigns, :url, DiceBear.url(assigns.style, assigns.seed, assigns.options, config))
+      assign(
+        assigns,
+        :url,
+        assigns.image || DiceBear.url(assigns.style, assigns.seed, options, config)
+      )
 
     ~H"""
     <Avatar.avatar

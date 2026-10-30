@@ -26,6 +26,12 @@ defmodule FrappeUILive.DiceBear do
   Cada estilo tem a licença do seu criador (CC BY 4.0 exige atribuição, CC0, MIT...);
   confira em <https://www.dicebear.com/licenses/> antes de publicar.
 
+  ## Determinismo
+
+  A `seed` passa por um hash (FNV-1a) que inicia um gerador pseudoaleatório
+  (Mulberry32): a mesma `style` + `seed` + opções dá sempre o mesmo avatar. Não é
+  criptográfico: serve para avatar estável, nunca para derivar segredo.
+
   ## Opções
 
   `opts` vira a query string. Comuns: `flip` (`none|horizontal|vertical|both`),
@@ -33,7 +39,14 @@ defmodule FrappeUILive.DiceBear do
   `backgroundColor` (lista de hex), `backgroundColorFill`; cada estilo tem as suas
   (`hairVariant`, ...). `idRandomization`, `fontFamily`, `fontWeight` e `title` só
   funcionam em instância própria. Raster (`png`, `jpg`, `webp`, `avif`) vai até 256 px
-  na API pública.
+  na API pública. `options/1` converte e valida as opções do núcleo em `snake_case`
+  (`border_radius: 50`) para os parâmetros da API.
+
+  ## Receita "avatar placeholder"
+
+  Para quem ainda não enviou foto, gere o avatar de uma seed estável (id do usuário,
+  `seed/1`) ou, no estilo `initials`, das iniciais do nome (`initials/1`). O componente
+  `DiceBearAvatar` já faz a troca no servidor (`image` presente = foto real).
   """
 
   alias FrappeUILive.Contract
@@ -51,6 +64,28 @@ defmodule FrappeUILive.DiceBear do
              constellation landscape planets)
 
   @formats ~w(svg png jpg webp avif)
+
+  # Só funcionam em instância própria (a API pública os exclui).
+  @self_host_only ~w(idRandomization fontFamily fontWeight title)
+  @public_host "api.dicebear.com"
+
+  @flips ~w(none horizontal vertical both)
+  @fills ~w(solid linear radial)
+  @hex ~r/\A(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\z/
+
+  # opção em snake_case -> {parâmetro da API, validador}
+  @typed %{
+    flip: {"flip", {:enum, @flips}},
+    rotate: {"rotate", {:range, -360, 360}},
+    scale: {"scale", {:range, 0, 10}},
+    border_radius: {"borderRadius", {:range, 0, 50}},
+    translate_x: {"translateX", {:range, -1000, 1000}},
+    translate_y: {"translateY", {:range, -1000, 1000}},
+    background_color: {"backgroundColor", :colors},
+    background_color_fill: {"backgroundColorFill", {:enum, @fills}},
+    background_color_angle: {"backgroundColorAngle", {:range, -360, 360}},
+    tags: {"tags", :tags}
+  }
   @key ~r/\A[a-zA-Z][a-zA-Z0-9]*\z/
   @style_name ~r/\A[a-z][a-z0-9]*(-[a-z0-9]+)*\z/
 
@@ -97,6 +132,8 @@ defmodule FrappeUILive.DiceBear do
     base = Keyword.get_lazy(config, :base_url, &base_url/0)
     ensure_base!(base, "dice_bear base_url")
 
+    guard_public_host!(base, opts)
+
     query =
       opts
       |> Enum.map(fn {key, value} -> {option_key!(key), option_value!(key, value)} end)
@@ -107,6 +144,50 @@ defmodule FrappeUILive.DiceBear do
 
     "#{String.trim_trailing(base, "/")}/#{style}/#{format}?#{query}"
   end
+
+  @doc """
+  Opções do núcleo em `snake_case` -> parâmetros da API, validadas nos intervalos da
+  documentação (`flip`, `rotate` -360..360, `scale` 0..10, `border_radius` 0..50,
+  `translate_x`/`translate_y` -1000..1000, `background_color` (hex, com ou sem `#`; texto
+  ou lista), `background_color_fill`, `background_color_angle`, `tags`). Chave
+  desconhecida ou valor fora do contrato falha alto.
+
+      iex> FrappeUILive.DiceBear.options(border_radius: 50, background_color: ["#b6e3f4"])
+      %{"backgroundColor" => ["b6e3f4"], "borderRadius" => 50}
+  """
+  @spec options(keyword() | map()) :: %{String.t() => term()}
+  def options(typed) do
+    Map.new(typed, fn {key, value} ->
+      case Map.fetch(@typed, key) do
+        {:ok, {param, check}} ->
+          {param, check!(key, check, value)}
+
+        :error ->
+          raise ArgumentError,
+                "dice_bear option #{inspect(key)}: desconhecida; esperado uma de #{inspect(Map.keys(@typed))}"
+      end
+    end)
+  end
+
+  @doc """
+  Iniciais de um nome (até duas letras maiúsculas): `"Ana Souza"` -> `"AS"`,
+  `"ana"` -> `"A"`, sem letras -> `nil`. Para `style="initials"` na receita de placeholder.
+  """
+  @spec initials(term()) :: String.t() | nil
+  def initials(name) when is_binary(name) do
+    letters =
+      name
+      |> String.split(~r/[^\p{L}\p{N}]+/u, trim: true)
+      |> Enum.map(&String.first/1)
+
+    case letters do
+      [] -> nil
+      [one] -> String.upcase(one)
+      [first | rest] -> String.upcase(first <> List.last(rest))
+    end
+  end
+
+  def initials(_name), do: nil
 
   @doc """
   *Seed* opaca e estável para um identificador (id, e-mail...): 16 hex do SHA-256.
@@ -130,6 +211,60 @@ defmodule FrappeUILive.DiceBear do
   defp valid_base?("http://" <> _), do: true
   defp valid_base?("https://" <> _), do: true
   defp valid_base?(_), do: false
+
+  defp guard_public_host!(base, opts) do
+    host = base |> URI.parse() |> Map.get(:host)
+
+    if host == @public_host do
+      bad = opts |> Map.keys() |> Enum.map(&to_string/1) |> Enum.filter(&(&1 in @self_host_only))
+
+      Contract.ensure!(
+        bad == [],
+        "dice_bear option #{Enum.join(bad, ", ")}: não funciona na API pública (#{@public_host}); só em instância própria (dice_bear_base_url)"
+      )
+    end
+  end
+
+  defp check!(key, {:enum, values}, value) do
+    Contract.require!(to_string(value), values, "dice_bear #{key}")
+  end
+
+  defp check!(key, {:range, min, max}, value) do
+    Contract.ensure!(
+      is_number(value) and value >= min and value <= max,
+      "dice_bear #{key}: valor #{inspect(value)} fora do contrato; esperado número de #{min} a #{max}"
+    )
+
+    value
+  end
+
+  defp check!(key, :colors, value) do
+    colors = value |> List.wrap() |> Enum.map(&hex!(key, &1))
+    Contract.ensure!(colors != [], "dice_bear #{key}: esperado ao menos uma cor")
+    colors
+  end
+
+  defp check!(key, :tags, value) do
+    tags = List.wrap(value)
+
+    Contract.ensure!(
+      tags != [] and Enum.all?(tags, &(is_binary(&1) and &1 =~ ~r/\A!?[A-Za-z0-9:_-]+\z/)),
+      "dice_bear #{key}: esperado texto como \"animation\" ou \"hairLength:long\" (\"!\" exclui)"
+    )
+
+    tags
+  end
+
+  defp hex!(key, color) do
+    hex = if is_binary(color), do: String.trim_leading(color, "#"), else: nil
+
+    Contract.ensure!(
+      is_binary(hex) and hex =~ @hex,
+      "dice_bear #{key}: cor #{inspect(color)} fora do contrato; esperado hex (#RGB, #RRGGBB ou #RRGGBBAA)"
+    )
+
+    hex
+  end
 
   defp option_key!(key) do
     key = to_string(key)
