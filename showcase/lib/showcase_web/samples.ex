@@ -55,6 +55,15 @@ defmodule ShowcaseWeb.Samples do
     theme_switcher: %{current: "light"}
   }
 
+  # Componentes sem slot obrigatório nem contexto: renderizam direto, só com os atributos.
+  # Qualquer outro id do catálogo PRECISA ter uma clause própria de `sample/3`; sem ela, a
+  # renderização falha alto (FunctionClauseError) em vez de cair num caminho genérico errado.
+  @generic ~w(button badge progress skeleton spinner loading_text avatar icon divider)a
+
+  @doc "Ids que usam a amostra genérica (todos os outros têm clause própria)."
+  @spec generic_ids() :: [atom()]
+  def generic_ids, do: @generic
+
   @months ~w(Jan Fev Mar Abr Mai Jun)
   @fruits [
     {"Maçã", "maca"},
@@ -568,7 +577,14 @@ defmodule ShowcaseWeb.Samples do
     assigns = %{a: a, demo: demo}
 
     ~H"""
-    <.list rows={@demo.rows} selected={@demo.selected} on_select="sel" on_drop="reorder" {@a}>
+    <.list
+      rows={@demo.rows}
+      selectable
+      selected={@demo.selected}
+      on_select="sel"
+      on_drop="reorder"
+      {@a}
+    >
       <:col :let={r} label="Nome">{r.nome}</:col>
       <:col :let={r} label="Papel"><.badge label={r.papel} /></:col>
       <:action :let={r}>
@@ -588,7 +604,7 @@ defmodule ShowcaseWeb.Samples do
     <.tree
       nodes={@nodes}
       expanded={@demo.expanded}
-      selected={@demo.tree_selected}
+      selected_id={@demo.tree_selected}
       on_toggle="tog"
       on_select="tsel"
       {@a}
@@ -854,7 +870,7 @@ defmodule ShowcaseWeb.Samples do
   end
 
   # Demais componentes: sem slots obrigatórios nem contexto.
-  defp sample(%{module: module, fun: fun}, a, _),
+  defp sample(%{id: id, module: module, fun: fun}, a, _) when id in @generic,
     do: apply(module, fun, [Map.put(a, :__changed__, nil)])
 
   defp markdown_sample, do: "## Título

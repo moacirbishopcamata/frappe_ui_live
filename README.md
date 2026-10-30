@@ -22,7 +22,7 @@ sem Vue — estado autoritativo no servidor, JS só onde `Phoenix.LiveView.JS` e
 | Experimental | `accordion`, `calendar` (agenda), `command_palette` (Ctrl/⌘ K), `list_view` (agrupada), `stepper`, `theme_switcher` — a API ainda pode mudar |
 
 A especificação de cada um (atributos, tipos, valores permitidos, slots) está no mostruário e é
-**lida do código** (`FrappeUILive.Spec`), então não diverge.
+**lida do código** (`Showcase.Spec`, parte do mostruário), então não diverge.
 
 ## Fundamentos
 
@@ -39,7 +39,7 @@ mix setup          # deps, baixa Tailwind/esbuild, gera CSS e JS
 mix phx.server     # http://localhost:4010
 ```
 
-- **Índice** com Fundamentos e categorias (Formulários, Feedback, Overlays, Navegação, Dados, Charts, Moléculas, Experimental); menu lateral para navegar.
+- **Home**: cartão de **todos** os componentes, com prévia ao vivo, mais Fundamentos e blocos internos. **Índice** com Fundamentos e categorias (Formulários, Feedback, Overlays, Navegação, Dados, Charts, Moléculas, Experimental); menu lateral para navegar.
 - **Playground**: um *formulário gerado dos `attr` reais* altera a prévia ao vivo e o trecho de uso.
 - **Especificação**: tabela de atributos e slots.
 - Estado no servidor: listas, árvore, ordenação, upload real, "salvo", abas ativas.
@@ -102,7 +102,7 @@ live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do ... end
 | `FrappeUILive.Ecto.Rating` | `Ecto.ParameterizedType`: avaliação `0..max` (`max: 5`) |
 | `FrappeUILive.Ecto.StringList` | `Ecto.Type`: lista de textos a partir de `"a, b"` ou lista (tags/MultiSelect) |
 | `FrappeUILive.Ecto.Options.from_enum/2` | opções de `Select` a partir de um `Ecto.Enum` |
-| `FrappeUILive.Ecto.Errors` / `FrappeUILive.ErrorTranslator` | tradução de erros de changeset (troque por Gettext via config) |
+| `FrappeUILive.ErrorTranslator` (padrão `ErrorTranslator.Default`) | tradução de erros de changeset (troque por Gettext via config) |
 | `FrappeUILive.Plug.Theme` | resolve `light`/`dark` (param → sessão → cookie → padrão) |
 | `FrappeUILive.Plug.Static` | serve `frappe_ui.css` direto da dependência |
 | `FrappeUILive.Live.ThemeHook` | `on_mount` que leva o tema da sessão aos assigns |
@@ -180,8 +180,11 @@ importantes). **Já corrigidos** (com testes de regressão):
 
 - `rest` global uniforme em todos os componentes com elemento raiz e textos fixos configuráveis (`FrappeUILive.Texts`).
 
-**Pendentes** (tasks 17.8 e 17.9 do OpenSpec): mover `Spec` para fora do pacote, precedência documentada de
-`Field.assign_field/1`, DatePicker alinhado aos outros campos e semântica de `selected`/`expanded`.
+- `Spec` saiu do pacote (é do mostruário); pontos de extensão (`IconResolver`, `ToastSink`, `ErrorTranslator`, `Translator`) com
+  fachada e módulo configurado validado; `Field.assign_field/2` com precedência documentada; `List` com `selectable`/`selected`
+  e `Tree` com `selected_id`; DatePicker alinhado aos outros campos.
+
+Sem pendências da revisão além de detalhes menores (ex.: o `default:` do `ThemeHook`).
 
 ## Licença
 

@@ -4,7 +4,7 @@ defmodule FrappeUILive.Components.List do
   seleção por checkbox e reordenação por arrastar-e-soltar. O estado
   (`selected`, ordem de `rows`) vive no servidor; cada interação é um evento.
 
-      <.list id="pedidos" rows={@pedidos} selected={@selected} on_select="select" on_drop="reorder">
+      <.list id="pedidos" rows={@pedidos} selectable selected={@selected} on_select="select" on_drop="reorder">
         <:col :let={pedido} label="Número">{pedido.numero}</:col>
         <:action :let={pedido}><.button label="Abrir" navigate={~p"/pedidos/\#{pedido.id}"} /></:action>
       </.list>
@@ -20,7 +20,12 @@ defmodule FrappeUILive.Components.List do
   attr :id, :string, required: true
   attr :rows, :list, required: true
   attr :row_id, :any, default: &Sortable.default_id/1
-  attr :selected, :list, default: nil, doc: "ids selecionados; `nil` desliga a coluna de seleção"
+
+  attr :selectable, :boolean,
+    default: false,
+    doc: "mostra a coluna de seleção (um checkbox por linha)"
+
+  attr :selected, :list, default: [], doc: "ids selecionados, comparados como texto"
   attr :on_select, :string, default: nil, doc: "evento do servidor: %{\"id\" => id}"
 
   attr :on_drop, :string,
@@ -43,7 +48,8 @@ defmodule FrappeUILive.Components.List do
 
     assigns =
       assigns
-      |> assign(:selectable?, assigns.selected != nil)
+      |> assign(:selectable?, assigns.selectable)
+      |> assign(:selected_ids, MapSet.new(assigns.selected, &to_string/1))
       |> assign(:sortable?, assigns.on_drop != nil)
 
     ~H"""
@@ -72,16 +78,14 @@ defmodule FrappeUILive.Components.List do
             :key={@row_id.(row)}
             id={"#{@id}-#{@row_id.(row)}"}
             {Sortable.item_attrs(@row_id.(row), @sortable?)}
-            aria-selected={
-              @selectable? && to_string(to_string(@row_id.(row)) in Enum.map(@selected, &to_string/1))
-            }
+            aria-selected={@selectable? && to_string(to_string(@row_id.(row)) in @selected_ids)}
             class="border-outline-gray-1 hover:bg-surface-gray-1 border-t"
           >
             <td :if={@sortable?} class="text-ink-gray-4 cursor-grab px-2" aria-hidden="true">⋮⋮</td>
             <td :if={@selectable?} class="px-3">
               <input
                 type="checkbox"
-                checked={to_string(@row_id.(row)) in Enum.map(@selected, &to_string/1)}
+                checked={to_string(@row_id.(row)) in @selected_ids}
                 phx-click={@on_select}
                 phx-value-id={@row_id.(row)}
                 aria-label={Texts.t(:select_row)}

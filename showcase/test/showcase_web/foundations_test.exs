@@ -217,4 +217,55 @@ defmodule ShowcaseWeb.FoundationsTest do
       assert has_element?(view, "#preview [data-command-item]")
     end
   end
+
+  describe "home: todos os componentes, no mesmo estilo, com prévia ao vivo" do
+    alias FrappeUILive.Components, as: Catalog
+
+    test "cada componente do catálogo tem cartão com prévia renderizada", %{conn: conn} do
+      {:ok, view, _} = live(conn, "/")
+
+      for entry <- Catalog.catalog() do
+        assert has_element?(view, "#card-#{entry.id}"), "sem cartão para #{entry.id}"
+        preview = view |> element("#preview-#{entry.id}") |> render()
+        refute preview =~ "sem prévia", "prévia indisponível para #{entry.id}"
+        assert preview =~ ~r/<\w+/, "prévia vazia para #{entry.id}"
+      end
+    end
+
+    test "o cartão é navegável pelo título (stretched link) e a prévia é inerte", %{conn: conn} do
+      {:ok, view, html} = live(conn, "/")
+      assert html =~ ~s(id="preview-button")
+      assert view |> element("#preview-button") |> render() =~ "inert"
+      assert view |> element("#preview-button") |> render() =~ "pointer-events-none"
+
+      view |> element("#card-badge a", "Badge") |> render_click()
+      assert_patch(view, "/c/badge")
+    end
+
+    test "HTML válido: nenhum link dentro de link e ids únicos na página inteira", %{conn: conn} do
+      {:ok, view, _} = live(conn, "/")
+      doc = LazyHTML.from_fragment(render(view))
+
+      assert Enum.count(LazyHTML.query(doc, "a a")) == 0, "<a> aninhado"
+
+      ids = doc |> LazyHTML.query("[id]") |> LazyHTML.attribute("id")
+      duplicated = ids -- Enum.uniq(ids)
+      assert duplicated == [], "ids duplicados: #{inspect(Enum.uniq(duplicated))}"
+    end
+
+    test "resumo com as contagens e a lista de blocos internos", %{conn: conn} do
+      {:ok, view, html} = live(conn, "/")
+      assert html =~ "#{length(Catalog.catalog())} componentes"
+      assert html =~ "#{length(Foundations.sections())} fundamentos"
+      assert html =~ "#{length(Catalog.internal())} blocos internos"
+
+      for {_module, fun} <- Catalog.internal() do
+        assert has_element?(view, ~s(#index-internal [data-internal="#{fun}"])),
+               "falta bloco #{fun}"
+      end
+
+      for {category, _title} <- Catalog.categories(),
+          do: assert(has_element?(view, "#index-#{category}"))
+    end
+  end
 end

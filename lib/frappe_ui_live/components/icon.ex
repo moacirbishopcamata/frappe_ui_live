@@ -12,7 +12,7 @@ defmodule FrappeUILive.Components.Icon do
 
   def icon(assigns) do
     ~H"""
-    <span class={[FrappeUILive.IconResolver.class(@name), @class]} aria-hidden="true" {@rest}></span>
+    <span class={[FrappeUILive.IconResolver.resolve(@name), @class]} aria-hidden="true" {@rest}></span>
     """
   end
 end

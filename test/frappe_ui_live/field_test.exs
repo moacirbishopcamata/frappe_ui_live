@@ -1,7 +1,7 @@
 defmodule FrappeUILive.FieldTest do
   use FrappeUILive.Case, async: true
 
-  alias FrappeUILive.{Ecto.Errors, Field}
+  alias FrappeUILive.{ErrorTranslator.Default, Field}
 
   defp base(extra), do: Map.merge(%{__changed__: nil, id: nil, field: nil}, Map.new(extra))
 
@@ -30,7 +30,7 @@ defmodule FrappeUILive.FieldTest do
   end
 
   test "multiple acrescenta [] ao name" do
-    out = Field.assign_field(base(field: form_field(:tags), multiple: true))
+    out = Field.assign_field(base(field: form_field(:tags)), multiple: true)
     assert out.name == "f[tags][]"
   end
 
@@ -49,7 +49,8 @@ defmodule FrappeUILive.FieldTest do
     assert Field.errors(f) == ["deve ter 3 letras"]
   end
 
-  test "Errors.translate/1 interpola valores não textuais com inspect" do
-    assert Errors.translate({"tipo %{type}", type: {:array, :string}}) == "tipo {:array, :string}"
+  test "Default.translate/1 interpola valores não textuais com inspect" do
+    assert Default.translate({"tipo %{type}", type: {:array, :string}}) ==
+             "tipo {:array, :string}"
   end
 end

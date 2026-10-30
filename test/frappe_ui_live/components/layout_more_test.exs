@@ -361,7 +361,7 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
 
       html =
         rendered_to_string(~H"""
-        <List.list id="l" rows={@rows} selected={[2]} on_select="sel">
+        <List.list id="l" rows={@rows} selectable selected={[2]} on_select="sel">
           <:col :let={r} label="Nome">{r.nome}</:col>
           <:action :let={r}>ver {r.id}</:action>
         </List.list>
@@ -422,7 +422,7 @@ defmodule FrappeUILive.Components.LayoutMoreTest do
 
       open =
         rendered_to_string(
-          ~H|<Tree.tree id="t" nodes={@n} expanded={[1, 3]} selected={4} on_toggle="tog" on_select="sel" />|
+          ~H|<Tree.tree id="t" nodes={@n} expanded={[1, 3]} selected_id={4} on_toggle="tog" on_select="sel" />|
         )
 
       assert Enum.count(query(open, "[role=treeitem]")) == 5

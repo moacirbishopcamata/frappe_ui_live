@@ -14,7 +14,7 @@ defmodule FrappeUILive.Components.Tree do
   attr :id, :string, required: true
   attr :nodes, :list, required: true
   attr :expanded, :list, default: [], doc: "ids dos nós abertos"
-  attr :selected, :any, default: nil, doc: "id do nó selecionado"
+  attr :selected_id, :any, default: nil, doc: "id do nó selecionado (comparado como texto)"
   attr :on_toggle, :string, default: nil
   attr :on_select, :string, default: nil
   attr :on_drop, :string, default: nil
@@ -36,7 +36,7 @@ defmodule FrappeUILive.Components.Tree do
         :for={node <- @nodes}
         node={node}
         open={@open}
-        selected={@selected}
+        selected={@selected_id}
         tree={Map.take(assigns, [:on_toggle, :on_select, :on_drop])}
         level={0}
       />

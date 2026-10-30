@@ -6,17 +6,17 @@ defmodule FrappeUILive.IconResolver do
   máscara `lucide-<nome>`, como o Frappe UI. Troque via config:
 
       config :frappe_ui_live, icon_resolver: MyApp.Icons
+
+  Os componentes chamam `resolve/1`; a implementação configurada fornece `class/1`.
   """
 
   @callback class(name :: String.t()) :: String.t()
 
-  @doc "Classe CSS do ícone `name`, pela implementação configurada."
-  @spec class(String.t()) :: String.t()
-  def class(name) when is_binary(name) do
-    resolver().class(name)
+  @doc "Classe CSS do ícone `name`, pela implementação configurada (validada)."
+  @spec resolve(String.t()) :: String.t()
+  def resolve(name) when is_binary(name) do
+    FrappeUILive.Config.module!(:icon_resolver, __MODULE__.Lucide, :class, 1).class(name)
   end
-
-  defp resolver, do: Application.get_env(:frappe_ui_live, :icon_resolver, __MODULE__.Lucide)
 end
 
 defmodule FrappeUILive.IconResolver.Lucide do

@@ -35,7 +35,7 @@ defmodule FrappeUILive.Toast do
       "toast: timeout deve ser inteiro positivo"
     )
 
-    ToastSink.sink().deliver(socket, %{
+    ToastSink.deliver(socket, %{
       kind: Atom.to_string(kind),
       message: message,
       timeout: timeout

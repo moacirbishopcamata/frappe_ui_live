@@ -4,7 +4,7 @@ defmodule ShowcaseWeb.Snippet do
   playground. Só inclui o que difere do `default` declarado (função pura).
   """
 
-  alias FrappeUILive.Spec
+  alias Showcase.Spec
 
   @spec build(Spec.t(), map()) :: String.t()
   def build(spec, attrs) do

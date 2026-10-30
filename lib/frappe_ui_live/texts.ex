@@ -94,8 +94,15 @@ defmodule FrappeUILive.Texts do
 
     text =
       case Application.get_env(:frappe_ui_live, :translator) do
-        nil -> override(key, default)
-        module -> module.translate(key, override(key, default), bindings)
+        nil ->
+          override(key, default)
+
+        _module ->
+          FrappeUILive.Config.module!(:translator, nil, :translate, 3).translate(
+            key,
+            override(key, default),
+            bindings
+          )
       end
 
     interpolate(text, bindings)

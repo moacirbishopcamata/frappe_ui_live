@@ -25,7 +25,7 @@ defmodule FrappeUILive.Components.Select do
   def select(assigns) do
     Contract.require!(assigns.variant, InputStyle.variants(), "select variant")
     Contract.require!(assigns.size, InputStyle.sizes(), "select size")
-    assigns = Field.assign_field(assigns)
+    assigns = Field.assign_field(assigns, multiple: assigns.multiple)
 
     ~H"""
     <div class="relative w-full">

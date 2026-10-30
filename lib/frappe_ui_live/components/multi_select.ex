@@ -25,8 +25,7 @@ defmodule FrappeUILive.Components.MultiSelect do
   def multi_select(assigns) do
     assigns =
       assigns
-      |> Map.put(:multiple, true)
-      |> Field.assign_field()
+      |> Field.assign_field(multiple: true)
       |> Field.require_id!("multi_select")
 
     ~H"""

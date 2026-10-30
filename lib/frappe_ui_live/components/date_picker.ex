@@ -20,20 +20,21 @@ defmodule FrappeUILive.Components.DatePicker do
 
   attr :id, :string, required: true
   attr :field, Phoenix.HTML.FormField, default: nil
-  attr :name, :string, default: nil
+  attr :name, :any, default: nil
   attr :value, :any, default: nil, doc: "data ISO (`2026-03-09`) ou `Date`"
   attr :min, :any, default: nil, doc: "primeira data permitida"
   attr :max, :any, default: nil, doc: "última data permitida"
   attr :placeholder, :string, default: nil
   attr :disabled, :boolean, default: false
+  attr :class, :any, default: nil
+  attr :errors, :list, default: []
   attr :rest, :global
 
   @doc "Função-componente que monta o LiveComponent (`<.date_picker id=... field=... />`)."
   def date_picker(assigns) do
-    passthrough =
-      assigns
-      |> Map.take([:id, :field, :name, :value, :min, :max, :placeholder, :disabled, :rest])
-      |> Map.reject(fn {k, v} -> is_nil(v) or (k == :rest and v == %{}) end)
+    # só o que o chamador passou de fato: `value={nil}` explícito limpa a data
+    given = assigns.__given__ |> Map.keys() |> Enum.reject(&(&1 == :__changed__))
+    passthrough = Map.take(assigns, given)
 
     assigns = assign(assigns, :passthrough, passthrough)
 
@@ -66,7 +67,8 @@ defmodule FrappeUILive.Components.DatePicker do
      |> assign(min: min, max: max, selected: selected, month: month)
      |> assign_new(:placeholder, fn -> Texts.t(:select_date) end)
      |> assign_new(:disabled, fn -> false end)
-     |> assign_new(:rest, fn -> %{} end)}
+     |> assign_new(:rest, fn -> %{} end)
+     |> assign_new(:class, fn -> nil end)}
   end
 
   # Com `field`, o valor do formulário é a fonte da verdade a cada atualização.
@@ -122,7 +124,7 @@ defmodule FrappeUILive.Components.DatePicker do
       )
 
     ~H"""
-    <div class="relative inline-block w-full" id={@id} {@rest}>
+    <div class={["relative inline-block w-full", @class]} id={@id} {@rest}>
       <input
         type="hidden"
         id={@value_id}

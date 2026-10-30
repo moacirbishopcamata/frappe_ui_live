@@ -1,7 +1,7 @@
-defmodule FrappeUILive.SpecTest do
+defmodule Showcase.SpecTest do
   use ExUnit.Case, async: true
 
-  alias FrappeUILive.Spec
+  alias Showcase.Spec
 
   test "all/0 cobre todo o catálogo, com documentação do módulo" do
     specs = Spec.all()

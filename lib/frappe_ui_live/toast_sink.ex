@@ -6,13 +6,20 @@ defmodule FrappeUILive.ToastSink do
       config :frappe_ui_live, toast_sink: MyApp.ToastSink
   """
 
+  @typedoc "Payload entregue ao cliente (`kind` já como texto)."
   @type payload :: %{kind: String.t(), message: String.t(), timeout: pos_integer()}
 
   @callback deliver(socket :: Phoenix.LiveView.Socket.t(), payload()) ::
               Phoenix.LiveView.Socket.t()
 
-  @doc false
-  def sink, do: Application.get_env(:frappe_ui_live, :toast_sink, __MODULE__.PushEvent)
+  @doc "Entrega o toast pela implementação configurada (validada)."
+  @spec deliver(Phoenix.LiveView.Socket.t(), payload()) :: Phoenix.LiveView.Socket.t()
+  def deliver(socket, payload) do
+    FrappeUILive.Config.module!(:toast_sink, __MODULE__.PushEvent, :deliver, 2).deliver(
+      socket,
+      payload
+    )
+  end
 end
 
 defmodule FrappeUILive.ToastSink.PushEvent do

@@ -1,6 +1,6 @@
-defmodule FrappeUILive.Spec do
+defmodule Showcase.Spec do
   @moduledoc """
-  Especificação *derivada* de cada componente, lida das declarações reais
+  Especificação *derivada* de cada componente (parte do mostruário, não do pacote Hex), lida das declarações reais
   (`attr`/`slot` via `__components__/0` e `@moduledoc`), de modo que a
   documentação nunca diverge do código.
 

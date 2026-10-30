@@ -615,4 +615,150 @@ end")
       assert orphans == [], "chaves sem uso: #{inspect(orphans)}"
     end
   end
+
+  describe "I-16: pontos de extensão validados" do
+    alias FrappeUILive.{Config, ErrorTranslator, IconResolver, Texts, ToastSink}
+
+    defmodule MeuIcones do
+      def class(name), do: "meu-" <> name
+    end
+
+    defmodule SemCallback do
+    end
+
+    setup do
+      on_exit(fn ->
+        for key <- [:icon_resolver, :toast_sink, :error_translator, :translator],
+            do: Application.delete_env(:frappe_ui_live, key)
+      end)
+    end
+
+    test "Config.module!/4 devolve o padrão, o configurado e rejeita módulo sem o callback" do
+      assert Config.module!(:icon_resolver, IconResolver.Lucide, :class, 1) == IconResolver.Lucide
+      Application.put_env(:frappe_ui_live, :icon_resolver, MeuIcones)
+      assert Config.module!(:icon_resolver, IconResolver.Lucide, :class, 1) == MeuIcones
+
+      Application.put_env(:frappe_ui_live, :icon_resolver, SemCallback)
+
+      assert_raise ArgumentError,
+                   ~r/icon_resolver: .*SemCallback.* não implementa class\/1/,
+                   fn -> IconResolver.resolve("plus") end
+
+      Application.put_env(:frappe_ui_live, :icon_resolver, Modulo.Que.Nao.Existe)
+      assert_raise ArgumentError, ~r/não implementa/, fn -> IconResolver.resolve("plus") end
+    end
+
+    test "IconResolver.resolve/1 usa a implementação configurada" do
+      assert IconResolver.resolve("plus") == "lucide-plus"
+      Application.put_env(:frappe_ui_live, :icon_resolver, MeuIcones)
+      assert IconResolver.resolve("plus") == "meu-plus"
+    end
+
+    test "ToastSink, ErrorTranslator e Texts também validam o módulo configurado" do
+      Application.put_env(:frappe_ui_live, :toast_sink, SemCallback)
+
+      assert_raise ArgumentError, ~r/toast_sink/, fn ->
+        ToastSink.deliver(%Phoenix.LiveView.Socket{}, %{kind: "info", message: "x", timeout: 1})
+      end
+
+      Application.put_env(:frappe_ui_live, :error_translator, SemCallback)
+
+      assert_raise ArgumentError, ~r/error_translator/, fn ->
+        ErrorTranslator.translate({"x", []})
+      end
+
+      Application.put_env(:frappe_ui_live, :translator, SemCallback)
+      assert_raise ArgumentError, ~r/translator/, fn -> Texts.t(:close) end
+    end
+
+    test "o tradutor de erros padrão vive em ErrorTranslator.Default" do
+      assert ErrorTranslator.translate({"mínimo %{count}", count: 3}) == "mínimo 3"
+      assert ErrorTranslator.Default.translate({"x %{a}", a: {:t, 1}}) =~ "{:t, 1}"
+    end
+  end
+
+  describe "I-12: precedência de Field.assign_field" do
+    test "id e value explícitos vencem; name e errors sempre vêm do campo" do
+      base = %{__changed__: nil, field: form_field(:nome, "Ana", [{"x", []}])}
+
+      out =
+        Field.assign_field(
+          Map.merge(base, %{id: "meu-id", value: "Bia", name: "outro", errors: ["ignorado"]})
+        )
+
+      assert {out.id, out.value, out.name} == {"meu-id", "Bia", "f[nome]"}
+      assert out.errors == ["x"]
+    end
+
+    test "multiple: true é opção explícita, não um atributo escondido" do
+      out = Field.assign_field(%{__changed__: nil, field: form_field(:tags), multiple: true})
+      assert out.name == "f[tags]"
+
+      assert Field.assign_field(%{__changed__: nil, field: form_field(:tags)}, multiple: true).name ==
+               "f[tags][]"
+    end
+  end
+
+  describe "I-20: semântica de selected/expanded" do
+    alias FrappeUILive.Components.{List, Tree}
+
+    @rows [%{id: 1, n: "a"}, %{id: 2, n: "b"}]
+
+    test "List: sem selectable não há coluna de seleção, mesmo com selected" do
+      assigns = %{rows: @rows}
+      html = rendered_to_string(~H|<List.list id="l" rows={@rows} selected={[1]}>
+  <:col :let={r} label="N">{r.n}</:col>
+</List.list>|)
+      refute has?(html, "input[type=checkbox]")
+      refute has?(html, "[aria-selected]")
+    end
+
+    test "List: selectable com selected vazio mostra caixas desmarcadas; ids comparados como texto" do
+      assigns = %{rows: @rows}
+      empty = rendered_to_string(~H|<List.list id="l" rows={@rows} selectable>
+  <:col :let={r} label="N">{r.n}</:col>
+</List.list>|)
+      assert Enum.count(query(empty, "input[type=checkbox]")) == 2
+      refute has?(empty, "input[checked]")
+
+      texto = rendered_to_string(~H|<List.list id="l" rows={@rows} selectable selected={["2"]}>
+  <:col :let={r} label="N">{r.n}</:col>
+</List.list>|)
+      assert has?(texto, "tr#l-2 input[checked]")
+      refute has?(texto, "tr#l-1 input[checked]")
+    end
+
+    test "Tree: selected_id compara como texto" do
+      assigns = %{n: [%{id: 1, label: "A"}, %{id: 2, label: "B"}]}
+      html = rendered_to_string(~H|<Tree.tree id="t" nodes={@n} selected_id="2" />|)
+      assert has?(html, "li[aria-selected=true]")
+      assert Enum.count(query(html, "li[aria-selected=true]")) == 1
+    end
+  end
+
+  describe "I-15: DatePicker alinhado" do
+    alias Phoenix.LiveView.Socket
+
+    test "value nil explícito limpa a data (update/2)" do
+      {:ok, socket} =
+        DatePicker.update(%{id: "d", value: "2026-03-09", today: ~D[2026-03-15]}, %Socket{})
+
+      assert socket.assigns.selected == ~D[2026-03-09]
+      {:ok, cleared} = DatePicker.update(%{id: "d", value: nil}, socket)
+      assert cleared.assigns.selected == nil
+    end
+
+    test "class e errors chegam ao componente" do
+      html =
+        render_component(DatePicker,
+          id: "d",
+          name: "n",
+          class: "minha-classe",
+          errors: ["x"],
+          today: ~D[2026-03-15]
+        )
+
+      assert has?(html, "#d.minha-classe")
+    end
+  end
 end

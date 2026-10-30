@@ -9,7 +9,8 @@ defmodule ShowcaseWeb.CatalogLive do
   use Phoenix.LiveView
   use FrappeUILive
 
-  alias FrappeUILive.{Foundations, Spec, Toast}
+  alias FrappeUILive.{Foundations, Toast}
+  alias Showcase.Spec
   alias FrappeUILive.Components, as: Catalog
   alias FrappeUILive.Components.Sortable
   alias ShowcaseWeb.{FoundationsView, Samples, Snippet}
@@ -287,7 +288,7 @@ defmodule ShowcaseWeb.CatalogLive do
           />
         </div>
 
-        <.index :if={!@spec and !@foundation} groups={@groups} />
+        <.index :if={!@spec and !@foundation} groups={@groups} extras={extras(assigns)} />
         <.foundation_page :if={@foundation} section={@foundation} />
         <.detail
           :if={@spec}
@@ -322,14 +323,25 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   attr :groups, :list, required: true
+  attr :extras, :map, required: true
 
   defp index(assigns) do
-    assigns = assign(assigns, :foundations, Foundations.sections())
+    previews =
+      for {_category, _title, entries} <- assigns.groups, entry <- entries, into: %{} do
+        {entry.id, preview(entry, assigns.extras)}
+      end
+
+    assigns =
+      assigns
+      |> assign(:foundations, Foundations.sections())
+      |> assign(:previews, previews)
+      |> assign(:total, map_size(previews))
+      |> assign(:internal, Catalog.internal())
 
     ~H"""
     <.page_header
       title="Componentes"
-      subtitle="Escolha um componente para ver o playground e a especificação."
+      subtitle={"#{@total} componentes, #{length(@foundations)} fundamentos e #{length(@internal)} blocos internos. Escolha um para ver o playground e a especificação."}
     />
     <div class="space-y-8 p-5">
       <section id="index-foundations">
@@ -346,27 +358,82 @@ defmodule ShowcaseWeb.CatalogLive do
           </.link>
         </div>
       </section>
-      <section :for={{_category, title, entries} <- @groups}>
-        <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-3">{title}</h2>
+
+      <section :for={{category, title, entries} <- @groups} id={"index-#{category}"}>
+        <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-3">
+          {title} <span class="fui-text-sm text-ink-gray-4 font-normal">({length(entries)})</span>
+        </h2>
         <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <.link
+          <%!-- cartão com "stretched link": o título é o link e cobre o cartão; a prévia (que tem
+               links e botões próprios) fica inerte, evitando <a> dentro de <a> --%>
+          <div
             :for={entry <- entries}
-            patch={"/c/#{entry.id}"}
             id={"card-#{entry.id}"}
-            class="border-outline-gray-2 bg-surface-base hover:bg-surface-gray-1 rounded-6 border p-4 transition-colors"
+            class="border-outline-gray-2 bg-surface-base hover:bg-surface-gray-1 rounded-6 relative border p-4 transition-colors"
           >
-            <p class="fui-text-base-medium text-ink-gray-9">{entry.title}</p>
+            <div
+              id={"preview-#{entry.id}"}
+              inert
+              aria-hidden="true"
+              class="bg-surface-gray-1 rounded-5 pointer-events-none mb-3 h-32 overflow-hidden p-3 select-none"
+            >
+              <.card_preview preview={@previews[entry.id]} />
+            </div>
+            <.link
+              patch={"/c/#{entry.id}"}
+              class="fui-text-base-medium text-ink-gray-9 after:absolute after:inset-0 after:content-['']"
+            >
+              {entry.title}
+            </.link>
             <p class="fui-text-p-sm text-ink-gray-5 mt-1 line-clamp-2">{summary(entry.doc)}</p>
             <p class="fui-text-xs text-ink-gray-4 mt-2">
               {length(Enum.filter(entry.attrs, & &1.editable))} atributos editáveis · {length(
                 entry.slots
               )} slots
             </p>
-          </.link>
+          </div>
         </div>
+      </section>
+
+      <section id="index-internal">
+        <h2 class="fui-text-lg-semibold text-ink-gray-9 mb-1">Blocos internos</h2>
+        <p class="fui-text-sm text-ink-gray-5 mb-3">
+          Peças públicas usadas pelos componentes acima; sem página própria.
+        </p>
+        <ul class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <li
+            :for={{module, fun} <- @internal}
+            data-internal={fun}
+            class="border-outline-gray-2 fui-text-sm rounded-5 border px-3 py-2"
+          >
+            <span class="fui-text-sm-medium text-ink-gray-9">{fun}</span>
+            <span class="text-ink-gray-5"> · {inspect(module)}</span>
+          </li>
+        </ul>
       </section>
     </div>
     """
+  end
+
+  attr :preview, :any, required: true
+
+  defp card_preview(assigns) do
+    ~H"""
+    <%= case @preview do %>
+      <% {:ok, html} -> %>
+        {html}
+      <% {:live, rendered} -> %>
+        {rendered}
+      <% {:error, _message} -> %>
+        <p class="fui-text-xs text-ink-gray-4">sem prévia</p>
+    <% end %>
+    """
+  end
+
+  # Prévia do cartão: valores padrão do componente + amostras iniciais, como na primeira abertura da página.
+  defp preview(spec, extras) do
+    attrs = spec |> Spec.defaults() |> Map.merge(Samples.initial(spec.id))
+    Samples.render(spec, attrs, extras)
   end
 
   attr :spec, :map, required: true

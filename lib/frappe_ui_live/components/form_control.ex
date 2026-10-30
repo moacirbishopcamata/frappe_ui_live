@@ -69,7 +69,6 @@ defmodule FrappeUILive.Components.FormControl do
     ~H"""
     <Textarea.textarea
       field={@field}
-      errors={@errors}
       variant={@variant}
       size={@size}
       disabled={@disabled}
@@ -83,7 +82,6 @@ defmodule FrappeUILive.Components.FormControl do
     ~H"""
     <Select.select
       field={@field}
-      errors={@errors}
       options={@options}
       variant={@variant}
       size={@size}
@@ -96,13 +94,13 @@ defmodule FrappeUILive.Components.FormControl do
 
   defp control(%{type: "checkbox"} = assigns) do
     ~H"""
-    <Checkbox.checkbox field={@field} errors={@errors} label={@label} disabled={@disabled} />
+    <Checkbox.checkbox field={@field} label={@label} disabled={@disabled} />
     """
   end
 
   defp control(%{type: "switch"} = assigns) do
     ~H"""
-    <Switch.switch field={@field} errors={@errors} label={@label} disabled={@disabled} />
+    <Switch.switch field={@field} label={@label} disabled={@disabled} />
     """
   end
 
@@ -110,7 +108,6 @@ defmodule FrappeUILive.Components.FormControl do
     ~H"""
     <TextInput.text_input
       field={@field}
-      errors={@errors}
       type={@type}
       variant={@variant}
       size={@size}
