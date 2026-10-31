@@ -3,6 +3,11 @@
 Versionamento [semântico](https://semver.org/lang/pt-BR/). Todo commit incrementa a versão
 (`feat` = minor, `fix`/`docs`/`chore` = patch).
 
+## 0.3.1
+
+### Alterado
+- CI: o job do Elixir 1.18 (versão mínima do `mix.exs`) passa a ser bloqueante, como o do 1.20.
+
 ## 0.3.0
 
 ### Alterado (incompatível)

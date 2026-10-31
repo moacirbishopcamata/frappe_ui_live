@@ -22,15 +22,14 @@ jobs:
   lib:
     name: Lib · Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
     runs-on: ubuntu-latest
-    # A versão mínima declarada no mix.exs (1.18) é verificada, mas não bloqueia o merge.
-    continue-on-error: ${{ matrix.experimental }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { elixir: "1.20", otp: "28", experimental: false }
-          - { elixir: "1.18", otp: "27", experimental: true }
+          - { elixir: "1.20", otp: "28" }
+          # versão mínima declarada no mix.exs
+          - { elixir: "1.18", otp: "27" }
 
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +89,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Relatório HTML de cobertura
-        if: always() && matrix.experimental == false
+        if: always() && matrix.elixir == '1.20'
         uses: actions/upload-artifact@v4
         with:
           name: cobertura-lib
