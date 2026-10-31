@@ -1,8 +1,8 @@
 defmodule FrappeUILive.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
-  @source_url "https://github.com/frappe_ui_live/frappe_ui_live"
+  @version "0.2.0"
+  @source_url "https://github.com/moacirbishopcamata/frappe_ui_live"
 
   def project do
     [
@@ -17,7 +17,17 @@ defmodule FrappeUILive.MixProject do
       test_coverage: [summary: [threshold: 90]],
       description: "Componentes Phoenix LiveView com a identidade visual do Frappe UI.",
       package: package(),
-      docs: [main: "readme", extras: ["README.md", "LICENSE"], source_ref: "v#{@version}"],
+      docs: [
+        main: "readme",
+        extras: [
+          "README.md",
+          "CHANGELOG.md",
+          "docs/componentes.md",
+          "THIRD_PARTY_LICENSES.md",
+          "LICENSE"
+        ],
+        source_ref: "v#{@version}"
+      ],
       source_url: @source_url
     ]
   end
@@ -59,8 +69,9 @@ defmodule FrappeUILive.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{"Frappe UI" => "https://ui.frappe.io"},
-      files: ~w(lib priv scripts mix.exs README.md LICENSE THIRD_PARTY_LICENSES.md .formatter.exs)
+      links: %{"GitHub" => @source_url, "Frappe UI (projeto original)" => "https://ui.frappe.io"},
+      files:
+        ~w(lib priv scripts docs mix.exs README.md CHANGELOG.md LICENSE THIRD_PARTY_LICENSES.md .formatter.exs)
     ]
   end
 end
