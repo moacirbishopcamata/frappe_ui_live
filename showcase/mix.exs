@@ -22,7 +22,7 @@ defmodule Showcase.MixProject do
 
   defp deps do
     [
-      {:frappe_ui_live, path: ".."},
+      {:frappe_ui_phx, path: ".."},
       {:phoenix, "~> 1.8"},
       {:phoenix_live_view, "~> 1.2"},
       {:phoenix_html, "~> 4.3"},

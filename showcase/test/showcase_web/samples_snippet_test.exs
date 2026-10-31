@@ -60,12 +60,12 @@ defmodule ShowcaseWeb.SamplesSnippetTest do
 
   describe "cobertura de amostras" do
     test "ids genéricos existem no catálogo" do
-      ids = FrappeUILive.Components.catalog() |> Enum.map(& &1.id)
+      ids = FrappeUIPhx.Components.catalog() |> Enum.map(& &1.id)
       assert Samples.generic_ids() -- ids == []
     end
 
     test "componente sem amostra falha alto (não cai num caminho genérico)" do
-      spec = %{id: :componente_novo, module: FrappeUILive.Components.Badge, fun: :badge}
+      spec = %{id: :componente_novo, module: FrappeUIPhx.Components.Badge, fun: :badge}
       assert_raise FunctionClauseError, fn -> Samples.render(spec, %{}, %{}) end
     end
 
@@ -75,7 +75,7 @@ defmodule ShowcaseWeb.SamplesSnippetTest do
 
       extras = %{upload: upload, saved_at: nil, demo: Samples.demo_state(), theme: "light"}
 
-      for entry <- FrappeUILive.Components.catalog() do
+      for entry <- FrappeUIPhx.Components.catalog() do
         spec = Spec.get(entry.id)
         attrs = spec |> Spec.defaults() |> Map.merge(Samples.initial(entry.id))
         assert {tag, _} = Samples.render(spec, attrs, extras)

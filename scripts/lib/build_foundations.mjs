@@ -1,5 +1,5 @@
 // Função pura: tokens -> dados dos Fundamentos (cores, tipografia, raio, sombras, foco).
-// Alimenta `FrappeUILive.Foundations` e o mostruário; sai de `priv/foundations.json`.
+// Alimenta `FrappeUIPhx.Foundations` e o mostruário; sai de `priv/foundations.json`.
 
 const SEMANTIC = ['surface', 'surface-alpha', 'ink', 'outline', 'outline-alpha']
 

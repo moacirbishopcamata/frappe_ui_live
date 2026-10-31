@@ -1,0 +1,164 @@
+name: CI
+
+# Testes unitários e de cobertura da biblioteca e do mostruário.
+# A cobertura mínima vem do mix.exs (lib: 90%, showcase: 80%); abaixo disso o job falha.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MIX_ENV: test
+
+jobs:
+  lib:
+    name: Lib · Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+    runs-on: ubuntu-latest
+    # A versão mínima declarada no mix.exs (1.18) é verificada, mas não bloqueia o merge.
+    continue-on-error: ${{ matrix.experimental }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { elixir: "1.20", otp: "28", experimental: false }
+          - { elixir: "1.18", otp: "27", experimental: true }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      # Node é necessário: os testes de costura leem os tokens e o lucide-static e executam trechos de JS.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: lib-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock', 'mix.exs', 'priv/icons.json') }}
+          restore-keys: |
+            lib-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-
+
+      - name: Dependências e avisos de segurança do Hex
+        run: |
+          mix deps.get 2>&1 | tee deps.log
+          if grep -q "VULNERABLE" deps.log; then
+            echo "::error::Dependência com vulnerabilidade conhecida (veja deps.log acima)"
+            exit 1
+          fi
+
+      - name: Formatação
+        run: mix format --check-formatted
+
+      - name: Compilação sem warnings
+        run: mix compile --warnings-as-errors
+
+      - name: Testes unitários e cobertura
+        run: mix test --cover 2>&1 | tee test.log
+
+      - name: Resumo da cobertura
+        if: always()
+        run: |
+          {
+            echo "### Cobertura da lib (Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }})"
+            echo
+            if grep -q "^|" test.log; then
+              grep "^|" test.log
+            else
+              echo "_Sem relatório de cobertura (os testes falharam antes?)_"
+            fi
+            echo
+            grep -E "^[0-9]+ (tests?|doctests?)|Result:|passed|failed" test.log || true
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Relatório HTML de cobertura
+        if: always() && matrix.experimental == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-lib
+          path: cover/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Auditoria de dependências (mix_audit)
+        run: mix deps.audit
+
+  showcase:
+    name: Mostruário · testes e cobertura
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: showcase
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.20"
+          otp-version: "28"
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            showcase/deps
+            showcase/_build
+          key: showcase-${{ runner.os }}-1.20-28-${{ hashFiles('showcase/mix.lock', 'mix.lock', 'priv/icons.json') }}
+          restore-keys: |
+            showcase-${{ runner.os }}-1.20-28-
+
+      - name: Dependências e avisos de segurança do Hex
+        run: |
+          mix deps.get 2>&1 | tee deps.log
+          if grep -q "VULNERABLE" deps.log; then
+            echo "::error::Dependência com vulnerabilidade conhecida (veja deps.log acima)"
+            exit 1
+          fi
+
+      # Os testes marcados :assets precisam do CSS/JS gerados (Tailwind e esbuild são baixados aqui).
+      - name: Assets
+        run: mix assets.setup && mix assets.build
+
+      - name: Testes unitários e cobertura
+        run: mix test --cover 2>&1 | tee test.log
+
+      - name: Resumo da cobertura
+        if: always()
+        run: |
+          {
+            echo "### Cobertura do mostruário"
+            echo
+            if grep -q "^|" test.log; then
+              grep "^|" test.log
+            else
+              echo "_Sem relatório de cobertura (os testes falharam antes?)_"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Relatório HTML de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-showcase
+          path: showcase/cover/
+          if-no-files-found: ignore
+          retention-days: 14

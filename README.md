@@ -1,4 +1,6 @@
-# frappe_ui_live
+# Frappe UI Phx
+
+[![CI](https://github.com/moacirbishopcamata/frappe_ui_phx/actions/workflows/ci.yml/badge.svg)](https://github.com/moacirbishopcamata/frappe_ui_phx/actions/workflows/ci.yml)
 
 Componentes **Phoenix LiveView** com a identidade visual do [Frappe UI](https://ui.frappe.io): os mesmos
 design tokens (`surface-*`, `ink-*`, `outline-*`, modo escuro), o mesmo markup e as mesmas classes, **sem Vue**.
@@ -43,14 +45,14 @@ O app precisa ter `compilers: [:phoenix_live_view] ++ Mix.compilers()` no `mix.e
 defp deps do
   [
     # a) do GitHub (hoje o repositório é privado: exige acesso à conta)
-    {:frappe_ui_live,
-     git: "https://github.com/moacirbishopcamata/frappe_ui_live.git", branch: "worktree-componentes-fase1"},
+    {:frappe_ui_phx,
+     git: "https://github.com/moacirbishopcamata/frappe_ui_phx.git", branch: "worktree-componentes-fase1"},
 
     # b) de uma pasta local
-    # {:frappe_ui_live, path: "../frappe_ui_live"},
+    # {:frappe_ui_phx, path: "../frappe_ui_phx"},
 
     # c) do Hex, depois de publicado
-    # {:frappe_ui_live, "~> 0.2"}
+    # {:frappe_ui_phx, "~> 0.3"}
   ]
 end
 ```
@@ -59,13 +61,13 @@ end
 mix deps.get
 ```
 
-A primeira compilação demora (~35 s): o módulo `FrappeUILive.Icons.Lucide` tem um componente para cada ícone. Acontece uma vez.
+A primeira compilação demora (~35 s): o módulo `FrappeUIPhx.Icons.Lucide` tem um componente para cada ícone. Acontece uma vez.
 
 ### 2. Rode o instalador
 
 ```sh
-mix frappe_ui_live.install --dry-run   # mostra o que faria, sem escrever nada
-mix frappe_ui_live.install             # aplica; é idempotente (pode rodar de novo)
+mix frappe_ui_phx.install --dry-run   # mostra o que faria, sem escrever nada
+mix frappe_ui_phx.install             # aplica; é idempotente (pode rodar de novo)
 ```
 
 O instalador:
@@ -88,14 +90,14 @@ Opções: `--dry-run` e `--dep-path CAMINHO` (padrão: onde o Mix achou a depend
 @source "../js";
 @source "../../lib/my_app_web";
 
-@import "../../deps/frappe_ui_live/priv/static/frappe_ui.css";   /* tokens, tema, utilitários */
-@source "../../deps/frappe_ui_live/lib";                        /* o Tailwind precisa enxergar as classes dos componentes */
+@import "../../deps/frappe_ui_phx/priv/static/frappe_ui.css";   /* tokens, tema, utilitários */
+@source "../../deps/frappe_ui_phx/lib";                        /* o Tailwind precisa enxergar as classes dos componentes */
 ```
 
 ```js
 // assets/js/app.js
 import {hooks as colocatedHooks} from "phoenix-colocated/my_app"
-import {hooks as frappeUiHooks} from "phoenix-colocated/frappe_ui_live"
+import {hooks as frappeUiHooks} from "phoenix-colocated/frappe_ui_phx"
 
 const liveSocket = new LiveSocket("/live", Socket, {
   params: {_csrf_token: csrfToken},
@@ -112,23 +114,23 @@ const liveSocket = new LiveSocket("/live", Socket, {
 defp html_helpers do
   quote do
     # ... imports que já existem (CoreComponents, Phoenix.HTML...)
-    use FrappeUILive, except: [button: 1, icon: 1, list: 1]
+    use FrappeUIPhx, except: [button: 1, icon: 1, list: 1]
   end
 end
 ```
 
-`use FrappeUILive` importa as funções de componente do catálogo (`<.badge>`, `<.alert>`, `<.dialog>`...) e
+`use FrappeUIPhx` importa as funções de componente do catálogo (`<.badge>`, `<.alert>`, `<.dialog>`...) e
 `show_dialog/1`/`hide_dialog/1`.
 
 **Colisões de nome.** O `CoreComponents` gerado pelo Phoenix já define `button/1`, `icon/1`, `list/1` (e `input`, `table`, `header`, `flash`...).
 Duas formas de resolver:
 
 ```elixir
-use FrappeUILive, except: [button: 1, icon: 1, list: 1]   # importa tudo, menos estes
-use FrappeUILive, only: [badge: 1, alert: 1, dialog: 1]    # importa só o que você usa
+use FrappeUIPhx, except: [button: 1, icon: 1, list: 1]   # importa tudo, menos estes
+use FrappeUIPhx, only: [badge: 1, alert: 1, dialog: 1]    # importa só o que você usa
 ```
 
-Os excluídos continuam acessíveis com o módulo: `<FrappeUILive.Components.Button.button label="Salvar" />`.
+Os excluídos continuam acessíveis com o módulo: `<FrappeUIPhx.Components.Button.button label="Salvar" />`.
 Um nome desconhecido em `only:`/`except:` falha na compilação, listando os nomes válidos.
 
 ### 5. Tema, toasts e layout
@@ -138,13 +140,13 @@ Um nome desconhecido em `only:`/`except:` falha na compilação, listando os nom
 pipeline :browser do
   # ... plugs existentes
   plug :fetch_session
-  plug FrappeUILive.Plug.Theme              # resolve ?theme=dark → sessão → cookie → "light"
+  plug FrappeUIPhx.Plug.Theme              # resolve ?theme=dark → sessão → cookie → "light"
 end
 
 scope "/", MyAppWeb do
   pipe_through :browser
 
-  live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do
+  live_session :default, on_mount: [FrappeUIPhx.Live.ThemeHook] do
     live "/", HomeLive
   end
 end
@@ -161,10 +163,10 @@ end
 ```
 
 > **Atenção com o tema do Phoenix 1.8.** O root layout gerado costuma controlar `data-theme` (daisyUI) com um pequeno script e
-> `localStorage`. Se você usar o `FrappeUILive.Plug.Theme`, remova esse script ou mantenha **um só dono** do atributo `data-theme`
+> `localStorage`. Se você usar o `FrappeUIPhx.Plug.Theme`, remova esse script ou mantenha **um só dono** do atributo `data-theme`
 > (os dois brigando produzem tema que "pisca"). Valores aceitos: `"light"` e `"dark"`.
 
-Tema padrão diferente de claro: `plug FrappeUILive.Plug.Theme, default: "dark"` e `on_mount: [{FrappeUILive.Live.ThemeHook, default: "dark"}]`.
+Tema padrão diferente de claro: `plug FrappeUIPhx.Plug.Theme, default: "dark"` e `on_mount: [{FrappeUIPhx.Live.ThemeHook, default: "dark"}]`.
 
 > O CSS do Frappe UI **não substitui** as escalas padrão do Tailwind (cores, `text-sm`, sombras): os tokens entram em namespaces
 > próprios (`bg-surface-*`, `text-ink-*`, `border-outline-*`, `fui-text-*`, `shadow-elevation-*`), então o daisyUI e as classes do seu app continuam intactos.
@@ -174,7 +176,7 @@ Tema padrão diferente de claro: `plug FrappeUILive.Plug.Theme, default: "dark"`
 Crie uma LiveView (ou edite a `HomeLive`) com:
 
 ```heex
-<.alert theme={:green} title="Instalado">frappe_ui_live está funcionando.</.alert>
+<.alert theme={:green} title="Instalado">frappe_ui_phx está funcionando.</.alert>
 <.button label="Salvar" variant={:solid} icon_left="check" />
 <.badge label="Novo" theme={:blue} />
 ```
@@ -257,7 +259,7 @@ defmodule MyAppWeb.PedidoLive do
   use MyAppWeb, :live_view
 
   alias MyApp.Pedidos.Pedido
-  alias FrappeUILive.Ecto.Options
+  alias FrappeUIPhx.Ecto.Options
 
   def mount(_params, _session, socket) do
     {:ok,
@@ -274,7 +276,7 @@ defmodule MyAppWeb.PedidoLive do
   def handle_event("salvar", %{"pedido" => params}, socket) do
     case MyApp.Pedidos.criar(params) do
       {:ok, _pedido} ->
-        {:noreply, FrappeUILive.Toast.put_toast(socket, :success, "Pedido salvo!")}
+        {:noreply, FrappeUIPhx.Toast.put_toast(socket, :success, "Pedido salvo!")}
 
       {:error, changeset} ->
         {:noreply, assign_form(socket, changeset)}
@@ -332,8 +334,8 @@ end
 
 - **Button** aceita `variant` (`:solid | :subtle | :outline | :ghost`), `theme` (`:gray | :blue | :green | :red`), `size` (`:xs`…`:lg`),
   `icon_left`, `icon_right`, `icon` (botão só com ícone), `loading`/`loading_text` e vira link com `href`, `navigate` ou `patch`.
-- **Select/MultiSelect/Combobox**: `options` aceita lista de textos, `{rótulo, valor}` ou keyword. `FrappeUILive.Ecto.Options.from_enum/2` monta as opções de um `Ecto.Enum`.
-- **`Duration`** entende `"1h 30m"`, `"1:30"` e `"90m"`; o tipo Ecto `FrappeUILive.Ecto.Duration` guarda segundos.
+- **Select/MultiSelect/Combobox**: `options` aceita lista de textos, `{rótulo, valor}` ou keyword. `FrappeUIPhx.Ecto.Options.from_enum/2` monta as opções de um `Ecto.Enum`.
+- **`Duration`** entende `"1h 30m"`, `"1:30"` e `"90m"`; o tipo Ecto `FrappeUIPhx.Ecto.Duration` guarda segundos.
 - **Upload**: o `file_uploader` mostra progresso, cancelamento e os erros do LiveView (tamanho, tipo, quantidade) traduzidos.
 
 > `pin_code` está em [PinCode e DiceBearAvatar](#pincode-e-dicebearavatar).
@@ -369,12 +371,12 @@ end
 Coloque `<.toast_container flash={@flash} />` uma vez no layout. Em qualquer LiveView:
 
 ```elixir
-FrappeUILive.Toast.put_toast(socket, :success, "Salvo!")                    # :info | :success | :warning | :error
-FrappeUILive.Toast.put_toast(socket, :error, "Falhou", timeout: 8_000)      # padrão: 4000 ms
+FrappeUIPhx.Toast.put_toast(socket, :success, "Salvo!")                    # :info | :success | :warning | :error
+FrappeUIPhx.Toast.put_toast(socket, :error, "Falhou", timeout: 8_000)      # padrão: 4000 ms
 ```
 
 O container também mostra as mensagens do `flash` (`put_flash`). Tipo desconhecido, mensagem vazia ou `timeout` não positivo levantam `ArgumentError`.
-Para mudar o transporte, implemente o behaviour `FrappeUILive.ToastSink` (veja [Configuração](#configuração)).
+Para mudar o transporte, implemente o behaviour `FrappeUIPhx.ToastSink` (veja [Configuração](#configuração)).
 
 ---
 
@@ -502,7 +504,7 @@ Alvos de arrastar-e-soltar são hooks nativos do HTML5; **a persistência sempre
 
 ```elixir
 def handle_event("reordenar", %{"id" => id, "to" => to, "position" => position}, socket) do
-  rows = FrappeUILive.Components.Sortable.move(socket.assigns.rows, & &1.id, id, to, position)
+  rows = FrappeUIPhx.Components.Sortable.move(socket.assigns.rows, & &1.id, id, to, position)
   {:noreply, assign(socket, :rows, rows)}
 end
 ```
@@ -541,7 +543,7 @@ SVG gerado **no servidor**: sem JavaScript, sem biblioteca de gráficos, acessí
 <.code_editor id="codigo" name="codigo" value={@json} />                   <%!-- área de código (sem realce de sintaxe) --%>
 ```
 
-Para exibir o que o `editor` salvou, com HTML seguro, use `{FrappeUILive.Markdown.to_safe(@texto)}` direto no template
+Para exibir o que o `editor` salvou, com HTML seguro, use `{FrappeUIPhx.Markdown.to_safe(@texto)}` direto no template
 (já vem marcado como seguro; não há escape duplo).
 
 Componentes **experimentais** (a API ainda pode mudar):
@@ -574,10 +576,10 @@ Componentes **experimentais** (a API ainda pode mudar):
 
 ## Ícones Lucide
 
-Todos os ícones do Lucide (`FrappeUILive.Icons.version/0`) são **componentes LiveView**, em SVG inline — sem JavaScript e sem CSS de ícones.
+Todos os ícones do Lucide (`FrappeUIPhx.Icons.version/0`) são **componentes LiveView**, em SVG inline — sem JavaScript e sem CSS de ícones.
 
 ```heex
-<%!-- uma vez, no módulo: alias FrappeUILive.Icons.Lucide --%>
+<%!-- uma vez, no módulo: alias FrappeUIPhx.Icons.Lucide --%>
 <Lucide.plus />
 <Lucide.circle_alert size={16} color="red" stroke_width={1.5} title="Erro" />
 
@@ -598,9 +600,9 @@ Todos os ícones do Lucide (`FrappeUILive.Icons.version/0`) são **componentes L
 - O nome da função é o do ícone com `-` trocado por `_` (`circle-alert` → `circle_alert`; nome que começa com dígito ganha o prefixo `i_`).
 - Nome inexistente levanta `ArgumentError` citando o nome e sugerindo parecidos. `size`/`stroke_width` inválidos também.
 - As props `icon=` dos demais componentes aceitam **qualquer** ícone pelo nome (`<.button icon_left="anchor" />`).
-- **Catálogo**: `FrappeUILive.Icons.names/0`, `get/1` (tags e aliases) e `search/1` (por nome ou tag). O mostruário tem a página **Ícones** (`/icones`).
+- **Catálogo**: `FrappeUIPhx.Icons.names/0`, `get/1` (tags e aliases) e `search/1` (por nome ou tag). O mostruário tem a página **Ícones** (`/icones`).
 - O Lucide não publica categorias no pacote; a descoberta é por **tags**.
-- Apelidos do projeto: `config :frappe_ui_live, icon_resolver: MyApp.Icons` (behaviour `FrappeUILive.IconResolver`, callback `name/1`).
+- Apelidos do projeto: `config :frappe_ui_phx, icon_resolver: MyApp.Icons` (behaviour `FrappeUIPhx.IconResolver`, callback `name/1`).
 
 ---
 
@@ -617,14 +619,14 @@ Uma caixa por caractere (3 a 12), avanço automático, `Backspace` que volta, se
 - O valor é **um campo só** (`name` do `field`); as caixas não são enviadas sozinhas — nada parcial chega ao servidor.
 - `type`: `:numeric` (padrão) ou `:alphanumeric`. `mask` esconde os caracteres como uma senha.
 - `on_complete="evento"` envia `%{"id" => id, "value" => código}` quando todas as caixas estão preenchidas.
-- `FrappeUILive.Components.PinCode.sanitize/2` aplica **no servidor** a mesma regra de caracteres do cliente. O código recebido
+- `FrappeUIPhx.Components.PinCode.sanitize/2` aplica **no servidor** a mesma regra de caracteres do cliente. O código recebido
   continua sendo entrada de usuário: valide-o (e limite tentativas) no servidor.
 
 ```elixir
 def handle_event("verificar", %{"value" => value}, socket) do
   case MyApp.Auth.verificar_codigo(socket.assigns.usuario, PinCode.sanitize(value)) do
     :ok -> {:noreply, push_navigate(socket, to: ~p"/")}
-    :error -> {:noreply, FrappeUILive.Toast.put_toast(socket, :error, "Código inválido")}
+    :error -> {:noreply, FrappeUIPhx.Toast.put_toast(socket, :error, "Código inválido")}
   end
 end
 ```
@@ -632,16 +634,16 @@ end
 ### DiceBearAvatar
 
 ```heex
-<.dice_bear_avatar seed={FrappeUILive.DiceBear.seed(@user.id)} style="thumbs" size={:xl} label={@user.name} />
+<.dice_bear_avatar seed={FrappeUIPhx.DiceBear.seed(@user.id)} style="thumbs" size={:xl} label={@user.name} />
 ```
 
-Avatar do [DiceBear](https://www.dicebear.com/) (API 10.x, 61 estilos em `FrappeUILive.DiceBear.styles/0`) sobre o `avatar`, com os mesmos `size` e `shape`.
+Avatar do [DiceBear](https://www.dicebear.com/) (API 10.x, 61 estilos em `FrappeUIPhx.DiceBear.styles/0`) sobre o `avatar`, com os mesmos `size` e `shape`.
 Não há biblioteca oficial para Elixir: o componente **monta a URL** da API HTTP; o navegador busca a imagem.
 
 - **Privacidade**: a `seed` vai na URL para o servidor do DiceBear. Use `DiceBear.seed/1` (id opaco), **nunca** e-mail ou nome.
 - **Uso comercial**: a API pública é gratuita **só para uso não comercial**, sem garantia de disponibilidade e com limite de requisições por segundo
   (50 para SVG, 10 para PNG/JPG/WebP/AVIF). Em produção, [hospede a API](https://www.dicebear.com/recipes/self-host-the-http-api/) e configure:
-  `config :frappe_ui_live, dice_bear_base_url: "https://avatares.meuapp.com/10.x"`.
+  `config :frappe_ui_phx, dice_bear_base_url: "https://avatares.meuapp.com/10.x"`.
 - **Licenças**: cada estilo tem a licença do seu criador (alguns CC BY 4.0, que exigem atribuição). Veja <https://www.dicebear.com/licenses/>.
 - **CSP**: libere o host da API em `img-src`. As imagens carregam sob demanda e sem `Referer`.
 - **Opções do núcleo** (validadas nos intervalos da documentação): `flip`, `rotate` (-360..360), `scale` (0..10), `border_radius` (0..50),
@@ -662,7 +664,7 @@ exigiria a biblioteca JS `@dicebear/core` (Node 22+), uma dependência npm que e
 ## Tema claro e escuro
 
 - O tema vive em `data-theme="light|dark"` no `<html>`; todos os tokens trocam por variáveis CSS, então **nada é re-renderizado** na troca.
-- `FrappeUILive.Plug.Theme` resolve (`?theme=dark` → sessão → cookie → padrão) e o `ThemeHook` leva o valor aos assigns (`@frappe_ui_theme`).
+- `FrappeUIPhx.Plug.Theme` resolve (`?theme=dark` → sessão → cookie → padrão) e o `ThemeHook` leva o valor aos assigns (`@frappe_ui_theme`).
 - Botão pronto: `<.theme_switcher current={@frappe_ui_theme} />` (recarrega com `?theme=…`).
 - No Tailwind, use o variante `dark:` normalmente (`dark:bg-surface-gray-2`); ele segue `[data-theme="dark"]`.
 
@@ -678,7 +680,7 @@ exigiria a biblioteca JS `@dicebear/core` (Node 22+), uma dependência npm que e
 | Raio | `rounded-4`, `rounded-5`, `rounded-6` (escala do Frappe) |
 
 As páginas de **Fundamentos** do mostruário (`/f/colors`, `/f/typography`, `/f/radius`, `/f/shadows`, `/f/focus_ring`, `/f/chart_colors`) mostram todos os
-valores, gerados da mesma fonte do CSS (`FrappeUILive.Foundations`). Para trocar um token, sobrescreva a variável CSS no seu `app.css`, depois do `@import`.
+valores, gerados da mesma fonte do CSS (`FrappeUIPhx.Foundations`). Para trocar um token, sobrescreva a variável CSS no seu `app.css`, depois do `@import`.
 
 ---
 
@@ -686,22 +688,22 @@ valores, gerados da mesma fonte do CSS (`FrappeUILive.Foundations`). Para trocar
 
 | Módulo | Para quê |
 |---|---|
-| `FrappeUILive.Ecto.Duration` | `Ecto.Type`: `"1h 30m"`, `"1:30"`, `"90m"` ⇄ segundos (mesmo parser do componente `duration`) |
-| `FrappeUILive.Ecto.Rating` | `Ecto.ParameterizedType`: avaliação `0..max` (`max: 5`) |
-| `FrappeUILive.Ecto.StringList` | `Ecto.Type`: lista de textos a partir de `"a, b"` ou de uma lista (tags / `multi_select`) |
-| `FrappeUILive.Ecto.Options.from_enum/2` | opções de `select` a partir de um `Ecto.Enum` |
-| `FrappeUILive.ErrorTranslator` | tradução dos erros de changeset (padrão `ErrorTranslator.Default`; troque por Gettext via config) |
-| `FrappeUILive.Plug.Theme` | resolve `light`/`dark` |
-| `FrappeUILive.Plug.Static` | serve `frappe_ui.css` direto da dependência, para quem prefere `<link>` a `@import` |
-| `FrappeUILive.Live.ThemeHook` | `on_mount` que leva o tema da sessão aos assigns |
-| `FrappeUILive.Toast` | `put_toast(socket, :success, "Salvo!")` |
-| `FrappeUILive.Markdown` | Markdown restrito → HTML seguro (para exibir o que o `editor` salva) |
+| `FrappeUIPhx.Ecto.Duration` | `Ecto.Type`: `"1h 30m"`, `"1:30"`, `"90m"` ⇄ segundos (mesmo parser do componente `duration`) |
+| `FrappeUIPhx.Ecto.Rating` | `Ecto.ParameterizedType`: avaliação `0..max` (`max: 5`) |
+| `FrappeUIPhx.Ecto.StringList` | `Ecto.Type`: lista de textos a partir de `"a, b"` ou de uma lista (tags / `multi_select`) |
+| `FrappeUIPhx.Ecto.Options.from_enum/2` | opções de `select` a partir de um `Ecto.Enum` |
+| `FrappeUIPhx.ErrorTranslator` | tradução dos erros de changeset (padrão `ErrorTranslator.Default`; troque por Gettext via config) |
+| `FrappeUIPhx.Plug.Theme` | resolve `light`/`dark` |
+| `FrappeUIPhx.Plug.Static` | serve `frappe_ui.css` direto da dependência, para quem prefere `<link>` a `@import` |
+| `FrappeUIPhx.Live.ThemeHook` | `on_mount` que leva o tema da sessão aos assigns |
+| `FrappeUIPhx.Toast` | `put_toast(socket, :success, "Salvo!")` |
+| `FrappeUIPhx.Markdown` | Markdown restrito → HTML seguro (para exibir o que o `editor` salva) |
 
 ```elixir
 schema "tarefas" do
-  field :tempo, FrappeUILive.Ecto.Duration                    # "1h 30m" no formulário, 5400 no banco
-  field :nota, FrappeUILive.Ecto.Rating, max: 5
-  field :etiquetas, FrappeUILive.Ecto.StringList              # "a, b" → ["a", "b"]
+  field :tempo, FrappeUIPhx.Ecto.Duration                    # "1h 30m" no formulário, 5400 no banco
+  field :nota, FrappeUIPhx.Ecto.Rating, max: 5
+  field :etiquetas, FrappeUIPhx.Ecto.StringList              # "a, b" → ["a", "b"]
 end
 ```
 
@@ -713,7 +715,7 @@ Tudo é opcional.
 
 ```elixir
 # config/config.exs
-config :frappe_ui_live,
+config :frappe_ui_phx,
   texts: %{close: "Close", today: "Today"},     # textos fixos: sobrescritas pontuais
   translator: MyApp.Translator,                 # ou um módulo que traduz (ex.: Gettext)
   error_translator: MyApp.ErrorTranslator,      # tradução de erros de changeset
@@ -724,11 +726,11 @@ config :frappe_ui_live,
 
 | Chave | Behaviour / formato | Padrão |
 |---|---|---|
-| `:texts` | mapa `%{chave => texto}`; `FrappeUILive.Texts.keys/0` lista as chaves | português |
-| `:translator` | `FrappeUILive.Translator` — `translate(key, default, bindings)` | sem tradutor |
-| `:error_translator` | `FrappeUILive.ErrorTranslator` | `ErrorTranslator.Default` |
-| `:icon_resolver` | `FrappeUILive.IconResolver` — `name(String.t()) :: String.t()` | nome inalterado |
-| `:toast_sink` | `FrappeUILive.ToastSink` — `deliver(socket, payload)` | `push_event` |
+| `:texts` | mapa `%{chave => texto}`; `FrappeUIPhx.Texts.keys/0` lista as chaves | português |
+| `:translator` | `FrappeUIPhx.Translator` — `translate(key, default, bindings)` | sem tradutor |
+| `:error_translator` | `FrappeUIPhx.ErrorTranslator` | `ErrorTranslator.Default` |
+| `:icon_resolver` | `FrappeUIPhx.IconResolver` — `name(String.t()) :: String.t()` | nome inalterado |
+| `:toast_sink` | `FrappeUIPhx.ToastSink` — `deliver(socket, payload)` | `push_event` |
 | `:dice_bear_base_url` | `http(s)://…` ou caminho começando por `/` | `https://api.dicebear.com/10.x` |
 
 Um módulo configurado que não implementa o callback falha **na primeira chamada**, com mensagem clara. Um texto passado explicitamente ao
@@ -756,14 +758,14 @@ mix phx.server     # http://localhost:4010
 
 | Sintoma | Causa provável | Solução |
 |---|---|---|
-| Componentes sem estilo | Tailwind não vê as classes da biblioteca | confira `@source "../../deps/frappe_ui_live/lib"` no `app.css` (caminho relativo ao arquivo) |
-| Cores/tokens ausentes (`bg-surface-*` não existe) | `frappe_ui.css` não importado | `@import "../../deps/frappe_ui_live/priv/static/frappe_ui.css"` depois de `@import "tailwindcss"` |
-| Dialog, Dropdown, Toast, PinCode não reagem | hooks *colocated* não registrados | `import {hooks as frappeUiHooks} from "phoenix-colocated/frappe_ui_live"` e `hooks: {...colocatedHooks, ...frappeUiHooks}`; rode `mix compile` e `mix assets.build` |
-| `** (CompileError) imported ...button/1 conflicts with local function` | colisão com o `CoreComponents` | `use FrappeUILive, except: [button: 1, icon: 1, list: 1]` |
+| Componentes sem estilo | Tailwind não vê as classes da biblioteca | confira `@source "../../deps/frappe_ui_phx/lib"` no `app.css` (caminho relativo ao arquivo) |
+| Cores/tokens ausentes (`bg-surface-*` não existe) | `frappe_ui.css` não importado | `@import "../../deps/frappe_ui_phx/priv/static/frappe_ui.css"` depois de `@import "tailwindcss"` |
+| Dialog, Dropdown, Toast, PinCode não reagem | hooks *colocated* não registrados | `import {hooks as frappeUiHooks} from "phoenix-colocated/frappe_ui_phx"` e `hooks: {...colocatedHooks, ...frappeUiHooks}`; rode `mix compile` e `mix assets.build` |
+| `** (CompileError) imported ...button/1 conflicts with local function` | colisão com o `CoreComponents` | `use FrappeUIPhx, except: [button: 1, icon: 1, list: 1]` |
 | `ArgumentError ... fora do contrato` | `variant`/`theme`/`size` inválido | use um dos valores listados na mensagem (veja [`docs/componentes.md`](docs/componentes.md)) |
 | `ArgumentError ... id` | componente com estado sem `id` válido | passe `id="…"` com letras, números, `-` e `_` |
 | Tema "pisca" ou não troca | dois donos do `data-theme` (script do Phoenix + `Plug.Theme`) | deixe só um; veja o aviso no passo 5 da instalação |
-| Ícone não aparece / `ArgumentError ... não existe no catálogo` | nome errado | `FrappeUILive.Icons.search("termo")`, ou a página `/icones` do mostruário |
+| Ícone não aparece / `ArgumentError ... não existe no catálogo` | nome errado | `FrappeUIPhx.Icons.search("termo")`, ou a página `/icones` do mostruário |
 | Avatar DiceBear quebrado | CSP bloqueando a imagem, ou limite da API pública | libere o host em `img-src`; em produção, hospede a API |
 | Primeira compilação lenta | ~2.000 componentes de ícone | normal, acontece uma vez (~35 s) |
 

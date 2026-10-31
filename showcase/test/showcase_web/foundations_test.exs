@@ -2,7 +2,7 @@ defmodule ShowcaseWeb.FoundationsTest do
   @moduledoc "Páginas de Fundamentos e comportamentos dos componentes experimentais no mostruário."
   use ShowcaseWeb.ConnCase, async: true
 
-  alias FrappeUILive.Foundations
+  alias FrappeUIPhx.Foundations
   alias ShowcaseWeb.FoundationsView
 
   describe "navegação" do
@@ -219,7 +219,7 @@ defmodule ShowcaseWeb.FoundationsTest do
   end
 
   describe "home: todos os componentes, no mesmo estilo, com prévia ao vivo" do
-    alias FrappeUILive.Components, as: Catalog
+    alias FrappeUIPhx.Components, as: Catalog
 
     test "cada componente do catálogo tem cartão com prévia renderizada", %{conn: conn} do
       {:ok, view, _} = live(conn, "/")

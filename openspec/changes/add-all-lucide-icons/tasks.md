@@ -7,12 +7,12 @@
 
 ## 2. Núcleo em Elixir
 
-- [x] 2.1 `FrappeUILive.Icons` (`names/0`, `get/1`, `search/1`, `version/0`) lendo `priv/icons.json` com `@external_resource`; busca normaliza caixa/acentos e ordena (exato, prefixo, tag)
+- [x] 2.1 `FrappeUIPhx.Icons` (`names/0`, `get/1`, `search/1`, `version/0`) lendo `priv/icons.json` com `@external_resource`; busca normaliza caixa/acentos e ordena (exato, prefixo, tag)
 - [x] 2.2 `Icons.Svg.render/2`: SVG com `size`, `color`, `stroke_width`, `absolute_stroke_width`, `class`, `title`, `rest`; pré-condições com `Contract.require!/3` (número positivo finito; nome existente com sugestões)
-- [x] 2.3 `FrappeUILive.Icons.Lucide`: macro que define um function component por ícone (nomes `-` → `_`, prefixo `i_` se começar com dígito), todos delegando ao `Svg.render/2`; resolver colisões de nome
+- [x] 2.3 `FrappeUIPhx.Icons.Lucide`: macro que define um function component por ícone (nomes `-` → `_`, prefixo `i_` se começar com dígito), todos delegando ao `Svg.render/2`; resolver colisões de nome
 - [x] 2.4 Medir tempo de compilação e tamanho do beam; se compilação > ~30 s, dividir por letra inicial; decidir dados compilados vs `persistent_term` (medido: ~35 s uma vez, beam de `Icons.Lucide` 8 MB por metadados de `attr`, dados em `Icons` 1,4 MB; mantido compilado e em módulo único)
 - [x] 2.5 `Components.Icon.icon/1` genérico por nome/alias com as novas propriedades; `IconResolver` (+ `IconResolver.Lucide`) cobrindo todo o catálogo; componentes com prop `icon=` renderizam via `<.icon>`
-- [x] 2.6 Catálogo `Components`/`use FrappeUILive`: manter `icon` no import padrão; documentar `alias FrappeUILive.Icons.Lucide`
+- [x] 2.6 Catálogo `Components`/`use FrappeUIPhx`: manter `icon` no import padrão; documentar `alias FrappeUIPhx.Icons.Lucide`
 
 ## 3. Testes
 

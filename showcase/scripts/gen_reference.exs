@@ -4,7 +4,7 @@
 # A fonte é `Showcase.Spec` (lê `attr`/`slot` declarados e o @moduledoc), então a
 # referência nunca diverge dos componentes. Não edite o arquivo gerado à mão.
 
-alias FrappeUILive.Components, as: Catalog
+alias FrappeUIPhx.Components, as: Catalog
 alias Showcase.Spec
 
 cell = fn text ->

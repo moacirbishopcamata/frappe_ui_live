@@ -1,12 +1,12 @@
-defmodule FrappeUILive.MixProject do
+defmodule FrappeUIPhx.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
-  @source_url "https://github.com/moacirbishopcamata/frappe_ui_live"
+  @version "0.3.0"
+  @source_url "https://github.com/moacirbishopcamata/frappe_ui_phx"
 
   def project do
     [
-      app: :frappe_ui_live,
+      app: :frappe_ui_phx,
       version: @version,
       elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -43,7 +43,7 @@ defmodule FrappeUILive.MixProject do
     [
       {:phoenix, "~> 1.8"},
       {:phoenix_live_view, "~> 1.2"},
-      {:phoenix_html, "~> 4.3"},
+      {:phoenix_html, "~> 4.4"},
       {:jason, "~> 1.4"},
       {:ecto, "~> 3.13", optional: true},
       {:phoenix_ecto, "~> 4.7", optional: true},

@@ -1,7 +1,7 @@
 defmodule ShowcaseWeb.IconsPageTest do
   use ShowcaseWeb.ConnCase, async: true
 
-  alias FrappeUILive.Icons
+  alias FrappeUIPhx.Icons
   alias ShowcaseWeb.IconsView
 
   defp change(view, params) do

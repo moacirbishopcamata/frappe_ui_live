@@ -1,5 +1,5 @@
 {
-  "name": "frappe_ui_live-dev",
+  "name": "frappe_ui_phx-dev",
   "private": true,
   "description": "Ferramentas de desenvolvimento (geração de tokens). Sem dependências npm; não é publicado.",
   "type": "module",

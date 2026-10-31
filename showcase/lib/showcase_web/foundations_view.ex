@@ -2,15 +2,15 @@ defmodule ShowcaseWeb.FoundationsView do
   @moduledoc """
   Páginas de Fundamentos (Colors, Typography, Radius, Shadows, Focus ring e Chart colors).
 
-  Tudo vem de `FrappeUILive.Foundations` (gerado da mesma fonte do CSS) e é exibido
+  Tudo vem de `FrappeUIPhx.Foundations` (gerado da mesma fonte do CSS) e é exibido
   pelas **variáveis CSS do tema** (`var(--surface-gray-2)`...): trocar claro/escuro
   muda as amostras na hora. Estilos de amostra usam `style` inline porque os nomes são
   dinâmicos (o Tailwind só enxerga classes escritas por inteiro no código).
   """
   use Phoenix.Component
-  use FrappeUILive
+  use FrappeUIPhx
 
-  alias FrappeUILive.Foundations
+  alias FrappeUIPhx.Foundations
 
   attr :id, :atom, required: true
 

@@ -8,7 +8,7 @@ defmodule Showcase.Spec do
   conversão (cast) do que o formulário envia para atributos tipados.
   """
 
-  alias FrappeUILive.Components, as: Catalog
+  alias FrappeUIPhx.Components, as: Catalog
 
   @editable_types ~w(atom string boolean integer)a
   @hidden ~w(rest)a

@@ -9,7 +9,7 @@ defmodule ShowcaseWeb.Samples do
   derrubar o LiveView, mostrando o `Contract` em ação.
   """
   use Phoenix.Component
-  use FrappeUILive
+  use FrappeUIPhx
 
   alias Phoenix.LiveView.JS
 
@@ -189,7 +189,7 @@ defmodule ShowcaseWeb.Samples do
 
   defp sample(%{id: :date_picker}, a, _) do
     # o id vira CSS inline: valida a pré-condição antes (o LiveComponent não pode ser pré-avaliado)
-    FrappeUILive.Components.Anchor.valid_id!(a.id, "date_picker")
+    FrappeUIPhx.Components.Anchor.valid_id!(a.id, "date_picker")
     assigns = %{a: a}
     {:live, ~H|<.date_picker name="data" value="2026-03-09" {@a} />|}
   end
@@ -278,7 +278,7 @@ defmodule ShowcaseWeb.Samples do
       <.button label="Erro" theme={:red} phx-click="toast" phx-value-kind="error" />
     </div>
     <p class="fui-text-sm text-ink-gray-5 mt-3">
-      O toast sai do servidor por <code>FrappeUILive.Toast.put_toast/4</code>; o container fica no layout desta página.
+      O toast sai do servidor por <code>FrappeUIPhx.Toast.put_toast/4</code>; o container fica no layout desta página.
     </p>
     """
   end
@@ -870,7 +870,7 @@ defmodule ShowcaseWeb.Samples do
     ~H"""
     <.theme_switcher {@a} />
     <p class="fui-text-sm text-ink-gray-5 mt-3">
-      Recarrega a página com <code>?theme=…</code>; o <code>FrappeUILive.Plug.Theme</code>
+      Recarrega a página com <code>?theme=…</code>; o <code>FrappeUIPhx.Plug.Theme</code>
       guarda a escolha.
     </p>
     """
@@ -887,12 +887,12 @@ Texto com **negrito** e _itálico_.
 - item um
 - item dois"
   defp code_sample, do: "{
-  \"nome\": \"frappe_ui_live\",
+  \"nome\": \"frappe_ui_phx\",
   \"versao\": \"0.1.0\"
 }"
 
   defp calendar_events(month) do
-    first = FrappeUILive.Calendar.first_of_month(month)
+    first = FrappeUIPhx.Calendar.first_of_month(month)
 
     [
       %{date: Date.add(first, 4), title: "Reunião", theme: :blue},

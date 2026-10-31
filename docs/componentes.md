@@ -17,7 +17,7 @@
 
 ### Button
 
-`FrappeUILive.Components.Button.button/1` — Botão do Frappe UI: variantes `solid | subtle | outline | ghost`, temas `gray | blue | green | red`, tamanhos `xs | sm | md | lg`.
+`FrappeUIPhx.Components.Button.button/1` — Botão do Frappe UI: variantes `solid | subtle | outline | ghost`, temas `gray | blue | green | red`, tamanhos `xs | sm | md | lg`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -40,7 +40,7 @@
 
 ### TextInput
 
-`FrappeUILive.Components.TextInput.text_input/1` — Campo de uma linha. Aceita `field={@form[:campo]}` (Phoenix/Ecto) ou `name`/`value` avulsos. Restrições (`required`, `maxlength`, `min`, `pattern`, `placeholder`...) vão direto ao `<input>`; o servidor continua sendo a barreira real (o `required` aqui espelha a regra do changeset).
+`FrappeUIPhx.Components.TextInput.text_input/1` — Campo de uma linha. Aceita `field={@form[:campo]}` (Phoenix/Ecto) ou `name`/`value` avulsos. Restrições (`required`, `maxlength`, `min`, `pattern`, `placeholder`...) vão direto ao `<input>`; o servidor continua sendo a barreira real (o `required` aqui espelha a regra do changeset).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -57,7 +57,7 @@
 
 ### Textarea
 
-`FrappeUILive.Components.Textarea.textarea/1` — Campo de várias linhas; mesmo contrato de `FrappeUILive.Components.TextInput`.
+`FrappeUIPhx.Components.Textarea.textarea/1` — Campo de várias linhas; mesmo contrato de `FrappeUIPhx.Components.TextInput`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -74,7 +74,7 @@
 
 ### Password
 
-`FrappeUILive.Components.Password.password/1` — Campo de senha com botão de mostrar/ocultar. A alternância é só visual (`JS.toggle_attribute` no `type`); o valor **nunca** é reenviado ao HTML.
+`FrappeUIPhx.Components.Password.password/1` — Campo de senha com botão de mostrar/ocultar. A alternância é só visual (`JS.toggle_attribute` no `type`); o valor **nunca** é reenviado ao HTML.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -90,7 +90,7 @@
 
 ### PinCode
 
-`FrappeUILive.Components.PinCode.pin_code/1` — Código de verificação / PIN: uma caixa por caractere, com avanço automático, Backspace que volta, setas, colar o código inteiro e preenchimento por SMS (`autocomplete="one-time-code"`).
+`FrappeUIPhx.Components.PinCode.pin_code/1` — Código de verificação / PIN: uma caixa por caractere, com avanço automático, Backspace que volta, setas, colar o código inteiro e preenchimento por SMS (`autocomplete="one-time-code"`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -110,7 +110,7 @@
 
 ### Select
 
-`FrappeUILive.Components.Select.select/1` — Seleção nativa. `options` aceita lista de strings, `{rótulo, valor}` ou keyword; `prompt` adiciona uma primeira opção vazia.
+`FrappeUIPhx.Components.Select.select/1` — Seleção nativa. `options` aceita lista de strings, `{rótulo, valor}` ou keyword; `prompt` adiciona uma primeira opção vazia.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -129,7 +129,7 @@
 
 ### Combobox
 
-`FrappeUILive.Components.Combobox.combobox/1` — Seleção única com busca. Aceita `field` (Phoenix/Ecto); a escolha é um radio nativo do formulário.
+`FrappeUIPhx.Components.Combobox.combobox/1` — Seleção única com busca. Aceita `field` (Phoenix/Ecto); a escolha é um radio nativo do formulário.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -148,7 +148,7 @@
 
 ### MultiSelect
 
-`FrappeUILive.Components.MultiSelect.multi_select/1` — Seleção múltipla com busca e selos. Envia `name[]` (mais um `""` para permitir esvaziar); combine com `FrappeUILive.Ecto.StringList`, que descarta o vazio.
+`FrappeUIPhx.Components.MultiSelect.multi_select/1` — Seleção múltipla com busca e selos. Envia `name[]` (mais um `""` para permitir esvaziar); combine com `FrappeUIPhx.Ecto.StringList`, que descarta o vazio.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -167,7 +167,7 @@
 
 ### Checkbox
 
-`FrappeUILive.Components.Checkbox.checkbox/1` — Caixa de seleção com rótulo opcional. Emite o `hidden` com `"false"` como o `core_components` do Phoenix, para que o desmarcado chegue ao servidor.
+`FrappeUIPhx.Components.Checkbox.checkbox/1` — Caixa de seleção com rótulo opcional. Emite o `hidden` com `"false"` como o `core_components` do Phoenix, para que o desmarcado chegue ao servidor.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -183,7 +183,7 @@
 
 ### Radio
 
-`FrappeUILive.Components.RadioGroup.radio_group/1` — Grupo de opções exclusivas (`<input type=radio>` nativos); `options` como em `Select`.
+`FrappeUIPhx.Components.RadioGroup.radio_group/1` — Grupo de opções exclusivas (`<input type=radio>` nativos); `options` como em `Select`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -200,7 +200,7 @@
 
 ### Switch
 
-`FrappeUILive.Components.Switch.switch/1` — Interruptor. É um checkbox nativo (`peer`), então funciona em formulários sem JS.
+`FrappeUIPhx.Components.Switch.switch/1` — Interruptor. É um checkbox nativo (`peer`), então funciona em formulários sem JS.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -217,7 +217,7 @@
 
 ### Slider
 
-`FrappeUILive.Components.Slider.slider/1` — Controle deslizante (`<input type=range>`); `min <= value <= max` é pré-condição.
+`FrappeUIPhx.Components.Slider.slider/1` — Controle deslizante (`<input type=range>`); `min <= value <= max` é pré-condição.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -235,7 +235,7 @@
 
 ### Rating
 
-`FrappeUILive.Components.Rating.rating/1` — Avaliação em estrelas (`1..max`). Cada estrela é um `<input type=radio>`, então funciona em formulários e `phx-change`; o preenchimento vem do valor no servidor. Combine com `FrappeUILive.Ecto.Rating` no schema.
+`FrappeUIPhx.Components.Rating.rating/1` — Avaliação em estrelas (`1..max`). Cada estrela é um `<input type=radio>`, então funciona em formulários e `phx-change`; o preenchimento vem do valor no servidor. Combine com `FrappeUIPhx.Ecto.Rating` no schema.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -250,7 +250,7 @@
 
 ### DatePicker
 
-`FrappeUILive.Components.DatePicker.date_picker/1` — Seletor de data com calendário (LiveComponent: o mês exibido é estado próprio).
+`FrappeUIPhx.Components.DatePicker.date_picker/1` — Seletor de data com calendário (LiveComponent: o mês exibido é estado próprio).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -267,7 +267,7 @@
 
 ### TimePicker
 
-`FrappeUILive.Components.TimePicker.time_picker/1` — Seletor de horário (`<input type=time>` nativo, com o teclado/relógio do dispositivo); `step` em segundos.
+`FrappeUIPhx.Components.TimePicker.time_picker/1` — Seletor de horário (`<input type=time>` nativo, com o teclado/relógio do dispositivo); `step` em segundos.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -284,7 +284,7 @@
 
 ### Duration
 
-`FrappeUILive.Components.Duration.duration/1` — Campo de duração: mostra `1h 30m` quando o valor são segundos e aceita o que `FrappeUILive.Duration` entende. Combine com `FrappeUILive.Ecto.Duration` no schema.
+`FrappeUIPhx.Components.Duration.duration/1` — Campo de duração: mostra `1h 30m` quando o valor são segundos e aceita o que `FrappeUIPhx.Duration` entende. Combine com `FrappeUIPhx.Ecto.Duration` no schema.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -300,7 +300,7 @@
 
 ### FileUploader
 
-`FrappeUILive.Components.FileUploader.file_uploader/1` — Área de envio sobre `allow_upload/3` do LiveView: arrastar-e-soltar, lista de arquivos com progresso, cancelamento e erros em português. Quem decide o que fazer com o arquivo (`consume_uploaded_entries/3`) é o servidor.
+`FrappeUIPhx.Components.FileUploader.file_uploader/1` — Área de envio sobre `allow_upload/3` do LiveView: arrastar-e-soltar, lista de arquivos com progresso, cancelamento e erros em português. Quem decide o que fazer com o arquivo (`consume_uploaded_entries/3`) é o servidor.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -315,7 +315,7 @@
 
 ### FormControl
 
-`FrappeUILive.Components.FormControl.form_control/1` — Rótulo + controle + descrição + erros, escolhendo o controle por `type`.
+`FrappeUIPhx.Components.FormControl.form_control/1` — Rótulo + controle + descrição + erros, escolhendo o controle por `type`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -333,7 +333,7 @@
 
 ### FormLabel
 
-`FrappeUILive.Components.FormLabel.form_label/1` — Rótulo de campo; `required` acrescenta o asterisco e deve espelhar o `required` do controle.
+`FrappeUIPhx.Components.FormLabel.form_label/1` — Rótulo de campo; `required` acrescenta o asterisco e deve espelhar o `required` do controle.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -349,7 +349,7 @@
 
 ### Badge
 
-`FrappeUILive.Components.Badge.badge/1` — Selo de status: temas `gray | blue | green | amber | red | violet`, variantes `solid | subtle | outline | ghost`.
+`FrappeUIPhx.Components.Badge.badge/1` — Selo de status: temas `gray | blue | green | amber | red | violet`, variantes `solid | subtle | outline | ghost`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -365,7 +365,7 @@
 
 ### Alert
 
-`FrappeUILive.Components.Alert.alert/1` — Alerta com título, descrição e ação opcional. Temas `gray | blue | green | amber | red`.
+`FrappeUIPhx.Components.Alert.alert/1` — Alerta com título, descrição e ação opcional. Temas `gray | blue | green | amber | red`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -381,7 +381,7 @@
 
 ### Progress
 
-`FrappeUILive.Components.Progress.progress/1` — Barra de progresso (`value` de 0 a 100) com rótulo e valor opcionais.
+`FrappeUIPhx.Components.Progress.progress/1` — Barra de progresso (`value` de 0 a 100) com rótulo e valor opcionais.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -393,7 +393,7 @@
 
 ### Skeleton
 
-`FrappeUILive.Components.Skeleton.skeleton/1` — Bloco animado para estados de carregamento; dimensione por `class` (ex.: `h-4 w-32`).
+`FrappeUIPhx.Components.Skeleton.skeleton/1` — Bloco animado para estados de carregamento; dimensione por `class` (ex.: `h-4 w-32`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -401,7 +401,7 @@
 
 ### Spinner
 
-`FrappeUILive.Components.Spinner.spinner/1` — Indicador de carregamento; herda a cor do texto.
+`FrappeUIPhx.Components.Spinner.spinner/1` — Indicador de carregamento; herda a cor do texto.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -409,7 +409,7 @@
 
 ### LoadingText
 
-`FrappeUILive.Components.LoadingText.loading_text/1` — Texto de carregamento com spinner.
+`FrappeUIPhx.Components.LoadingText.loading_text/1` — Texto de carregamento com spinner.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -418,7 +418,7 @@
 
 ### Avatar
 
-`FrappeUILive.Components.Avatar.avatar/1` — Avatar com imagem ou iniciais do `label`. Formas `circle | square`.
+`FrappeUIPhx.Components.Avatar.avatar/1` — Avatar com imagem ou iniciais do `label`. Formas `circle | square`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -430,7 +430,7 @@
 
 ### DiceBearAvatar
 
-`FrappeUILive.Components.DiceBearAvatar.dice_bear_avatar/1` — Avatar gerado pelo [DiceBear](https://www.dicebear.com/) a partir de uma `seed`: a mesma `style` + `seed` + `options` dá sempre o mesmo desenho. Mesmos tamanhos e formas do `FrappeUILive.Components.Avatar`, de quem herda o visual (composição).
+`FrappeUIPhx.Components.DiceBearAvatar.dice_bear_avatar/1` — Avatar gerado pelo [DiceBear](https://www.dicebear.com/) a partir de uma `seed`: a mesma `style` + `seed` + `options` dá sempre o mesmo desenho. Mesmos tamanhos e formas do `FrappeUIPhx.Components.Avatar`, de quem herda o visual (composição).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -454,7 +454,7 @@
 
 ### Icon
 
-`FrappeUILive.Components.Icon.icon/1` — Ícone Lucide por nome, renderizado como `<svg>` inline (veja `FrappeUILive.Icons`).
+`FrappeUIPhx.Components.Icon.icon/1` — Ícone Lucide por nome, renderizado como `<svg>` inline (veja `FrappeUIPhx.Icons`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -468,7 +468,7 @@
 
 ### KeyboardShortcut
 
-`FrappeUILive.Components.KeyboardShortcut.keyboard_shortcut/1` — Atalho de teclado: uma `<kbd>` por tecla (`keys={["Ctrl", "K"]}`).
+`FrappeUIPhx.Components.KeyboardShortcut.keyboard_shortcut/1` — Atalho de teclado: uma `<kbd>` por tecla (`keys={["Ctrl", "K"]}`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -477,7 +477,7 @@
 
 ### ItemListRow
 
-`FrappeUILive.Components.ItemListRow.item_list_row/1` — Linha de lista com ícone, título, subtítulo e ações; navegável por `navigate`/`patch`/`href`.
+`FrappeUIPhx.Components.ItemListRow.item_list_row/1` — Linha de lista com ícone, título, subtítulo e ações; navegável por `navigate`/`patch`/`href`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -492,7 +492,7 @@
 
 ### SavedIndicator
 
-`FrappeUILive.Components.SavedIndicator.saved_indicator/1` — Confirmação visual transitória ("Salvo") sem `useEffect`/timer: o servidor devolve um valor que muda a cada sucesso (`at`, ex. um timestamp) e o `:key` remonta o elemento, reiniciando a animação CSS que termina em opacidade 0.
+`FrappeUIPhx.Components.SavedIndicator.saved_indicator/1` — Confirmação visual transitória ("Salvo") sem `useEffect`/timer: o servidor devolve um valor que muda a cada sucesso (`at`, ex. um timestamp) e o `:key` remonta o elemento, reiniciando a animação CSS que termina em opacidade 0.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -502,7 +502,7 @@
 
 ### ErrorMessage
 
-`FrappeUILive.Components.ErrorMessage.error_message/1` — Mensagem(ns) de erro. Aceita uma string, uma lista de strings ou `nil` (não renderiza nada).
+`FrappeUIPhx.Components.ErrorMessage.error_message/1` — Mensagem(ns) de erro. Aceita uma string, uma lista de strings ou `nil` (não renderiza nada).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -512,7 +512,7 @@
 
 ### Toast
 
-`FrappeUILive.Components.Toast.toast_container/1` — Container de toasts: mostra mensagens de `flash` (renderizadas no servidor) e as enviadas por `FrappeUILive.Toast.put_toast/4` (via hook colocated).
+`FrappeUIPhx.Components.Toast.toast_container/1` — Container de toasts: mostra mensagens de `flash` (renderizadas no servidor) e as enviadas por `FrappeUIPhx.Toast.put_toast/4` (via hook colocated).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -524,7 +524,7 @@
 
 ### Dialog
 
-`FrappeUILive.Components.Dialog.dialog/1` — Diálogo modal sobre `<dialog>` nativo (foco preso, Esc e backdrop pelo navegador).
+`FrappeUIPhx.Components.Dialog.dialog/1` — Diálogo modal sobre `<dialog>` nativo (foco preso, Esc e backdrop pelo navegador).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -544,7 +544,7 @@
 
 ### BottomSheet
 
-`FrappeUILive.Components.BottomSheet.bottom_sheet/1` — Folha inferior (mobile): um `Dialog` com `placement: :bottom`; abre/fecha com `show_dialog/1` e `hide_dialog/1`.
+`FrappeUIPhx.Components.BottomSheet.bottom_sheet/1` — Folha inferior (mobile): um `Dialog` com `placement: :bottom`; abre/fecha com `show_dialog/1` e `hide_dialog/1`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -561,7 +561,7 @@
 
 ### SettingsDialog
 
-`FrappeUILive.Components.SettingsDialog.settings_dialog/1` — Diálogo de configurações: navegação lateral por seções (`:tab`) e o conteúdo da seção ativa. A seção ativa (`active`) é um assign do servidor.
+`FrappeUIPhx.Components.SettingsDialog.settings_dialog/1` — Diálogo de configurações: navegação lateral por seções (`:tab`) e o conteúdo da seção ativa. A seção ativa (`active`) é um assign do servidor.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -578,7 +578,7 @@
 
 ### KeyboardShortcutsDialog
 
-`FrappeUILive.Components.KeyboardShortcutsDialog.keyboard_shortcuts_dialog/1` — Diálogo com a lista de atalhos: `shortcuts={[%{label: "Buscar", keys: ["Ctrl", "K"]}]}`.
+`FrappeUIPhx.Components.KeyboardShortcutsDialog.keyboard_shortcuts_dialog/1` — Diálogo com a lista de atalhos: `shortcuts={[%{label: "Buscar", keys: ["Ctrl", "K"]}]}`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -590,7 +590,7 @@
 
 ### Dropdown
 
-`FrappeUILive.Components.Dropdown.dropdown/1` — Menu suspenso sem JavaScript: Popover API (light-dismiss e Esc nativos) + CSS Anchor Positioning (inverte para cima quando falta espaço).
+`FrappeUIPhx.Components.Dropdown.dropdown/1` — Menu suspenso sem JavaScript: Popover API (light-dismiss e Esc nativos) + CSS Anchor Positioning (inverte para cima quando falta espaço).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -606,7 +606,7 @@
 
 ### Popover
 
-`FrappeUILive.Components.Popover.popover/1` — Painel flutuante com conteúdo livre: Popover API + CSS Anchor Positioning (sem JS).
+`FrappeUIPhx.Components.Popover.popover/1` — Painel flutuante com conteúdo livre: Popover API + CSS Anchor Positioning (sem JS).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -621,7 +621,7 @@
 
 ### ContextMenu
 
-`FrappeUILive.Components.ContextMenu.context_menu/1` — Menu de contexto (botão direito) sobre uma região. O hook colocated só posiciona e abre o `popover` no cursor; o que cada item faz é decidido pelo servidor (`click`) ou por navegação.
+`FrappeUIPhx.Components.ContextMenu.context_menu/1` — Menu de contexto (botão direito) sobre uma região. O hook colocated só posiciona e abre o `popover` no cursor; o que cada item faz é decidido pelo servidor (`click`) ou por navegação.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -635,7 +635,7 @@
 
 ### HoverCard
 
-`FrappeUILive.Components.HoverCard.hover_card/1` — Cartão que aparece em hover ou foco do gatilho, com pequeno atraso (CSS puro).
+`FrappeUIPhx.Components.HoverCard.hover_card/1` — Cartão que aparece em hover ou foco do gatilho, com pequeno atraso (CSS puro).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -648,7 +648,7 @@
 
 ### Tooltip
 
-`FrappeUILive.Components.Tooltip.tooltip/1` — Dica visual sem JavaScript: aparece em hover e em foco do conteúdo envolvido.
+`FrappeUIPhx.Components.Tooltip.tooltip/1` — Dica visual sem JavaScript: aparece em hover e em foco do conteúdo envolvido.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -664,7 +664,7 @@
 
 ### Tabs
 
-`FrappeUILive.Components.Tabs.tabs/1` — Abas cujo item ativo é decidido por um assign (`active`), nunca por estado do cliente. Cada `:tab` navega (`patch`/`navigate`) ou dispara evento (`click`). O conteúdo do painel ativo vai no `inner_block`.
+`FrappeUIPhx.Components.Tabs.tabs/1` — Abas cujo item ativo é decidido por um assign (`active`), nunca por estado do cliente. Cada `:tab` navega (`patch`/`navigate`) ou dispara evento (`click`). O conteúdo do painel ativo vai no `inner_block`.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -679,7 +679,7 @@
 
 ### TabButtons
 
-`FrappeUILive.Components.TabButtons.tab_buttons/1` — Abas em formato de botões segmentados; a ativa é um assign do servidor (`active`).
+`FrappeUIPhx.Components.TabButtons.tab_buttons/1` — Abas em formato de botões segmentados; a ativa é um assign do servidor (`active`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -692,7 +692,7 @@
 
 ### Breadcrumbs
 
-`FrappeUILive.Components.Breadcrumbs.breadcrumbs/1` — Trilha de navegação; o último item é a página atual (`aria-current="page"`).
+`FrappeUIPhx.Components.Breadcrumbs.breadcrumbs/1` — Trilha de navegação; o último item é a página atual (`aria-current="page"`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -704,7 +704,7 @@
 
 ### PageHeader
 
-`FrappeUILive.Components.PageHeader.page_header/1` — Cabeçalho de página: breadcrumbs opcionais, título e ações.
+`FrappeUIPhx.Components.PageHeader.page_header/1` — Cabeçalho de página: breadcrumbs opcionais, título e ações.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -719,7 +719,7 @@
 
 ### Sidebar
 
-`FrappeUILive.Components.Sidebar.sidebar/1` — Barra lateral de navegação. O item ativo (`active`) e o recolhimento (`collapsed`) são assigns do servidor; recolhida, só os ícones aparecem.
+`FrappeUIPhx.Components.Sidebar.sidebar/1` — Barra lateral de navegação. O item ativo (`active`) e o recolhimento (`collapsed`) são assigns do servidor; recolhida, só os ícones aparecem.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -735,7 +735,7 @@
 
 ### SidebarRail
 
-`FrappeUILive.Components.SidebarRail.sidebar_rail/1` — Trilho estreito só com ícones (rótulo acessível e `title`); ativo por assign.
+`FrappeUIPhx.Components.SidebarRail.sidebar_rail/1` — Trilho estreito só com ícones (rótulo acessível e `title`); ativo por assign.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -750,7 +750,7 @@
 
 ### DesktopShell
 
-`FrappeUILive.Components.DesktopShell.desktop_shell/1` — Casca de página para desktop: `:sidebar` à esquerda e o conteúdo rolável à direita.
+`FrappeUIPhx.Components.DesktopShell.desktop_shell/1` — Casca de página para desktop: `:sidebar` à esquerda e o conteúdo rolável à direita.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -763,7 +763,7 @@
 
 ### MobileShell
 
-`FrappeUILive.Components.MobileShell.mobile_shell/1` — Casca para telas estreitas: cabeçalho, conteúdo rolável e navegação inferior (`:nav`).
+`FrappeUIPhx.Components.MobileShell.mobile_shell/1` — Casca para telas estreitas: cabeçalho, conteúdo rolável e navegação inferior (`:nav`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -778,7 +778,7 @@
 
 ### ScrollArea
 
-`FrappeUILive.Components.ScrollArea.scroll_area/1` — Região rolável com barras finas e discretas (CSS nativo); focável para rolagem por teclado.
+`FrappeUIPhx.Components.ScrollArea.scroll_area/1` — Região rolável com barras finas e discretas (CSS nativo); focável para rolagem por teclado.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -791,7 +791,7 @@
 
 ### Divider
 
-`FrappeUILive.Components.Divider.divider/1` — Linha divisória horizontal ou vertical.
+`FrappeUIPhx.Components.Divider.divider/1` — Linha divisória horizontal ou vertical.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -802,7 +802,7 @@
 
 ### Tree
 
-`FrappeUILive.Components.Tree.tree/1` — Árvore de nós `%{id, label, icon, children}`. Expansão (`expanded`) e seleção (`selected`) são assigns do servidor; cada clique é um evento (`on_toggle`/`on_select` com `%{"id" => id}`). Com `on_drop`, os nós de um mesmo nível podem ser reordenados por arrastar-e-soltar.
+`FrappeUIPhx.Components.Tree.tree/1` — Árvore de nós `%{id, label, icon, children}`. Expansão (`expanded`) e seleção (`selected`) são assigns do servidor; cada clique é um evento (`on_toggle`/`on_select` com `%{"id" => id}`). Com `on_drop`, os nós de um mesmo nível podem ser reordenados por arrastar-e-soltar.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -817,13 +817,13 @@
 
 ### Sortable
 
-`FrappeUILive.Components.Sortable.sortable/1` — Lista reordenável por arrastar-e-soltar (HTML5 nativo).
+`FrappeUIPhx.Components.Sortable.sortable/1` — Lista reordenável por arrastar-e-soltar (HTML5 nativo).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
 | `class` | any | não | — |  |  |
 | `id` | string | sim | — |  |  |
-| `item_id` | any | não | `&FrappeUILive.Components.Sortable.default_id/1` |  | função item -> id (padrão: `item.id`) |
+| `item_id` | any | não | `&FrappeUIPhx.Components.Sortable.default_id/1` |  | função item -> id (padrão: `item.id`) |
 | `items` | list | sim | — |  |  |
 | `on_drop` | string | sim | — |  | evento do servidor: %{"id", "to", "position"} |
 
@@ -835,7 +835,7 @@
 
 ### BarChart
 
-`FrappeUILive.Charts.Bar.bar_chart/1` — Gráfico de barras agrupadas (SVG no servidor, cores do tema, estados loading/empty/error).
+`FrappeUIPhx.Charts.Bar.bar_chart/1` — Gráfico de barras agrupadas (SVG no servidor, cores do tema, estados loading/empty/error).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -849,7 +849,7 @@
 
 ### LineChart
 
-`FrappeUILive.Charts.Line.line_chart/1` — Gráficos de linha e de área (SVG no servidor), com pontos, dicas e estados.
+`FrappeUIPhx.Charts.Line.line_chart/1` — Gráficos de linha e de área (SVG no servidor), com pontos, dicas e estados.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -863,7 +863,7 @@
 
 ### AreaChart
 
-`FrappeUILive.Charts.Line.area_chart/1` — Gráficos de linha e de área (SVG no servidor), com pontos, dicas e estados.
+`FrappeUIPhx.Charts.Line.area_chart/1` — Gráficos de linha e de área (SVG no servidor), com pontos, dicas e estados.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -877,7 +877,7 @@
 
 ### DonutChart
 
-`FrappeUILive.Charts.Donut.donut_chart/1` — Gráfico de rosca (SVG no servidor). `data` é `[%{label, value}]`; valores ≤ 0 são ignorados.
+`FrappeUIPhx.Charts.Donut.donut_chart/1` — Gráfico de rosca (SVG no servidor). `data` é `[%{label, value}]`; valores ≤ 0 são ignorados.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -890,7 +890,7 @@
 
 ### PercentageBarChart
 
-`FrappeUILive.Charts.Proportion.percentage_bar_chart/1` — Gráficos de proporção: barra percentual empilhada e funil.
+`FrappeUIPhx.Charts.Proportion.percentage_bar_chart/1` — Gráficos de proporção: barra percentual empilhada e funil.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -902,7 +902,7 @@
 
 ### FunnelChart
 
-`FrappeUILive.Charts.Proportion.funnel_chart/1` — Gráficos de proporção: barra percentual empilhada e funil.
+`FrappeUIPhx.Charts.Proportion.funnel_chart/1` — Gráficos de proporção: barra percentual empilhada e funil.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -914,7 +914,7 @@
 
 ### HeatmapChart
 
-`FrappeUILive.Charts.Matrix.heatmap_chart/1` — Mapas de calor: matriz linhas × colunas e calendário (estilo contribuições).
+`FrappeUIPhx.Charts.Matrix.heatmap_chart/1` — Mapas de calor: matriz linhas × colunas e calendário (estilo contribuições).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -927,7 +927,7 @@
 
 ### CalendarHeatmapChart
 
-`FrappeUILive.Charts.Matrix.calendar_heatmap_chart/1` — Mapas de calor: matriz linhas × colunas e calendário (estilo contribuições).
+`FrappeUIPhx.Charts.Matrix.calendar_heatmap_chart/1` — Mapas de calor: matriz linhas × colunas e calendário (estilo contribuições).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -940,7 +940,7 @@
 
 ### ScatterChart
 
-`FrappeUILive.Charts.Scatter.scatter_chart/1` — Gráfico de dispersão: séries de pontos `{x, y}` em eixos numéricos.
+`FrappeUIPhx.Charts.Scatter.scatter_chart/1` — Gráfico de dispersão: séries de pontos `{x, y}` em eixos numéricos.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -953,7 +953,7 @@
 
 ### SankeyChart
 
-`FrappeUILive.Charts.Sankey.sankey_chart/1` — Diagrama de Sankey: `links` é `[%{source, target, value}]`; os nós e as colunas (profundidade) são derivados dos links. Ciclos não são suportados e falham alto.
+`FrappeUIPhx.Charts.Sankey.sankey_chart/1` — Diagrama de Sankey: `links` é `[%{source, target, value}]`; os nós e as colunas (profundidade) são derivados dos links. Ciclos não são suportados e falham alto.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -965,7 +965,7 @@
 
 ### NumberCard
 
-`FrappeUILive.Charts.NumberCard.number_card/1` — Cartão de indicador: rótulo, valor grande e variação percentual opcional (verde sobe, vermelho cai).
+`FrappeUIPhx.Charts.NumberCard.number_card/1` — Cartão de indicador: rótulo, valor grande e variação percentual opcional (verde sobe, vermelho cai).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -979,7 +979,7 @@
 
 ### ChartCard
 
-`FrappeUILive.Charts.ChartCard.chart_card/1` — Cartão que enquadra um gráfico: título, subtítulo, ações e o gráfico no corpo.
+`FrappeUIPhx.Charts.ChartCard.chart_card/1` — Cartão que enquadra um gráfico: título, subtítulo, ações e o gráfico no corpo.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -994,7 +994,7 @@
 
 ### ChartLegend
 
-`FrappeUILive.Charts.Legend.chart_legend/1` — Legenda: marcador colorido + nome. `items` é `[%{label, color}]` ou vem das séries.
+`FrappeUIPhx.Charts.Legend.chart_legend/1` — Legenda: marcador colorido + nome. `items` é `[%{label, color}]` ou vem das séries.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1003,7 +1003,7 @@
 
 ### ChartTooltip
 
-`FrappeUILive.Charts.Tooltip.chart_tooltip/1` — Dica de um ponto de dado, desenhada em SVG: aparece quando o pai tem a classe `group` e está em hover/foco (CSS puro). Complementa o `<title>` nativo.
+`FrappeUIPhx.Charts.Tooltip.chart_tooltip/1` — Dica de um ponto de dado, desenhada em SVG: aparece quando o pai tem a classe `group` e está em hover/foco (CSS puro). Complementa o `<title>` nativo.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1013,7 +1013,7 @@
 
 ### ChartStates
 
-`FrappeUILive.Charts.Frame.chart_frame/1` — Moldura comum dos gráficos com os estados `:loading`, `:empty` e `:error` (visualmente distintos); no estado `:ready` mostra o gráfico.
+`FrappeUIPhx.Charts.Frame.chart_frame/1` — Moldura comum dos gráficos com os estados `:loading`, `:empty` e `:error` (visualmente distintos); no estado `:ready` mostra o gráfico.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1030,7 +1030,7 @@
 
 ### List
 
-`FrappeUILive.Components.List.list/1` — Tabela de objetos: colunas por slot (`:col`), ações por linha (`:action`), seleção por checkbox e reordenação por arrastar-e-soltar. O estado (`selected`, ordem de `rows`) vive no servidor; cada interação é um evento.
+`FrappeUIPhx.Components.List.list/1` — Tabela de objetos: colunas por slot (`:col`), ações por linha (`:action`), seleção por checkbox e reordenação por arrastar-e-soltar. O estado (`selected`, ordem de `rows`) vive no servidor; cada interação é um evento.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1039,7 +1039,7 @@
 | `id` | string | sim | — |  |  |
 | `on_drop` | string | não | — |  | liga o arrastar-e-soltar; evento: %{"id", "to", "position"} |
 | `on_select` | string | não | — |  | evento do servidor: %{"id" => id} |
-| `row_id` | any | não | `&FrappeUILive.Components.Sortable.default_id/1` |  |  |
+| `row_id` | any | não | `&FrappeUIPhx.Components.Sortable.default_id/1` |  |  |
 | `rows` | list | sim | — |  |  |
 | `selectable` | boolean | não | `false` |  | mostra a coluna de seleção (um checkbox por linha) |
 | `selected` | list | não | `[]` |  | ids selecionados, comparados como texto |
@@ -1051,7 +1051,7 @@
 
 ### Editor
 
-`FrappeUILive.Components.Editor.editor/1` — Editor de texto rico (negrito, itálico, título, listas, código, link) que guarda **Markdown** num `<input type=hidden>`, então participa do formulário e do `phx-change` como qualquer campo.
+`FrappeUIPhx.Components.Editor.editor/1` — Editor de texto rico (negrito, itálico, título, listas, código, link) que guarda **Markdown** num `<input type=hidden>`, então participa do formulário e do `phx-change` como qualquer campo.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1066,7 +1066,7 @@
 
 ### CodeEditor
 
-`FrappeUILive.Components.CodeEditor.code_editor/1` — Editor de código: `<textarea>` monoespaçado com numeração de linhas, tecla Tab que indenta e rótulo da linguagem. É um campo de formulário comum (`name`, `phx-change`, `field`).
+`FrappeUIPhx.Components.CodeEditor.code_editor/1` — Editor de código: `<textarea>` monoespaçado com numeração de linhas, tecla Tab que indenta e rótulo da linguagem. É um campo de formulário comum (`name`, `phx-change`, `field`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1084,7 +1084,7 @@
 
 ### Accordion
 
-`FrappeUILive.Components.Accordion.accordion/1` — Seções recolhíveis sobre `<details>` nativo (teclado e leitores de tela de graça). Por padrão só uma seção fica aberta por vez (atributo `name` do HTML, agrupado pelo `id`); com `multiple`, qualquer combinação. `open` no item abre desde o servidor.
+`FrappeUIPhx.Components.Accordion.accordion/1` — Seções recolhíveis sobre `<details>` nativo (teclado e leitores de tela de graça). Por padrão só uma seção fica aberta por vez (atributo `name` do HTML, agrupado pelo `id`); com `multiple`, qualquer combinação. `open` no item abre desde o servidor.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1098,7 +1098,7 @@
 
 ### Calendar
 
-`FrappeUILive.Components.Calendar.calendar/1` — Calendário mensal com eventos (visão de agenda). O mês exibido e o dia selecionado são assigns do servidor; navegar e escolher são eventos (`on_prev`, `on_next`, `on_today`, `on_select` com `%{"date" => "2026-03-09"}`).
+`FrappeUIPhx.Components.Calendar.calendar/1` — Calendário mensal com eventos (visão de agenda). O mês exibido e o dia selecionado são assigns do servidor; navegar e escolher são eventos (`on_prev`, `on_next`, `on_today`, `on_select` com `%{"date" => "2026-03-09"}`).
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1115,7 +1115,7 @@
 
 ### CommandPalette
 
-`FrappeUILive.Components.CommandPalette.command_palette/1` — Paleta de comandos (Ctrl/⌘ + K): busca, grupos e navegação por teclado. Abre como o `Dialog` (mesmo hook nativo: foco preso, Esc, backdrop) e o hook próprio só filtra a lista, move a seleção com ↑/↓ e aciona o item com Enter. O que cada item *faz* é decidido pelo servidor (`click`) ou por navegação.
+`FrappeUIPhx.Components.CommandPalette.command_palette/1` — Paleta de comandos (Ctrl/⌘ + K): busca, grupos e navegação por teclado. Abre como o `Dialog` (mesmo hook nativo: foco preso, Esc, backdrop) e o hook próprio só filtra a lista, move a seleção com ↑/↓ e aciona o item com Enter. O que cada item *faz* é decidido pelo servidor (`click`) ou por navegação.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1131,7 +1131,7 @@
 
 ### ListView
 
-`FrappeUILive.Components.ListView.list_view/1` — Lista agrupada e recolhível: `group_by` (função linha → rótulo) forma os grupos; os recolhidos (`collapsed`) são um assign do servidor e o cabeçalho de cada grupo dispara `on_toggle` com `%{"group" => rótulo}`. Colunas por slot, como em `list`. Experimental.
+`FrappeUIPhx.Components.ListView.list_view/1` — Lista agrupada e recolhível: `group_by` (função linha → rótulo) forma os grupos; os recolhidos (`collapsed`) são um assign do servidor e o cabeçalho de cada grupo dispara `on_toggle` com `%{"group" => rótulo}`. Colunas por slot, como em `list`. Experimental.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1141,7 +1141,7 @@
 | `group_by` | any | não | — |  | função linha -> rótulo do grupo (nil = sem grupos) |
 | `id` | string | sim | — |  |  |
 | `on_toggle` | string | não | — |  |  |
-| `row_id` | any | não | `&FrappeUILive.Components.Sortable.default_id/1` |  |  |
+| `row_id` | any | não | `&FrappeUIPhx.Components.Sortable.default_id/1` |  |  |
 | `rows` | list | sim | — |  |  |
 
 **Slots**
@@ -1150,7 +1150,7 @@
 
 ### Stepper
 
-`FrappeUILive.Components.Stepper.stepper/1` — Indicador de etapas. A etapa atual (`current`, índice a partir de 0; igual ao número de etapas = tudo concluído) é um assign do servidor, e o estado de cada etapa (`:done | :current | :upcoming`) é derivado dele. Com `on_go`, as etapas concluídas viram botões que voltam para elas (`%{"step" => índice}`). Experimental.
+`FrappeUIPhx.Components.Stepper.stepper/1` — Indicador de etapas. A etapa atual (`current`, índice a partir de 0; igual ao número de etapas = tudo concluído) é um assign do servidor, e o estado de cada etapa (`:done | :current | :upcoming`) é derivado dele. Com `on_go`, as etapas concluídas viram botões que voltam para elas (`%{"step" => índice}`). Experimental.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|
@@ -1165,7 +1165,7 @@
 
 ### ThemeSwitcher
 
-`FrappeUILive.Components.ThemeSwitcher.theme_switcher/1` — Alternador claro/escuro. Cada opção é um link `?theme=…` tratado por `FrappeUILive.Plug.Theme`, que persiste a escolha em sessão e cookie; o tema atual (`current`) vem do servidor (`@frappe_ui_theme`). Experimental.
+`FrappeUIPhx.Components.ThemeSwitcher.theme_switcher/1` — Alternador claro/escuro. Cada opção é um link `?theme=…` tratado por `FrappeUIPhx.Plug.Theme`, que persiste a escolha em sessão e cookie; o tema atual (`current`) vem do servidor (`@frappe_ui_theme`). Experimental.
 
 | Atributo | Tipo | Obrigatório | Padrão | Valores | Descrição |
 |---|---|---|---|---|---|

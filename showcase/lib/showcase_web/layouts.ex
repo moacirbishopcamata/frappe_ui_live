@@ -1,5 +1,5 @@
 defmodule ShowcaseWeb.Layouts do
-  @moduledoc "Layout raiz: `data-theme` vem do `FrappeUILive.Plug.Theme`."
+  @moduledoc "Layout raiz: `data-theme` vem do `FrappeUIPhx.Plug.Theme`."
   use Phoenix.Component
 
   def root(assigns) do
@@ -10,7 +10,7 @@ defmodule ShowcaseWeb.Layouts do
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
-        <.live_title default="Frappe UI Live" suffix=" · Mostruário">
+        <.live_title default="Frappe UI Phx" suffix=" · Mostruário">
           {assigns[:page_title]}
         </.live_title>
         <link phx-track-static rel="stylesheet" href="/assets/css/app.css" />

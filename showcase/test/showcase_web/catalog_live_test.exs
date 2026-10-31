@@ -1,8 +1,8 @@
 defmodule ShowcaseWeb.CatalogLiveTest do
   use ShowcaseWeb.ConnCase, async: true
 
-  alias FrappeUILive.Components, as: Catalog
-  alias FrappeUILive.Icons
+  alias FrappeUIPhx.Components, as: Catalog
+  alias FrappeUIPhx.Icons
 
   describe "índice" do
     test "lista todos os componentes do catálogo, agrupados por categoria", %{conn: conn} do

@@ -5,7 +5,7 @@ defmodule Showcase.SpecTest do
 
   test "all/0 cobre todo o catálogo, com documentação do módulo" do
     specs = Spec.all()
-    assert length(specs) == length(FrappeUILive.Components.catalog())
+    assert length(specs) == length(FrappeUIPhx.Components.catalog())
     assert Enum.all?(specs, &(&1.doc != ""))
   end
 

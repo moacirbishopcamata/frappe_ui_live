@@ -71,7 +71,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 ## DiceBear
 
-Nenhum código, estilo ou imagem do DiceBear é distribuído aqui: `FrappeUILive.DiceBear` apenas monta
+Nenhum código, estilo ou imagem do DiceBear é distribuído aqui: `FrappeUIPhx.DiceBear` apenas monta
 URLs da API (https://www.dicebear.com). Os avatares retornados têm a licença do criador de cada estilo
 (algumas CC BY 4.0, que exigem atribuição) e a API pública é gratuita só para uso não comercial; veja
 https://www.dicebear.com/licenses/.

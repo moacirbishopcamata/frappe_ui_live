@@ -1,4 +1,4 @@
-defmodule FrappeUILive.Case do
+defmodule FrappeUIPhx.Case do
   @moduledoc "Base dos testes de componente: HEEx, renderização para string e parsing de HTML."
   use ExUnit.CaseTemplate
 
@@ -6,7 +6,7 @@ defmodule FrappeUILive.Case do
     quote do
       import Phoenix.Component
       import Phoenix.LiveViewTest, only: [rendered_to_string: 1]
-      import FrappeUILive.Case
+      import FrappeUIPhx.Case
     end
   end
 

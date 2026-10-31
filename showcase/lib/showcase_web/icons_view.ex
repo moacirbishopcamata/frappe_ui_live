@@ -8,9 +8,9 @@ defmodule ShowcaseWeb.IconsView do
   entrada do formulário é convertida e limitada aqui, nunca confiada.
   """
   use Phoenix.Component
-  use FrappeUILive
+  use FrappeUIPhx
 
-  alias FrappeUILive.Icons
+  alias FrappeUIPhx.Icons
 
   @page 120
   @colors ~w(currentColor red blue green orange purple)

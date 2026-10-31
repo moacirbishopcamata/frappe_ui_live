@@ -4,7 +4,7 @@
 
 ## Engenharia (SOLID, DbC, testes)
 
-- **DbC**: `FrappeUILive.Contract` — `require!/3` (pré-condição: `variant: :sombrio` levanta `ArgumentError`,
+- **DbC**: `FrappeUIPhx.Contract` — `require!/3` (pré-condição: `variant: :sombrio` levanta `ArgumentError`,
   não renderiza errado em silêncio) e `ensure!/2` (pós-condição/invariante). Entrada de usuário nunca levanta:
   vira `errors` do `FormField`; eventos forjados do cliente (ex.: data fora de `min`/`max`) são ignorados.
 - **SOLID**: um módulo por componente; extensão por `@behaviour` (`IconResolver`, `ToastSink`, `ErrorTranslator`),
@@ -28,13 +28,13 @@ importantes). **Já corrigidos** (com testes de regressão):
 - `id` obrigatório com erro uniforme e validação central (`Anchor`, `Dialog`, `Field.require_id!/2`);
 - protocolo de DOM do Sortable encapsulado, nome do hook derivado e Tree só reordena entre irmãos;
 - Markdown (open-redirect `/\`, ordem de ênfase/links, `to_safe/1`) e Toast (contêiner `phx-update=ignore`, paleta única);
-- `use FrappeUILive` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`;
+- `use FrappeUIPhx` com `only:` e validação de nomes; casca de painel única; `Plug.Static`/`Plug.Theme`; `Contract.require!/3`;
 - item de navegação unificado: `Action` decide link ou botão (`NavItem`, `MenuItem`, `Tabs`) e os slots usam o mesmo vocabulário.
 
-- `rest` global uniforme em todos os componentes com elemento raiz e textos fixos configuráveis (`FrappeUILive.Texts`).
+- `rest` global uniforme em todos os componentes com elemento raiz e textos fixos configuráveis (`FrappeUIPhx.Texts`).
 
 - `Spec` saiu do pacote (é do mostruário); pontos de extensão (`IconResolver`, `ToastSink`, `ErrorTranslator`, `Translator`) com
   fachada e módulo configurado validado; `Field.assign_field/2` com precedência documentada; `List` com `selectable`/`selected`
   e `Tree` com `selected_id`; DatePicker alinhado aos outros campos.
 
-Sem pendências da revisão. O tema padrão também vale no LiveView: `on_mount: [{FrappeUILive.Live.ThemeHook, default: "dark"}]`.
+Sem pendências da revisão. O tema padrão também vale no LiveView: `on_mount: [{FrappeUIPhx.Live.ThemeHook, default: "dark"}]`.

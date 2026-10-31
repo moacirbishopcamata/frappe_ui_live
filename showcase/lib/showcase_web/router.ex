@@ -12,13 +12,13 @@ defmodule ShowcaseWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     # Integração da biblioteca: resolve o tema (?theme=dark) e o guarda em sessão/cookie.
-    plug FrappeUILive.Plug.Theme
+    plug FrappeUIPhx.Plug.Theme
   end
 
   scope "/", ShowcaseWeb do
     pipe_through :browser
 
-    live_session :default, on_mount: [FrappeUILive.Live.ThemeHook] do
+    live_session :default, on_mount: [FrappeUIPhx.Live.ThemeHook] do
       live "/", CatalogLive, :index
       live "/c/:id", CatalogLive, :show
       live "/f/:id", CatalogLive, :foundation

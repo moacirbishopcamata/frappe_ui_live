@@ -16,7 +16,7 @@ A biblioteca SHALL ser adicionável a um app Phoenix 1.8 com LiveView 1.x por um
 A biblioteca SHALL expor todos os componentes por um único `use` (ou `import`) que o app host coloca em seu módulo de componentes/HTML.
 
 #### Scenario: Componente disponível em template
-- **WHEN** o módulo web do host faz `use FrappeUILive`
+- **WHEN** o módulo web do host faz `use FrappeUIPhx`
 - **THEN** `<.button>` e demais componentes ficam disponíveis em HEEx sem alias adicional
 
 ### Requirement: Instalador

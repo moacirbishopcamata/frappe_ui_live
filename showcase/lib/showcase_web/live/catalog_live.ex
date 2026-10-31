@@ -7,12 +7,12 @@ defmodule ShowcaseWeb.CatalogLive do
   Todo o estado (valores do formulário, aba, tema) vive no servidor.
   """
   use Phoenix.LiveView
-  use FrappeUILive
+  use FrappeUIPhx
 
-  alias FrappeUILive.{Foundations, Toast}
+  alias FrappeUIPhx.{Foundations, Toast}
   alias Showcase.Spec
-  alias FrappeUILive.Components, as: Catalog
-  alias FrappeUILive.Components.Sortable
+  alias FrappeUIPhx.Components, as: Catalog
+  alias FrappeUIPhx.Components.Sortable
   alias ShowcaseWeb.{FoundationsView, IconsView, Samples, Snippet}
 
   @tabs ~w(playground spec)
@@ -162,7 +162,7 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   def handle_event("cal_select", %{"date" => iso}, socket) do
-    case FrappeUILive.Calendar.to_date(iso) do
+    case FrappeUIPhx.Calendar.to_date(iso) do
       %Date{} = date -> {:noreply, update(socket, :demo, &%{&1 | day: date})}
       nil -> {:noreply, socket}
     end
@@ -223,7 +223,7 @@ defmodule ShowcaseWeb.CatalogLive do
   end
 
   defp shift_month(socket, delta) do
-    update(socket, :demo, &%{&1 | month: FrappeUILive.Calendar.shift_month(&1.month, delta)})
+    update(socket, :demo, &%{&1 | month: FrappeUIPhx.Calendar.shift_month(&1.month, delta)})
   end
 
   defp known_id(rows, id) do
@@ -255,7 +255,7 @@ defmodule ShowcaseWeb.CatalogLive do
     <div class="flex min-h-screen">
       <aside class="border-outline-gray-2 bg-surface-sidebar w-60 shrink-0 border-r px-3 py-4">
         <.link patch="/" class="fui-text-lg-semibold text-ink-gray-9 mb-4 block px-2">
-          Frappe UI Live
+          Frappe UI Phx
         </.link>
         <nav aria-label="Ícones" class="mb-4">
           <.link
@@ -405,7 +405,7 @@ defmodule ShowcaseWeb.CatalogLive do
           </div>
           <p class="fui-text-base-medium text-ink-gray-9">Todos os ícones Lucide</p>
           <p class="fui-text-p-sm text-ink-gray-5 mt-1">
-            {length(FrappeUILive.Icons.names())} componentes LiveView com size, color e stroke_width.
+            {length(FrappeUIPhx.Icons.names())} componentes LiveView com size, color e stroke_width.
           </p>
         </.link>
       </section>
